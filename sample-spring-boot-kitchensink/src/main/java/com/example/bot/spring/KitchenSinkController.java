@@ -256,7 +256,10 @@ public class KitchenSinkController {
                 this.reply(replyToken, templateMessage);
                 break;
             }
-
+        	
+            
+            	
+            
             default:
             	String reply = null;
             	try {
