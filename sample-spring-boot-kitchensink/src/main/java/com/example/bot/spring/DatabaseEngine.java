@@ -25,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class DatabaseEngine {
 	String search(String text) throws Exception {
+		System.out.println("why are you here?");
 		String result = null;
 		BufferedReader br = null;
 		InputStreamReader isr = null;
