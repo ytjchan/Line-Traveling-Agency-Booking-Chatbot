@@ -14,8 +14,8 @@ public class SQLDatabaseEngine extends DatabaseEngine {
 		//Write your code here
 		Connection c = this.getConnection();
 		PreparedStatement stmt = c.prepareStatement(
-			"SELECT response FROM mapping where keyword = ?");
-		stmt.setString(1, text); //or some other variables
+			"SELECT response FROM mapping where keyword like ?");
+		stmt.setString(1, '%' + text + '%'); //or some other variables
 		String reply = null;
 		System.out.println("before execute");
 		ResultSet rs = stmt.executeQuery();
