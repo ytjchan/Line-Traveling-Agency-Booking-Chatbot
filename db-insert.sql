@@ -12,23 +12,37 @@ INSERT INTO Tour (TourID,TourName,TourDesc,TourLength) VALUES ('3D991','Qingyuan
 INSERT INTO Tour (TourID,TourName,TourDesc,TourLength) VALUES ('3D842','Shenzhen city tour ','Window of The World  * Splendid China & Chinese Folk Culture Village * Dafen Oil Painting Village (All tickets included)','3');
 
 /* TourGuide table from "Bookin Table" */
-INSERT INTO TourGuide (LineID,Name) VALUES ('Group member A Line ID','Amber');
-INSERT INTO TourGuide (LineID,Name) VALUES ('Group members B Line ID','Betty');
-INSERT INTO TourGuide (LineID,Name) VALUES ('no need for Carol','Carol');
-INSERT INTO TourGuide (LineID,Name) VALUES ('no need for Linsay','Linsay');
+INSERT INTO TourGuide (LineID,Name) VALUES ('hkgeorgechen','Amber');
+INSERT INTO TourGuide (LineID,Name) VALUES ('HKJeffer','Betty');
+INSERT INTO TourGuide (LineID,Name) VALUES ('member C','Carol');
+INSERT INTO TourGuide (LineID,Name) VALUES ('member L','Linsay');
 
 /* TourOffering table from "Booking Table" */
+INSERT INTO TourOffering (TourID,OfferID,TourDate,TourGuideLineID,Hotel,Price,MaxCapacity,MinRequirement,Confirmed) VALUES ('2D001','2D00120171106',2017-11-06,'hkgeorgechen','Hotel L\Cheap',499,20,4,false);
+INSERT INTO TourOffering (TourID,OfferID,TourDate,TourGuideLineID,Hotel,Price,MaxCapacity,MinRequirement,Confirmed) VALUES ('2D001','2D00120171108',2017-11-08,'HKJeffer','Hotel L\Cheap',499,20,4,false);
+INSERT INTO TourOffering (TourID,OfferID,TourDate,TourGuideLineID,Hotel,Price,MaxCapacity,MinRequirement,Confirmed) VALUES ('2D001','2D00120171111',2017-11-11,'member C','Hotel de Carol',599,20,4,false);
+INSERT INTO TourOffering (TourID,OfferID,TourDate,TourGuideLineID,Hotel,Price,MaxCapacity,MinRequirement,Confirmed) VALUES ('2D001','2D00120171113',2017-11-13,'member L','Hotel L\Cheap',499,20,4,false);
+INSERT INTO TourOffering (TourID,OfferID,TourDate,TourGuideLineID,Hotel,Price,MaxCapacity,MinRequirement,Confirmed) VALUES ('2D001','2D00120171115',2017-11-15,'hkgeorgechen','Hotel de Carol',499,20,4,false);
+INSERT INTO TourOffering (TourID,OfferID,TourDate,TourGuideLineID,Hotel,Price,MaxCapacity,MinRequirement,Confirmed) VALUES ('2D001','2D00120171118',2017-11-18,'HKJeffer','Maxim Grand Hotel',599,20,4,false);
+INSERT INTO TourOffering (TourID,OfferID,TourDate,TourGuideLineID,Hotel,Price,MaxCapacity,MinRequirement,Confirmed) VALUES ('2D002','2D00220171106',2017-11-06,'member C','Hotel L\Cheap',299,30,8,false);
+INSERT INTO TourOffering (TourID,OfferID,TourDate,TourGuideLineID,Hotel,Price,MaxCapacity,MinRequirement,Confirmed) VALUES ('2D002','2D00220171108',2017-11-08,'member L','Hotel de Carol',299,30,8,false);
+INSERT INTO TourOffering (TourID,OfferID,TourDate,TourGuideLineID,Hotel,Price,MaxCapacity,MinRequirement,Confirmed) VALUES ('2D002','2D00220171117',2017-11-17,'member C','Maxim Grand Hotel',299,30,8,false);
 
 /* Booker table from "Customer Table" */
+INSERT INTO Booker (LineID,HKID,PhoneNo,Age) VALUES ('hkgeorgechen','A111222',66161748,35);
+INSERT INTO Booker (LineID,HKID,PhoneNo,Age) VALUES ('HKJeffer','A222444',67679166,36);
 
 /* Booking table from "Customer Table" */
+INSERT INTO Booking (LineID,OfferID,Adults,Children,Toddlers,TourFee,AmountPaid,SpecialRequest,Cancelled) VALUES ('hkgeorgechen','2D00120171108',2,2,0,1796.4,1796.4,'Non smoking room',false);
+INSERT INTO Booking (LineID,OfferID,Adults,Children,Toddlers,TourFee,AmountPaid,SpecialRequest,Cancelled) VALUES ('HKJeffer','2D00120171108',2,0,0,998,500,null,false);
+INSERT INTO Booking (LineID,OfferID,Adults,Children,Toddlers,TourFee,AmountPaid,SpecialRequest,Cancelled) VALUES ('HKJeffer','2D00120171118',2,0,0,998,600,null,false);
 
 /* FAQ table from faq.md */
 INSERT INTO FAQ (Keywoed,Question,Answer) VALUES ('apply', 'How to apply?', 'Customers shall approach the company by phone or visit our store (in Clearwater bay) with the choosen tour code and departure date. If it is not full, customers will be advised by the staff to pay the tour fee. Tour fee is non refundable. Customer can pay their fee by ATM to 123-345-432-211 of ABC Bank or by cash in our store. Customer shall send their pay-in slip to us by email or LINE.');
 INSERT INTO FAQ (Keywoed,Question,Answer) VALUES ('gathering', 'Where is the gathering/assemble and dismiss spot?', 'We gather at the gathering spot "Exit A, Futian port, Shenzhen" at 8:00AM on the departure date. We dismiss at the same spot after the tour.');
 INSERT INTO FAQ (Keywoed,Question,Answer) VALUES ('assemble', 'Where is the gathering/assemble and dismiss spot?', 'We gather at the gathering spot "Exit A, Futian port, Shenzhen" at 8:00AM on the departure date. We dismiss at the same spot after the tour.');
 INSERT INTO FAQ (Keywoed,Question,Answer) VALUES ('dismiss', 'Where is the gathering/assemble and dismiss spot?', 'We gather at the gathering spot "Exit A, Futian port, Shenzhen" at 8:00AM on the departure date. We dismiss at the same spot after the tour.');
-INSERT INTO FAQ (Keywoed,Question,Answer) VALUES ('cancel', 'What if the tour is cancelled?', 'In case a tour has not enough people or bad weather condition and the tour is forced to cancel, customers will be informed 3 days in advanced. Either change to another tour or refund is avaliable for customers to select. However, due to other reasons such as customers‘ personal problem no refund can be made.');
+INSERT INTO FAQ (Keywoed,Question,Answer) VALUES ('cancel', 'What if the tour is cancelled?', 'In case a tour has not enough people or bad weather condition and the tour is forced to cancel, customers will be informed 3 days in advanced. Either change to another tour or refund is avaliable for customers to select. However, due to other reasons such as customers\ personal problem no refund can be made.');
 INSERT INTO FAQ (Keywoed,Question,Answer) VALUES ('charge', 'Are there any additional charge?', 'Each customer need to pay an additional service charge at the rate $60/day/person, on top of the tour fee. It is collected by the tour guide at the end of the tour.');
 INSERT INTO FAQ (Keywoed,Question,Answer) VALUES ('transportation', 'What is the transportation in Guangdong?', 'A tour bus.');
 INSERT INTO FAQ (Keywoed,Question,Answer) VALUES ('contact', 'How can I contact the tour guide?', 'Each tour guide has a LINE account and he will add the customers as his friends before the departure date. You can contact him/her accordingly.');
