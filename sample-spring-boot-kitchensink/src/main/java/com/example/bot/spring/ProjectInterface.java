@@ -74,7 +74,7 @@ import java.net.URI;
 
 public class ProjectInterface {
 	//TODO define image addresses
-	public static final String [] imageNames = {"gather.jpg","gd1.jpg","beach3.jpg","","","","","","",""};
+	public static final String [] IMAGE_NAMES = {"/static/gather.jpg","/static/gd1.jpg","/static/beach3.jpg","TODO","TODO","TODO","TODO","TODO","TODO","TODO"};
 	
 	public String inputText = "((start))";
 	public String state = "init";			//define the state i.e. init, search, book, enq
