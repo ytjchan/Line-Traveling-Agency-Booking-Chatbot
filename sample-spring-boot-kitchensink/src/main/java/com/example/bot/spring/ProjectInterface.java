@@ -123,7 +123,9 @@ public class ProjectInterface {
 		//use Instant lastMessageTime
 		//check if 15 minutes have passed since last message from user
 		//should be accessible from ANY state, after 15 minutes or 'cancel' statement
-		return lastMessageTime.plusSeconds(900).isBefore(Instant.now());
+		boolean flag = lastMessageTime.plusSeconds(900).isBefore(Instant.now());
+		lastMessageTime = Instant.now();
+		return flag;
 		//for test case, remove when you're actually done
 		//return false;
 	}
