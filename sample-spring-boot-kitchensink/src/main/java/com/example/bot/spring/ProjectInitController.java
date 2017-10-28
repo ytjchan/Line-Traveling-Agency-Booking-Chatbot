@@ -72,12 +72,14 @@ import java.net.URI;
 
 
 public class ProjectInitController {
-	private static String [] imgs = ProjectInterface.imageNames;
-	private static String [] uris = new String[imgs.length];
+	private static String [] imgs;// = ProjectInterface.imageNames;
+	private static String [] uris = new String[3];
 	
 	static {
-		for (String img: imgs)
-			img = '/'+img;
+		imgs = new String[3];
+		imgs[0] = "/static/gather.jpg";
+		imgs[1] = "/static/gd1.jpg";
+		imgs[2] = "/static/beach3.jpg";
 		for (int i=0; i<imgs.length; i++)
 			uris[i] = KitchenSinkController.createUri(imgs[i]);
 	}
