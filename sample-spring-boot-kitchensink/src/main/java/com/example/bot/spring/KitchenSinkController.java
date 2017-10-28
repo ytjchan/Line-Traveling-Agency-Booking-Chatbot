@@ -92,6 +92,7 @@ public class KitchenSinkController {
 
 	@Autowired
 	private LineMessagingClient lineMessagingClient;
+	public ProjectInterface funInterface = new ProjectInterface();
 
 	@EventMapping
 	public void handleTextMessageEvent(MessageEvent<TextMessageContent> event) throws Exception {
@@ -209,9 +210,44 @@ public class KitchenSinkController {
 
 	private void handleTextContent(String replyToken, Event event, TextMessageContent content)
             throws Exception {
-        String text = content.getText();
+		String text = content.getText();
 
         log.info("Got text message from {}: {}", replyToken, text);
+        
+        funInterface.process(text);
+        //now the replyType of funInterface will change depending on the text
+        
+        //TODO manage the output reply based on the replyType
+        
+        switch (funInterface.replyType) {
+    		case "text":{
+    			//test case
+    			this.replyText(replyToken, funInterface.replyText);
+    			break;
+    		}
+    		case "image":{
+    			//base on funInterface.replyImageAddress
+    			break;
+    		}
+    		case "carousel":{
+    			//base on funInterface.replyCarousel
+    			break;
+    		}
+    		case "confirm":{
+    			//the message is always the same, i.e. yes & no refer to provided codes
+    			break;
+    		}
+    		case "unknown":{
+    			//the message is always the same, e.g. "sorry i did not understand that"
+    			this.replyText(replyToken, funInterface.replyText);
+    			break;
+    		}
+    		default:
+    			break;
+        }
+        
+        
+        /*
         switch (text) {
             case "profile": {
                 String userId = event.getSource().getUserId();
@@ -273,7 +309,7 @@ public class KitchenSinkController {
                         itscLOGIN + " says " + reply
                 );
                 break;
-        }
+        }*/
     }
 
 	static String createUri(String path) {
