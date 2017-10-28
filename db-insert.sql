@@ -18,13 +18,13 @@ INSERT INTO TourGuide (LineID,Name) VALUES ('member C','Carol');
 INSERT INTO TourGuide (LineID,Name) VALUES ('member L','Linsay');
 
 /* TourOffering table from "Booking Table" */
-INSERT INTO TourOffering (TourID,OfferID,TourDate,TourGuideLineID,Hotel,Price,MaxCapacity,MinRequirement,Confirmed) VALUES ('2D001','2D00120171106',2017-11-06,'hkgeorgechen','Hotel L\'Cheap',499,20,4,false);
-INSERT INTO TourOffering (TourID,OfferID,TourDate,TourGuideLineID,Hotel,Price,MaxCapacity,MinRequirement,Confirmed) VALUES ('2D001','2D00120171108',2017-11-08,'HKJeffer','Hotel L\'Cheap',499,20,4,false);
+INSERT INTO TourOffering (TourID,OfferID,TourDate,TourGuideLineID,Hotel,Price,MaxCapacity,MinRequirement,Confirmed) VALUES ('2D001','2D00120171106',2017-11-06,'hkgeorgechen','Hotel L\Cheap',499,20,4,false);
+INSERT INTO TourOffering (TourID,OfferID,TourDate,TourGuideLineID,Hotel,Price,MaxCapacity,MinRequirement,Confirmed) VALUES ('2D001','2D00120171108',2017-11-08,'HKJeffer','Hotel L\Cheap',499,20,4,false);
 INSERT INTO TourOffering (TourID,OfferID,TourDate,TourGuideLineID,Hotel,Price,MaxCapacity,MinRequirement,Confirmed) VALUES ('2D001','2D00120171111',2017-11-11,'member C','Hotel de Carol',599,20,4,false);
-INSERT INTO TourOffering (TourID,OfferID,TourDate,TourGuideLineID,Hotel,Price,MaxCapacity,MinRequirement,Confirmed) VALUES ('2D001','2D00120171113',2017-11-13,'member L','Hotel L\'Cheap',499,20,4,false);
+INSERT INTO TourOffering (TourID,OfferID,TourDate,TourGuideLineID,Hotel,Price,MaxCapacity,MinRequirement,Confirmed) VALUES ('2D001','2D00120171113',2017-11-13,'member L','Hotel L\Cheap',499,20,4,false);
 INSERT INTO TourOffering (TourID,OfferID,TourDate,TourGuideLineID,Hotel,Price,MaxCapacity,MinRequirement,Confirmed) VALUES ('2D001','2D00120171115',2017-11-15,'hkgeorgechen','Hotel de Carol',499,20,4,false);
 INSERT INTO TourOffering (TourID,OfferID,TourDate,TourGuideLineID,Hotel,Price,MaxCapacity,MinRequirement,Confirmed) VALUES ('2D001','2D00120171118',2017-11-18,'HKJeffer','Maxim Grand Hotel',599,20,4,false);
-INSERT INTO TourOffering (TourID,OfferID,TourDate,TourGuideLineID,Hotel,Price,MaxCapacity,MinRequirement,Confirmed) VALUES ('2D002','2D00220171106',2017-11-06,'member C','Hotel L\'Cheap',299,30,8,false);
+INSERT INTO TourOffering (TourID,OfferID,TourDate,TourGuideLineID,Hotel,Price,MaxCapacity,MinRequirement,Confirmed) VALUES ('2D002','2D00220171106',2017-11-06,'member C','Hotel L\Cheap',299,30,8,false);
 INSERT INTO TourOffering (TourID,OfferID,TourDate,TourGuideLineID,Hotel,Price,MaxCapacity,MinRequirement,Confirmed) VALUES ('2D002','2D00220171108',2017-11-08,'member L','Hotel de Carol',299,30,8,false);
 INSERT INTO TourOffering (TourID,OfferID,TourDate,TourGuideLineID,Hotel,Price,MaxCapacity,MinRequirement,Confirmed) VALUES ('2D002','2D00220171117',2017-11-17,'member C','Maxim Grand Hotel',299,30,8,false);
 
@@ -42,7 +42,7 @@ INSERT INTO FAQ (Keywoed,Question,Answer) VALUES ('apply', 'How to apply?', 'Cus
 INSERT INTO FAQ (Keywoed,Question,Answer) VALUES ('gathering', 'Where is the gathering/assemble and dismiss spot?', 'We gather at the gathering spot "Exit A, Futian port, Shenzhen" at 8:00AM on the departure date. We dismiss at the same spot after the tour.');
 INSERT INTO FAQ (Keywoed,Question,Answer) VALUES ('assemble', 'Where is the gathering/assemble and dismiss spot?', 'We gather at the gathering spot "Exit A, Futian port, Shenzhen" at 8:00AM on the departure date. We dismiss at the same spot after the tour.');
 INSERT INTO FAQ (Keywoed,Question,Answer) VALUES ('dismiss', 'Where is the gathering/assemble and dismiss spot?', 'We gather at the gathering spot "Exit A, Futian port, Shenzhen" at 8:00AM on the departure date. We dismiss at the same spot after the tour.');
-INSERT INTO FAQ (Keywoed,Question,Answer) VALUES ('cancel', 'What if the tour is cancelled?', 'In case a tour has not enough people or bad weather condition and the tour is forced to cancel, customers will be informed 3 days in advanced. Either change to another tour or refund is avaliable for customers to select. However, due to other reasons such as customers‘ personal problem no refund can be made.');
+INSERT INTO FAQ (Keywoed,Question,Answer) VALUES ('cancel', 'What if the tour is cancelled?', 'In case a tour has not enough people or bad weather condition and the tour is forced to cancel, customers will be informed 3 days in advanced. Either change to another tour or refund is avaliable for customers to select. However, due to other reasons such as customers\ personal problem no refund can be made.');
 INSERT INTO FAQ (Keywoed,Question,Answer) VALUES ('charge', 'Are there any additional charge?', 'Each customer need to pay an additional service charge at the rate $60/day/person, on top of the tour fee. It is collected by the tour guide at the end of the tour.');
 INSERT INTO FAQ (Keywoed,Question,Answer) VALUES ('transportation', 'What is the transportation in Guangdong?', 'A tour bus.');
 INSERT INTO FAQ (Keywoed,Question,Answer) VALUES ('contact', 'How can I contact the tour guide?', 'Each tour guide has a LINE account and he will add the customers as his friends before the departure date. You can contact him/her accordingly.');
