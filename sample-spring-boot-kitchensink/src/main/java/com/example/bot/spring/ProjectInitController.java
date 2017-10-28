@@ -70,94 +70,39 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.net.URI;
 
-//import java.time;
 
-public class ProjectInterface {
-	//TODO define image addresses
-	public static final String [] imageNames = new String[10] {"gather.jpg","gd1.jpg","beach3.jpg","","","","","","",""};
+public class ProjectInitController {
+	private static String [] imgs = ProjectInterface.imageNames;
+	private static String [] uris = new String[imgs.length];
 	
-	public String inputText = "((start))";
-	public String state = "init";			//define the state i.e. init, search, book, enq
-	public Queue<String> buffer;	//for unknown case
-	public Instant lastMessageTime = Instant.MIN;	//for check initial state
-	
-	public String replyType;		//i.e. text, image, carousel, confirm, unknown
-	public String replyText;		//for replyType: text
-	public String replyImageAddress;
-	public CarouselTemplate replyCarousel;
-	
-	public ProjectMasterController controller = new ProjectMasterController();
-	
-	public ProjectInterface() {
-		
+	static {
+		for (int i=0; i<imgs.length; i++)
+			uris[i] = KitchenSinkController.createUri(imgs[i]);
 	}
 	
-	//this will change the reply type & reply 
-	public void process(String text) {
-		if (checkInitState()) {
-			//TODO: call init controller
-			
-			replyText = "Hello! How may I help you today?";
-			replyType = "carousel";
-		} else if (checkSearchState()) {
-			//TODO: call tour search controller
-		} else if (checkBookState()) {
-			//TODO: call booking controller
-		} else if (checkEnqState()) {
-			//TODO: call enquiry controller
-		} else if (checkFAQ()) {
-			//TODO: call FAQ handler
-		} else {
-			//TODO: call unknown controller
-			//find some way to send message to staff, and/or store result in database
-			
-			replyText = "Sorry, I did not understand: " + text + ". We will relay this message to a staff member who will contact you if your question is valid.";
-			replyType = "unknown";
-		}
-			
+	public static TemplateMessage createMessage() {
+        CarouselTemplate carouselTemplate = new CarouselTemplate(
+                Arrays.asList(
+                        new CarouselColumn(uris[1], "3111 Travel", "Hello and welcome!\nWe are 3111 Travel, one of the best China travel agency in the mainland. Please type in what you want, or choose one of the following:", 
+                        		Arrays.asList(
+                        				new PostbackAction("Say hello1",
+                        						"hello ã�“ã‚“ã�«ã�¡ã�¯")
+                        				)
+                        		),
+                        new CarouselColumn(uris[2], "FAQ", "Want to know some useful information? Check here!", 
+                        		Arrays.asList(
+                        				new PostbackAction("è¨€ hello2",
+                        						"hello ã�“ã‚“ã�«ã�¡ã�¯",
+                        						"hello ã�“ã‚“ã�«ã�¡ã�¯"),
+                        				new MessageAction("How to apply?",
+                        						"Rice=ç±³"),
+                        				new URIAction("Visit our webpage", "https://github.com/khwang0/2017F-COMP3111")
+                        				)
+                        		)
+                )
+                );
+        TemplateMessage templateMessage = new TemplateMessage("Carousel alt text", carouselTemplate);
+        this.reply(replyToken, templateMessage);
+        break;
 	}
-	
-	public boolean checkInitState() {
-		//TODO: check if state is initial
-		//use Instant lastMessageTime
-		//check if 15 minutes have passed since last message from user
-		//should be accessible from ANY state, after 15 minutes or 'cancel' statement
-		return lastMessageTime.plusSeconds(900).isBefore(Instant.now())
-		//for test case, remove when you're actually done
-		return false;
-	}
-	
-	public boolean checkSearchState() {
-		//TODO: check if state is search
-		//should be accessible from INIT state ONLY
-		
-		//for test case, remove when you're actually done
-		return false;		
-	}
-	
-	public boolean checkBookState() {
-		//TODO: check if state is book
-		//should be accessible from SEARCH (result) state ONLY
-		
-		//for test case, remove when you're actually done
-		return false;
-	}
-	
-	public boolean checkEnqState() {
-		//TODO: check if state is enq
-		//should be accessible from INIT state ONLY
-		
-		//for test case, remove when you're actually done
-		return false;
-	}
-	
-	public boolean checkFAQ() {
-		//TODO: check if state is faq
-		//lookup faq table in database to see if input message matches any stored questions
-		//should be accessible from ANY state
-		
-		//for test case, remove when you're actually done
-		return false;
-	}
-
 }
