@@ -231,6 +231,8 @@ public class KitchenSinkController {
     		}
     		case "carousel":{
     			//base on funInterface.replyCarousel
+    			TemplateMessage templateMessage = new TemplateMessage("Carousel alt text", funInterface.replyCarousel);
+                this.reply(replyToken, templateMessage);
     			break;
     		}
     		case "confirm":{

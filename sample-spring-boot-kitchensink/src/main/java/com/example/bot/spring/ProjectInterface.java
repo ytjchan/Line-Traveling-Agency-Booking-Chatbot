@@ -74,7 +74,7 @@ import java.net.URI;
 
 public class ProjectInterface {
 	//TODO define image addresses
-	public static final String [] imageNames = new String[10] {"gather.jpg","gd1.jpg","beach3.jpg","","","","","","",""};
+	public static final String [] imageNames = {"gather.jpg","gd1.jpg","beach3.jpg","","","","","","",""};
 	
 	public String inputText = "((start))";
 	public String state = "init";			//define the state i.e. init, search, book, enq
@@ -96,8 +96,9 @@ public class ProjectInterface {
 	public void process(String text) {
 		if (checkInitState()) {
 			//TODO: call init controller
-			
-			replyText = "Hello! How may I help you today?";
+			state = "init";
+			replyCarousel = ProjectInitController.createMessage();
+			replyText = "Carousel message for init state";
 			replyType = "carousel";
 		} else if (checkSearchState()) {
 			//TODO: call tour search controller
@@ -122,9 +123,9 @@ public class ProjectInterface {
 		//use Instant lastMessageTime
 		//check if 15 minutes have passed since last message from user
 		//should be accessible from ANY state, after 15 minutes or 'cancel' statement
-		return lastMessageTime.plusSeconds(900).isBefore(Instant.now())
+		return lastMessageTime.plusSeconds(900).isBefore(Instant.now());
 		//for test case, remove when you're actually done
-		return false;
+		//return false;
 	}
 	
 	public boolean checkSearchState() {

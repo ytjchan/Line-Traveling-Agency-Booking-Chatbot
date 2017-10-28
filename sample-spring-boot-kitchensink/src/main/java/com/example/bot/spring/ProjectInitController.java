@@ -76,33 +76,37 @@ public class ProjectInitController {
 	private static String [] uris = new String[imgs.length];
 	
 	static {
+		for (String img: imgs)
+			img = '/'+img;
 		for (int i=0; i<imgs.length; i++)
 			uris[i] = KitchenSinkController.createUri(imgs[i]);
 	}
 	
-	public static TemplateMessage createMessage() {
+	public static CarouselTemplate createMessage() {
         CarouselTemplate carouselTemplate = new CarouselTemplate(
                 Arrays.asList(
-                        new CarouselColumn(uris[1], "3111 Travel", "Hello and welcome!\nWe are 3111 Travel, one of the best China travel agency in the mainland. Please type in what you want, or choose one of the following:", 
+                        new CarouselColumn(uris[1], "3111 Travel", "Hello & welcome! We are 3111 Travel, one of the best agency.", 
                         		Arrays.asList(
-                        				new PostbackAction("Say hello1",
-                        						"hello ã�“ã‚“ã�«ã�¡ã�¯")
+                        				new MessageAction("Recommends",
+                        						"Recommend me a trip"),
+                        				new PostbackAction("Search trips",
+                        						"User selected to search trips",
+                        						"To search for a trip, please text me 'Search ...' with '...' as your search criteria.")
                         				)
                         		),
-                        new CarouselColumn(uris[2], "FAQ", "Want to know some useful information? Check here!", 
+                        new CarouselColumn(uris[2], "More info", "Check here for more info!", 
                         		Arrays.asList(
-                        				new PostbackAction("è¨€ hello2",
-                        						"hello ã�“ã‚“ã�«ã�¡ã�¯",
-                        						"hello ã�“ã‚“ã�«ã�¡ã�¯"),
-                        				new MessageAction("How to apply?",
-                        						"Rice=ç±³"),
-                        				new URIAction("Visit our webpage", "https://github.com/khwang0/2017F-COMP3111")
+                        				new PostbackAction("FAQ Keywords",
+                        						"Displayed keywords to user",
+                        						"Work-in-progress"), //TODO: use db to select all possible keywords
+                        				new URIAction("Our website", "https://github.com/khwang0/2017F-COMP3111")
                         				)
                         		)
-                )
-                );
-        TemplateMessage templateMessage = new TemplateMessage("Carousel alt text", carouselTemplate);
-        this.reply(replyToken, templateMessage);
-        break;
+                		)
+        		);
+        return carouselTemplate;
+                
+//        TemplateMessage templateMessage = new TemplateMessage("Carousel alt text", carouselTemplate);
+//        return templateMessage;
 	}
 }
