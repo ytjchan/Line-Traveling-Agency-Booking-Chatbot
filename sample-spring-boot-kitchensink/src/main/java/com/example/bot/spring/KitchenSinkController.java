@@ -166,7 +166,7 @@ public class KitchenSinkController {
 	@EventMapping
 	public void handlePostbackEvent(PostbackEvent event) {
 		String replyToken = event.getReplyToken();
-		this.replyText(replyToken, "Got postback " + event.getPostbackContent().getData());
+		this.replyText(replyToken, event.getPostbackContent().getData());
 	}
 
 	@EventMapping
@@ -231,6 +231,8 @@ public class KitchenSinkController {
     		}
     		case "carousel":{
     			//base on funInterface.replyCarousel
+    			TemplateMessage templateMessage = new TemplateMessage("Carousel alt text", funInterface.replyCarousel);
+                this.reply(replyToken, templateMessage);
     			break;
     		}
     		case "confirm":{
