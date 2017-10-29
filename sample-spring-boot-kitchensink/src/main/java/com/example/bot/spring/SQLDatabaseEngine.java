@@ -9,9 +9,13 @@ import java.net.URI;
 
 @Slf4j
 public class SQLDatabaseEngine extends DatabaseEngine {
-	@Override
-	String search(String text) throws Exception {
+	
+	
+	ResultSet search(PreparedStatement stmt) throws Exception {
 		//Write your code here
+		ResultSet rs = stmt.executeQuery();
+		return rs;
+		/*
 		Connection c = this.getConnection();
 		PreparedStatement stmt = c.prepareStatement(
 			"SELECT response FROM mapping where keyword like ?");
@@ -36,6 +40,8 @@ public class SQLDatabaseEngine extends DatabaseEngine {
 			throw new Exception("NOT FOUND");
 		else 
 			return reply;
+		*/
+		
 	}
 	
 	
