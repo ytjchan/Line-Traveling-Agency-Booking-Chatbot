@@ -45,7 +45,7 @@ public class SQLDatabaseEngine extends DatabaseEngine {
 	}
 	
 	
-	private Connection getConnection() throws URISyntaxException, SQLException {
+	public Connection getConnection() throws URISyntaxException, SQLException {
 		Connection connection;
 		URI dbUri = new URI(System.getenv("DATABASE_URL"));
 
