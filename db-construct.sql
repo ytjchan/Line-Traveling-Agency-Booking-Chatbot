@@ -8,7 +8,7 @@ drop table Question cascade;
 drop table FAQ cascade;
 
 /* Create tables */
-create table Tour (TourID varchar(5) constraint check_id_length check (length(TourID)=5) primary key, TourName varchar(50) constraint not_null not null, TourDesc varchar(200), TourLength smallint constraint check_length check (TourLength>0));
+create table Tour (TourID varchar(5) primary key, TourName varchar(50) constraint not_null not null, TourDesc varchar(200), TourLength smallint constraint check_length check (TourLength>0));
 create table TourGuide (LineID varchar(40) primary key, Name varchar(50));
 create table TourOffering (TourID varchar(5) references Tour(TourID), OfferID varchar(8) constraint check_id_length check(length(OfferID)=8), TourDate date, TourGuideLineID varchar(40) references TourGuide(LineID) not null, Hotel varchar(50), Price smallint constraint check_price check (Price>0), MaxCapacity smallint constraint check_capacity check (MaxCapacity>0 and MaxCapacity>MinRequirement), MinRequirement smallint constraint check_requirement check (MinRequirement>0), Confirmed boolean, primary key(TourID, OfferID));
 create table Booker (LineID varchar(40) primary key, Name varchar(50), HKID varchar(7), PhoneNo integer, Age smallint constraint check_age check (Age>0));
