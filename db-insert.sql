@@ -18,15 +18,15 @@ INSERT INTO TourGuide (LineID,Name) VALUES ('member C','Carol');
 INSERT INTO TourGuide (LineID,Name) VALUES ('member L','Linsay');
 
 /* TourOffering table from "Booking Table" */
-INSERT INTO TourOffering (TourID,OfferID,TourDate,TourGuideLineID,Hotel,Price,MaxCapacity,MinRequirement,Confirmed) VALUES ('2D001','2D00120171106',2017-11-06,'hkgeorgechen','Hotel L\Cheap',499,20,4,false);
-INSERT INTO TourOffering (TourID,OfferID,TourDate,TourGuideLineID,Hotel,Price,MaxCapacity,MinRequirement,Confirmed) VALUES ('2D001','2D00120171108',2017-11-08,'HKJeffer','Hotel L\Cheap',499,20,4,false);
-INSERT INTO TourOffering (TourID,OfferID,TourDate,TourGuideLineID,Hotel,Price,MaxCapacity,MinRequirement,Confirmed) VALUES ('2D001','2D00120171111',2017-11-11,'member C','Hotel de Carol',599,20,4,false);
-INSERT INTO TourOffering (TourID,OfferID,TourDate,TourGuideLineID,Hotel,Price,MaxCapacity,MinRequirement,Confirmed) VALUES ('2D001','2D00120171113',2017-11-13,'member L','Hotel L\Cheap',499,20,4,false);
-INSERT INTO TourOffering (TourID,OfferID,TourDate,TourGuideLineID,Hotel,Price,MaxCapacity,MinRequirement,Confirmed) VALUES ('2D001','2D00120171115',2017-11-15,'hkgeorgechen','Hotel de Carol',499,20,4,false);
-INSERT INTO TourOffering (TourID,OfferID,TourDate,TourGuideLineID,Hotel,Price,MaxCapacity,MinRequirement,Confirmed) VALUES ('2D001','2D00120171118',2017-11-18,'HKJeffer','Maxim Grand Hotel',599,20,4,false);
-INSERT INTO TourOffering (TourID,OfferID,TourDate,TourGuideLineID,Hotel,Price,MaxCapacity,MinRequirement,Confirmed) VALUES ('2D002','2D00220171106',2017-11-06,'member C','Hotel L\Cheap',299,30,8,false);
-INSERT INTO TourOffering (TourID,OfferID,TourDate,TourGuideLineID,Hotel,Price,MaxCapacity,MinRequirement,Confirmed) VALUES ('2D002','2D00220171108',2017-11-08,'member L','Hotel de Carol',299,30,8,false);
-INSERT INTO TourOffering (TourID,OfferID,TourDate,TourGuideLineID,Hotel,Price,MaxCapacity,MinRequirement,Confirmed) VALUES ('2D002','2D00220171117',2017-11-17,'member C','Maxim Grand Hotel',299,30,8,false);
+INSERT INTO TourOffering (TourID,OfferID,TourDate,TourGuideLineID,Hotel,Price,MaxCapacity,MinRequirement,Confirmed) VALUES ('2D001','2D00120171106',TO_DATE('2017-11-06','YYYY-MM-DD'),'hkgeorgechen','Hotel L\Cheap',499,20,4,false);
+INSERT INTO TourOffering (TourID,OfferID,TourDate,TourGuideLineID,Hotel,Price,MaxCapacity,MinRequirement,Confirmed) VALUES ('2D001','2D00120171108',TO_DATE('2017-11-08','YYYY-MM-DD'),'HKJeffer','Hotel L\Cheap',499,20,4,false);
+INSERT INTO TourOffering (TourID,OfferID,TourDate,TourGuideLineID,Hotel,Price,MaxCapacity,MinRequirement,Confirmed) VALUES ('2D001','2D00120171111',TO_DATE('2017-11-11','YYYY-MM-DD'),'member C','Hotel de Carol',599,20,4,false);
+INSERT INTO TourOffering (TourID,OfferID,TourDate,TourGuideLineID,Hotel,Price,MaxCapacity,MinRequirement,Confirmed) VALUES ('2D001','2D00120171113',TO_DATE('2017-11-13','YYYY-MM-DD'),'member L','Hotel L\Cheap',499,20,4,false);
+INSERT INTO TourOffering (TourID,OfferID,TourDate,TourGuideLineID,Hotel,Price,MaxCapacity,MinRequirement,Confirmed) VALUES ('2D001','2D00120171115',TO_DATE('2017-11-15','YYYY-MM-DD'),'hkgeorgechen','Hotel de Carol',499,20,4,false);
+INSERT INTO TourOffering (TourID,OfferID,TourDate,TourGuideLineID,Hotel,Price,MaxCapacity,MinRequirement,Confirmed) VALUES ('2D001','2D00120171118',TO_DATE('2017-11-18','YYYY-MM-DD'),'HKJeffer','Maxim Grand Hotel',599,20,4,false);
+INSERT INTO TourOffering (TourID,OfferID,TourDate,TourGuideLineID,Hotel,Price,MaxCapacity,MinRequirement,Confirmed) VALUES ('2D002','2D00220171106',TO_DATE('2017-11-06','YYYY-MM-DD'),'member C','Hotel L\Cheap',299,30,8,false);
+INSERT INTO TourOffering (TourID,OfferID,TourDate,TourGuideLineID,Hotel,Price,MaxCapacity,MinRequirement,Confirmed) VALUES ('2D002','2D00220171108',TO_DATE('2017-11-08','YYYY-MM-DD'),'member L','Hotel de Carol',299,30,8,false);
+INSERT INTO TourOffering (TourID,OfferID,TourDate,TourGuideLineID,Hotel,Price,MaxCapacity,MinRequirement,Confirmed) VALUES ('2D002','2D00220171117',TO_DATE('2017-11-17','YYYY-MM-DD'),'member C','Maxim Grand Hotel',299,30,8,false);
 
 /* Booker table from "Customer Table" */
 INSERT INTO Booker (LineID,HKID,PhoneNo,Age) VALUES ('hkgeorgechen','A111222',66161748,35);
