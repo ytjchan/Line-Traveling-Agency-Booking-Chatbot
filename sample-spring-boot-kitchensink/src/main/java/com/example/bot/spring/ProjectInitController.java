@@ -81,23 +81,40 @@ public class ProjectInitController {
 	}
 	
 	public static CarouselTemplate createMessage() {
-        CarouselTemplate carouselTemplate = new CarouselTemplate(
-	        Arrays.asList(
-				new CarouselColumn(uris[1], "3111 Travel", "Welcome! We are 3111 Travel, the leading China travel agency.", 
-		    		Arrays.asList(
-	    				new MessageAction("Recommendations", "Recommend me a trip"),
-	    				new PostbackAction("Search trips", "Search for trips")
-					)	
-	    		),
-		        new CarouselColumn(uris[2], "About chatbot", "Press the buttons, and type cancel anytime to go back.", 
-		    		Arrays.asList(
-	    				new PostbackAction("FAQ Keywords", "Work-in-progress: select all keywords from DB"), //TODO: use db to select all possible keywords
-	    				new URIAction("Our website", "https://github.com/khwang0/2017F-COMP3111")
-    				)
-	    		)
-			)
-		);
-        return carouselTemplate;
+//        CarouselTemplate carouselTemplate = new CarouselTemplate(
+//	        Arrays.asList(
+//				new CarouselColumn(uris[1], "3111 Travel", "Welcome! We are 3111 Travel, the leading China travel agency.", 
+//		    		Arrays.asList(
+//	    				new MessageAction("Recommendations", "Recommend me a trip"),
+//	    				new PostbackAction("Search trips", "Search for trips")
+//					)	
+//	    		),
+//		        new CarouselColumn(uris[2], "About chatbot", "Press the buttons, and type cancel anytime to go back.", 
+//		    		Arrays.asList(
+//	    				new PostbackAction("FAQ Keywords", "Work-in-progress: select all keywords from DB"), //TODO: use db to select all possible keywords
+//	    				new URIAction("Our website", "https://github.com/khwang0/2017F-COMP3111")
+//    				)
+//	    		)
+//			)
+//		);
+//        return carouselTemplate;
+	        CarouselTemplate carouselTemplate = new CarouselTemplate(
+	                Arrays.asList(
+	                		new CarouselColumn(uris[1], "3111 Travel", "Hello & welcome! We are 3111 Travel, one of the best agency.", 
+	                        		Arrays.asList(
+	                        				new MessageAction("Recommends", "Recommend me a trip"),
+	                        				new PostbackAction("Search trips", "To search for a trip, please text me 'Search ...' with '...' as your search criteria.")
+	                        				)
+	                        		),
+	                        new CarouselColumn(uris[2], "More info", "Check here for more info!", 
+	                        		Arrays.asList(
+	                        				new PostbackAction("FAQ Keywords", "Work-in-progress: select all keywords from DB"), //TODO: use db to select all possible keywords
+	                        				new URIAction("Our website", "https://github.com/khwang0/2017F-COMP3111")
+	                        				)
+	                        		)
+	                		)
+	        		);
+	        return carouselTemplate;
                 
 //        TemplateMessage templateMessage = new TemplateMessage("Carousel alt text", carouselTemplate);
 //        return templateMessage;
