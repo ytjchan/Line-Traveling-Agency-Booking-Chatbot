@@ -106,7 +106,7 @@ public class ProjectInitController {
 	                        				new MessageAction("Search for trips", "Search for trips")
 	                        				)
 	                        		),
-	                        new CarouselColumn(uris[2], "More info", "Check here for more info!", 
+	                        new CarouselColumn(uris[2], "About the chatbot", "Press the buttons, or type cancel at any time to go back.", 
 	                        		Arrays.asList(
 	                        				new PostbackAction("FAQ Keywords", "Work-in-progress: select all keywords from DB"), //TODO: use db to select all possible keywords
 	                        				new URIAction("Our website", "https://github.com/khwang0/2017F-COMP3111")
