@@ -100,10 +100,10 @@ public class ProjectInitController {
 //        return carouselTemplate;
 	        CarouselTemplate carouselTemplate = new CarouselTemplate(
 	                Arrays.asList(
-	                		new CarouselColumn(uris[1], "3111 Travel", "Hello & welcome! We are 3111 Travel, one of the best agency.", 
+	                		new CarouselColumn(uris[1], "3111 Travel", "Welcome to 3111 Travel, the leading China travel agency.", 
 	                        		Arrays.asList(
-	                        				new MessageAction("Recommends", "Recommend me a trip"),
-	                        				new MessageAction("Search trips", "To search for a trip, please text me 'Search ...' with '...' as your search criteria.")
+	                        				new MessageAction("Recommendations", "Recommend me a trip"),
+	                        				new MessageAction("Search for trips", "Search for trips")
 	                        				)
 	                        		),
 	                        new CarouselColumn(uris[2], "More info", "Check here for more info!", 
