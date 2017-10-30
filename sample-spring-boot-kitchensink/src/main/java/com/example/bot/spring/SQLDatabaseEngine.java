@@ -65,7 +65,7 @@ public class SQLDatabaseEngine extends DatabaseEngine {
 		
 	}
 	
-	ResultSet UpdateQuery(String table_name, String set_values, String, condition) {
+	ResultSet UpdateQuery(String table_name, String set_values, String condition) {
 	//e.g UPDATE table_name SET set_values WHERE condition
 		String query="update " + table_name + " Set " + set_values + " WHERE " + condition ;
 		return this.query(query);
