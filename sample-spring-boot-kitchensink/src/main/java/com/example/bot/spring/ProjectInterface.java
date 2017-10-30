@@ -79,7 +79,7 @@ public class ProjectInterface {
 	
 	public String inputText = "";
 	public String state = "init";			//define the state i.e. init, search, book, enq
-	public Queue<String> buffer = new PriorityQueue<String>();	//for unknown case
+	public Queue<String> buffer = new LinkedList<String>();	//for unknown case
 	public Instant lastMessageTime = Instant.MIN;	//for check initial state
 	
 	public String replyType;		//i.e. text, image, carousel, confirm, unknown
