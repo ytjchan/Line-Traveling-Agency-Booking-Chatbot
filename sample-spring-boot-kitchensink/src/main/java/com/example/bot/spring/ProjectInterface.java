@@ -109,7 +109,7 @@ public class ProjectInterface {
 			buffer.poll();
 		}
 		
-		if (checkInitState()) {
+		if (checkInitState(text)) {
 			//TODO: call init controller
 			state = "init";
 			replyCarousel = ProjectInitController.createMessage();
@@ -133,12 +133,12 @@ public class ProjectInterface {
 			
 	}
 	
-	public boolean checkInitState() {
+	public boolean checkInitState(String text) {
 		//TODO: check if state is initial
 		//use Instant lastMessageTime
 		//check if 15 minutes have passed since last message from user
 		//should be accessible from ANY state, after 15 minutes or 'cancel' statement
-		if (state.equals("start")) {
+		if (text.equals("reset")) {
 			return true;
 		}
 		boolean flag = lastMessageTime.plusSeconds(900).isBefore(Instant.now());
