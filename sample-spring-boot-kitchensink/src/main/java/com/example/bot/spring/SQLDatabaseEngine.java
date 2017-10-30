@@ -11,8 +11,8 @@ import java.net.URI;
 public class SQLDatabaseEngine extends DatabaseEngine {
 
 	PreparedStatement Statement(String query) throws Exception {
-	    Connection c = this.getConnection();
-    	PreparedStatement stmt = c.prepareStatement(query); 
+		Connection c = this.getConnection();
+		PreparedStatement stmt = c.prepareStatement(query); 
 		return stmt;
 	}
 	
@@ -21,8 +21,8 @@ public class SQLDatabaseEngine extends DatabaseEngine {
 		return this.Statement(query);
 	}
 	
-	PreparedStatement InsertionStatement(SString table_name, String[] values) throws Exception {
-	    String query="insert into " + table_name + "values (";
+	PreparedStatement InsertionStatement(String table_name, String[] values) throws Exception {
+		String query="insert into " + table_name + "values (";
 		for (String s: values) {
 			query+= s+",";
 		}
