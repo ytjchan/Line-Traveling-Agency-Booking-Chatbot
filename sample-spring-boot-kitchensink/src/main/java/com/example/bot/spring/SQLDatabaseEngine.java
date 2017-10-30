@@ -10,31 +10,31 @@ import java.net.URI;
 @Slf4j
 public class SQLDatabaseEngine extends DatabaseEngine {
 
-	PreparedStatement Statement(String query) throws Exception {
+	PreparedStatement statement(String query) throws Exception {
 		Connection c = this.getConnection();
 		PreparedStatement stmt = c.prepareStatement(query); 
 		return stmt;
 	}
 	
-	PreparedStatement SelectionStatement(String A, String B, String C) throws Exception {
+	PreparedStatement selectionStatement(String A, String B, String C) throws Exception {
 		String query="select " + A + " from " + B + " where " + C;
-		return this.Statement(query);
+		return this.statement(query);
 	}
 	
-	PreparedStatement InsertionStatement(String table_name, String[] values) throws Exception {
+	PreparedStatement insertionStatement(String table_name, String[] values) throws Exception {
 		String query="insert into " + table_name + "values (";
 		for (String s: values) {
 			query+= s+",";
 		}
 		query+=")";
 		query.replace(",)", ")");
-		return this.Statement(query);
+		return this.statement(query);
 	}
 	
-	PreparedStatement UpdateStatement(String table_name, String set_values, String condition) throws Exception {
+	PreparedStatement updateStatement(String table_name, String set_values, String condition) throws Exception {
 	//e.g UPDATE table_name SET set_values WHERE condition
 		String query="update " + table_name + " Set " + set_values + " WHERE " + condition ;
-		return this.Statement(query);	
+		return this.statement(query);	
 	} 
 	
 // below are examples of how to use above functions, just for refference.
@@ -42,7 +42,7 @@ public class SQLDatabaseEngine extends DatabaseEngine {
 /*
 	void InsertTour(int tourID, String TourName, String TourDesc, int TourLength) throws Exception {
 		String[] values = new String[] {"?","?","?","?"};
-		PreparedStatement stmt = this.InsertionStatement("tour", values);
+		PreparedStatement stmt = this.insertionStatement("tour", values);
 		stmt.setInt(1,tourID);
 		stmt.setString(2,TourName);
 		stmt.setString(3,TourDesc);
@@ -51,13 +51,13 @@ public class SQLDatabaseEngine extends DatabaseEngine {
 	}
 	
 	ResultSet searchTour(String criteria) throws Exception {
-		PreparedStatement stmt = this.SelectionStatement("TourName","tour","TourDesc like ?");
+		PreparedStatement stmt = this.selectionStatement("TourName","tour","TourDesc like ?");
 		stmt.setString(1, '%'+ criteria +'%');
 		return stmt.executeQuery();
 	}
 	
 	void payBooking(String LineID, String OfferID, double amount) throws Exception {
-		PreparedStatement stmt = this.UpdateStatement("Booking","AmountPaid = AmountPaid + ?", 
+		PreparedStatement stmt = this.updateStatement("Booking","AmountPaid = AmountPaid + ?", 
 			"LineID = ?	and OfferID = ?");
 		stmt.setDouble(1,amount);
 		stmt.setString(2,LineID);
