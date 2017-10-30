@@ -49,7 +49,7 @@ public class SQLDatabaseEngine extends DatabaseEngine {
 	
 	ResultSet SelectQuery(String A, String B, String C) {
 	// get query result with input A,B,C stand for "selct A from B where C"
-		String query="select " + A + " from B" + " where C";
+		String query="select " + A + " from " + B + " where " + C;
 		return this.query(query);
 	}
 	
