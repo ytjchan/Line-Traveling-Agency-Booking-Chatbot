@@ -120,6 +120,7 @@ public class ProjectInterface {
 			
 			replyText = "Sorry, I did not understand: " + text + ". We will relay this message to a staff member who will contact you if your question is valid.";
 			replyType = "unknown";
+			controller.unknown.HandleUnknown(text); //this actually does nothing now
 		}
 			
 	}
