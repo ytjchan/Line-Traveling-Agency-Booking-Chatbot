@@ -9,67 +9,63 @@ import java.net.URI;
 
 @Slf4j
 public class SQLDatabaseEngine extends DatabaseEngine {
-	
-	
-	ResultSet query(String query) throws Exception {
-		//
-    	Connection c = this.getConnection();
-    	PreparedStatement stmt = c.prepareStatement(query); // now other classes need not to create Connection and PreparedStatement obejects
-    	ResultSet rs = stmt.executeQuery();
-    	return rs;
 
-		/*
-		Connection c = this.getConnection();
-		PreparedStatement stmt = c.prepareStatement(
-			"SELECT response FROM mapping where keyword like ?");
-		stmt.setString(1, '%' + text + '%'); //or some other variables
-		String reply = null;
-		System.out.println("before execute");
-		ResultSet rs = stmt.executeQuery();
-		System.out.println("after execute");
-		while (rs.next()) {
-			System.out.println("looping");
-			if (reply == null)
-				reply = rs.getString(1);
-			else
-				reply += " " + rs.getString(1);
-		}
-		
-		rs.close();
-		stmt.close();
-		c.close();
-		System.out.println(reply);
-		if (reply == null)
-			throw new Exception("NOT FOUND");
-		else 
-			return reply;
-		*/
-		
+	PreparedStatement Statement(String query) throws Exception {
+	    Connection c = this.getConnection();
+    	PreparedStatement stmt = c.prepareStatement(query); 
+		return stmt;
 	}
 	
-	ResultSet SelectQuery(String A, String B, String C) {
-	// get query result with input A,B,C stand for "selct A from B where C"
+	PreparedStatement SelectionStatement(String A, String B, String C) throws Exception {
 		String query="select " + A + " from " + B + " where " + C;
-		return this.query(query);
+		return this.Statement(query);
 	}
 	
-	ResultSet InsertQuery(String table_name, String[] values) {
-	// use query to insert into tables. String[] values must include all columns in the table e.g: insert into table_name values (values[1],values[2],...)
-		String query="insert into " + table_name + "values (";
+	PreparedStatement InsertionStatement(SString table_name, String[] values) throws Exception {
+	    String query="insert into " + table_name + "values (";
 		for (String s: values) {
 			query+= s+",";
 		}
 		query+=")";
 		query.replace(",)", ")");
-		return this.query(query);
-		
+		return this.Statement(query);
 	}
 	
-	ResultSet UpdateQuery(String table_name, String set_values, String condition) {
+	PreparedStatement UpdateStatement(String table_name, String set_values, String condition) throws Exception {
 	//e.g UPDATE table_name SET set_values WHERE condition
 		String query="update " + table_name + " Set " + set_values + " WHERE " + condition ;
-		return this.query(query);
+		return this.Statement(query);	
+	} 
+	
+// below are examples of how to use above functions, just for refference.
+
+/*
+	void InsertTour(int tourID, String TourName, String TourDesc, int TourLength) throws Exception {
+		String[] values = new String[] {"?","?","?","?"};
+		PreparedStatement stmt = this.InsertionStatement("tour", values);
+		stmt.setInt(1,tourID);
+		stmt.setString(2,TourName);
+		stmt.setString(3,TourDesc);
+		stmt.setInt(4,TourLength);
+		stmt.executeQuery();
 	}
+	
+	ResultSet searchTour(String criteria) throws Exception {
+		PreparedStatement stmt = this.SelectionStatement("TourName","tour","TourDesc like ?");
+		stmt.setString(1, '%'+ criteria +'%');
+		return stmt.executeQuery();
+	}
+	
+	void payBooking(String LineID, String OfferID, double amount) throws Exception {
+		PreparedStatement stmt = this.UpdateStatement("Booking","AmountPaid = AmountPaid + ?", 
+			"LineID = ?	and OfferID = ?");
+		stmt.setDouble(1,amount);
+		stmt.setString(2,LineID);
+		stmt.setString(3,OfferID);
+		stmt.executeQuery();
+	}
+*/	
+
 	
 	private Connection getConnection() throws URISyntaxException, SQLException {
 		Connection connection;
@@ -88,3 +84,5 @@ public class SQLDatabaseEngine extends DatabaseEngine {
 	}
 
 }
+
+
