@@ -75,10 +75,21 @@ import java.util.LinkedList;
 
 public class ProjectInterface {
 	//TODO define image addresses
-	public static final String [] IMAGE_NAMES = {"/static/gather.jpg","/static/gd1.jpg","/static/beach3.jpg","TODO","TODO","TODO","TODO","TODO","TODO","TODO"};
+	public static final String [] IMAGE_NAMES = {
+		"/static/gather.jpg",
+		"/static/gd1.jpg",
+		"/static/beach3.jpg",
+		"TODO",
+		"TODO",
+		"TODO",
+		"TODO",
+		"TODO",
+		"TODO",
+		"TODO"
+	};
 	
 	public String inputText = "";
-	public String state = "init";			//define the state i.e. init, search, book, enq
+	public String state = "start";			//define the state i.e. init, search, book, enq
 	public Queue<String> buffer = new LinkedList<String>();	//for unknown case
 	public Instant lastMessageTime = Instant.MIN;	//for check initial state
 	
@@ -89,9 +100,7 @@ public class ProjectInterface {
 	
 	public ProjectMasterController controller = new ProjectMasterController();
 	
-	public ProjectInterface() {
-		
-	}
+	public ProjectInterface() {}
 	
 	//this will change the reply type & reply 
 	public void process(String text) {
@@ -129,6 +138,9 @@ public class ProjectInterface {
 		//use Instant lastMessageTime
 		//check if 15 minutes have passed since last message from user
 		//should be accessible from ANY state, after 15 minutes or 'cancel' statement
+		if (state.equals("start")) {
+			return true;
+		}
 		boolean flag = lastMessageTime.plusSeconds(900).isBefore(Instant.now());
 		lastMessageTime = Instant.now();
 		return flag;
