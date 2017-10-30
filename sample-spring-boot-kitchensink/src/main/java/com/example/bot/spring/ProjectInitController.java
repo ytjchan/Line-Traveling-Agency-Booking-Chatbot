@@ -82,21 +82,21 @@ public class ProjectInitController {
 	
 	public static CarouselTemplate createMessage() {
         CarouselTemplate carouselTemplate = new CarouselTemplate(
-                Arrays.asList(
-                		new CarouselColumn(uris[1], "3111 Travel", "Hello & welcome! We are 3111 Travel, one of the best agency.", 
-                        		Arrays.asList(
-                        				new MessageAction("Recommends", "Recommend me a trip"),
-                        				new PostbackAction("Search trips", "To search for a trip, please text me 'Search ...' with '...' as your search criteria.")
-                        				)
-                        		),
-                        new CarouselColumn(uris[2], "More info", "Check here for more info!", 
-                        		Arrays.asList(
-                        				new PostbackAction("FAQ Keywords", "Work-in-progress: select all keywords from DB"), //TODO: use db to select all possible keywords
-                        				new URIAction("Our website", "https://github.com/khwang0/2017F-COMP3111")
-                        				)
-                        		)
-                		)
-        		);
+	        Arrays.asList(
+				new CarouselColumn(uris[1], "3111 Travel", "Hello & welcome! We are 3111 Travel, one of the best agency.", 
+		    		Arrays.asList(
+	    				new MessageAction("Recommendations", "Recommend me a trip"),
+	    				new MessageAction("Search for tours", "Search for trips")
+					)	
+	    		),
+		        new CarouselColumn(uris[2], "About the chatbot", "Click on any of the links below. Type cancel at any time to show this message again.", 
+		    		Arrays.asList(
+	    				new PostbackAction("FAQ Keywords", "Work-in-progress: select all keywords from DB"), //TODO: use db to select all possible keywords
+	    				new URIAction("Our website", "https://github.com/khwang0/2017F-COMP3111")
+    				)
+	    		)
+			)
+		);
         return carouselTemplate;
                 
 //        TemplateMessage templateMessage = new TemplateMessage("Carousel alt text", carouselTemplate);
