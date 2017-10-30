@@ -86,7 +86,7 @@ public class ProjectInitController {
 				new CarouselColumn(uris[1], "3111 Travel", "Welcome! We are 3111 Travel, the leading China travel agency.", 
 		    		Arrays.asList(
 	    				new MessageAction("Recommendations", "Recommend me a trip"),
-	    				new MessageAction("Search trips", "Search for trips")
+	    				new PostbackAction("Search trips", "Search for trips")
 					)	
 	    		),
 		        new CarouselColumn(uris[2], "About chatbot", "Press the buttons, and type cancel anytime to go back.", 

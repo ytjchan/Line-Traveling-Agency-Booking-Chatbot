@@ -127,7 +127,7 @@ public class ProjectInterface {
 			//TODO: call unknown controller
 			//find some way to send message to staff, and/or store result in database
 			
-			replyText = "Sorry, I did not understand: " + text + ". We will relay this message to a staff member who will contact you if your question is valid.";
+			replyText = "Received: " + text;
 			replyType = "unknown";
 		}
 			
