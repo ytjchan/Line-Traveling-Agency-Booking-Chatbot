@@ -71,7 +71,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.net.URI;
 
 //extra imports
-import java.util.PriorityQueue;
+import java.util.LinkedList;
 
 public class ProjectInterface {
 	//TODO define image addresses
