@@ -4,7 +4,8 @@ public class ProjectUnknownController {
 
     public ProjectUnknownController() {}
     
-    public HandleUnknown (String text) { //input can also be the buffer
+    public void HandleUnknown (String text) //input can also be the buffer
+    {
     //TODO: insert text into Question table in database, by calling SQLDatabaseEngine.
     //Need to know user's LineID
     
