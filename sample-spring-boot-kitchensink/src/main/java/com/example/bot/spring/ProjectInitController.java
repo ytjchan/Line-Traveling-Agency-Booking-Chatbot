@@ -83,13 +83,13 @@ public class ProjectInitController {
 	public static CarouselTemplate createMessage() {
         CarouselTemplate carouselTemplate = new CarouselTemplate(
 	        Arrays.asList(
-				new CarouselColumn(uris[1], "3111 Travel", "Hello & welcome! We are 3111 Travel, one of the best agency.", 
+				new CarouselColumn(uris[1], "3111 Travel", "Welcome! We are 3111 Travel, the leading China travel agency.", 
 		    		Arrays.asList(
 	    				new MessageAction("Recommendations", "Recommend me a trip"),
 	    				new MessageAction("Search for tours", "Search for trips")
 					)	
 	    		),
-		        new CarouselColumn(uris[2], "About the chatbot", "Click on any of the links below. Type cancel at any time to show this message again.", 
+		        new CarouselColumn(uris[2], "About", "Use the buttons below. Type cancel to show this message again.", 
 		    		Arrays.asList(
 	    				new PostbackAction("FAQ Keywords", "Work-in-progress: select all keywords from DB"), //TODO: use db to select all possible keywords
 	    				new URIAction("Our website", "https://github.com/khwang0/2017F-COMP3111")
