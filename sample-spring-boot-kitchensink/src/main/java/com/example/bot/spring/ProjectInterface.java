@@ -115,8 +115,13 @@ public class ProjectInterface {
 			replyCarousel = ProjectInitController.createMessage();
 			replyText = "Carousel message for init state";
 			replyType = "carousel";
-		} else if (checkSearchState()) {
+		} else if (checkSearchState(text)) {
 			//TODO: call tour search controller
+			state = "search";
+			controller.search.process(text);
+			replyType = controller.search.replyType;
+			replyText = controller.search.replyText;
+			replyCarousel = controller.search.replyCarousel;
 		} else if (checkBookState()) {
 			//TODO: call booking controller
 		} else if (checkEnqState()) {
@@ -148,12 +153,17 @@ public class ProjectInterface {
 		//return false;
 	}
 	
-	public boolean checkSearchState() {
+	public boolean checkSearchState(String text) {
 		//TODO: check if state is search
 		//should be accessible from INIT state ONLY
-		
-		//for test case, remove when you're actually done
-		return false;		
+		if ((state.equals("init") && text.toLowerCase().contains("search")) || state.equals("book") && text.toLowerCase().contains("back")) {
+			controller.search.keywords.clear();
+			return true;
+		} else if (state.equals("search") && !text.toLowerCase().contains("show") && !text.toLowerCase().contains("book")) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	public boolean checkBookState() {

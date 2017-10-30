@@ -9,37 +9,14 @@ import java.net.URI;
 
 @Slf4j
 public class SQLDatabaseEngine extends DatabaseEngine {
-	@Override
-	String search(String text) throws Exception {
-		//Write your code here
-		Connection c = this.getConnection();
-		PreparedStatement stmt = c.prepareStatement(
-			"SELECT response FROM mapping where keyword like ?");
-		stmt.setString(1, '%' + text + '%'); //or some other variables
-		String reply = null;
-		System.out.println("before execute");
+	ResultSet search(PreparedStatement stmt) throws Exception {
+ 		//Write your code here
 		ResultSet rs = stmt.executeQuery();
-		System.out.println("after execute");
-		while (rs.next()) {
-			System.out.println("looping");
-			if (reply == null)
-				reply = rs.getString(1);
-			else
-				reply += " " + rs.getString(1);
-		}
-		
-		rs.close();
-		stmt.close();
-		c.close();
-		System.out.println(reply);
-		if (reply == null)
-			throw new Exception("NOT FOUND");
-		else 
-			return reply;
-	}
+		return rs;
+ 	}	
 	
 	
-	private Connection getConnection() throws URISyntaxException, SQLException {
+	public Connection getConnection() throws URISyntaxException, SQLException {
 		Connection connection;
 		URI dbUri = new URI(System.getenv("DATABASE_URL"));
 
