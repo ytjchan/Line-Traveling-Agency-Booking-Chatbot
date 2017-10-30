@@ -103,7 +103,7 @@ public class ProjectInitController {
 	                		new CarouselColumn(uris[1], "3111 Travel", "Hello & welcome! We are 3111 Travel, one of the best agency.", 
 	                        		Arrays.asList(
 	                        				new MessageAction("Recommends", "Recommend me a trip"),
-	                        				new PostbackAction("Searches trips", "To search for a trip, please text me 'Search ...' with '...' as your search criteria.")
+	                        				new MessageAction("Search trips", "To search for a trip, please text me 'Search ...' with '...' as your search criteria.")
 	                        				)
 	                        		),
 	                        new CarouselColumn(uris[2], "More info", "Check here for more info!", 
