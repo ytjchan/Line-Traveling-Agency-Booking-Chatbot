@@ -6,6 +6,7 @@ import javax.sql.DataSource;
 import java.sql.*;
 import java.net.URISyntaxException;
 import java.net.URI;
+import java.util.ArrayList;
 
 @Slf4j
 public class SQLDatabaseEngine extends DatabaseEngine {
@@ -28,6 +29,38 @@ public class SQLDatabaseEngine extends DatabaseEngine {
                         return null;
                 }
                 
+        }
+        
+        /**
+         * Search for tours with given description with format shown below.
+         * Suppose we search for tours with 'spring', we will get 
+         * A[0]= "1: 2D001|Shimen National Forest Tour"
+         * A[1]= "2: 2D002|Yangshan Hot Spring Tour"
+         * etc. with A as a String array
+         * @param desc Description word to search for
+         * @return String array of formatted search results (see above)
+         */
+        protected String[] searchTourByDesc(String desc){
+                try{
+                        PreparedStatement stmt = getStatement("select tourid, tourname from tour where lower(tourdesc) like concat('%',?,'%');"); // need to use concat()
+                        stmt.setString(1, desc.toLowerCase());
+                        ResultSet tourRs = stmt.executeQuery();
+                        ArrayList<String> arr = new ArrayList<>();
+                        int i=1;
+                        while (tourRs.next()){
+                                StringBuilder sb = new StringBuilder();
+                                sb.append(i).append(": ");
+                                sb.append(tourRs.getString(1));
+                                sb.append('|');
+                                sb.append(tourRs.getString(2));
+                                arr.add(sb.toString());
+                                i++;
+                        }
+                        return arr.toArray(new String[0]);
+                } catch (SQLException e){
+                        log.info("Searching tours by description failed!");
+                        return null;
+                }
         }
         
         // protected = access within same package and subclasses (=derived class)
