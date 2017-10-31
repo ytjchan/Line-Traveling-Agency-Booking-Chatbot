@@ -213,7 +213,7 @@ public class KitchenSinkController {
 		String text = content.getText();
 
         log.info("Got text message from {}: {}", replyToken, text);
-        
+
         funInterface.process(text);
         //now the replyType of funInterface will change depending on the text
         
