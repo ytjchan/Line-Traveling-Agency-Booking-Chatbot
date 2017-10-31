@@ -9,7 +9,27 @@ import java.net.URI;
 
 @Slf4j
 public class SQLDatabaseEngine extends DatabaseEngine {
-
+        
+        /**
+         * Return all keywords available in FAQ table
+         * @return String of all keywords concatenated and separated by ', ' 
+         */
+        protected String searchAllKeywords(){
+                try{
+                        StringBuilder sb = new StringBuilder();
+                        ResultSet keywordRs = getStatement("select keyword from faq;").executeQuery();
+                        while (keywordRs.next()){
+                                sb.append(keywordRs.getString(1));
+                                sb.append(", ");
+                        }
+                        return sb.toString();
+                } catch (SQLException e){
+                        log.info("Searching for all keywords failed!");
+                        return null;
+                }
+                
+        }
+        
         // protected = access within same package and subclasses (=derived class)
         // javadoc below is just for fancy code suggestion in IDE
         /**
