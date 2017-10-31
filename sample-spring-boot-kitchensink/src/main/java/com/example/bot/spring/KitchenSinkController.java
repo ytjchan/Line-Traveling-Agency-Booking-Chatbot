@@ -213,12 +213,7 @@ public class KitchenSinkController {
 		String text = content.getText();
 
         log.info("Got text message from {}: {}", replyToken, text);
-        
-        String[] arr = database.searchTourByDesc("Spring");
-        if (arr!=null)
-        for (String s: arr)
-                log.info(s);
-        
+
         funInterface.process(text);
         //now the replyType of funInterface will change depending on the text
         
