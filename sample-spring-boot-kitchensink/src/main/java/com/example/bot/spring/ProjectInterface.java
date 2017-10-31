@@ -86,7 +86,8 @@ public class ProjectInterface {
 	public String replyText;		//for replyType: text
 	public String replyImageAddress;
 	public CarouselTemplate replyCarousel;
-	
+    public String userID;           //need user's Line ID to support desired functions
+    
 	public ProjectMasterController controller = new ProjectMasterController();
 	
 	public ProjectInterface() {
@@ -120,10 +121,15 @@ public class ProjectInterface {
 			
 			replyText = "Sorry, I did not understand: " + text + ". We will relay this message to a staff member who will contact you if your question is valid.";
 			replyType = "unknown";
-			controller.unknown.HandleUnknown(text); //this actually does nothing now
+			controller.unknown.HandleUnknown(buffer,userID); //this actually does nothing now
+            buffer.clear(); //clear the buffer after insert questions to database
 		}
 			
 	}
+    
+    public void setUserID (String userID) {
+        this.userID = userID;
+    }
 	
 	public boolean checkInitState() {
 		//TODO: check if state is initial
