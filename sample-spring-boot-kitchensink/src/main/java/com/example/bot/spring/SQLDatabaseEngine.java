@@ -18,9 +18,13 @@ public class SQLDatabaseEngine extends DatabaseEngine {
          * @return String of all keywords concatenated and separated by ', ' 
          */
         protected String searchAllKeywords(){
+                PreparedStatement stmt = null;
+                ResultSet keywordRs = null;
                 try{
+
                         StringBuilder sb = new StringBuilder();
-                        ResultSet keywordRs = getStatement("select keyword from faq;").executeQuery();
+                        stmt = getStatement("select keyword from faq;");
+                        keywordRs = stmt.executeQuery();
                         while (keywordRs.next()){
                                 sb.append(keywordRs.getString(1));
                                 sb.append(", ");
@@ -29,7 +33,11 @@ public class SQLDatabaseEngine extends DatabaseEngine {
                 } catch (SQLException e){
                         log.info("Searching for all keywords failed!");
                         return null;
-                }              
+                } finally {
+                        try{if(stmt!=null)stmt.close();}catch(SQLException e){}
+                        try{if(keywordRs!=null)keywordRs.close();}catch(SQLException e){}
+                        try{if(connection!=null)connection.close();}catch(SQLException e){} 
+                }
         }
         
         /**
@@ -42,10 +50,12 @@ public class SQLDatabaseEngine extends DatabaseEngine {
          * @return String array of formatted search results (see above)
          */
         protected String[] searchTourByDesc(String desc){
+                PreparedStatement stmt = null;
+                ResultSet tourRs = null;
                 try{
-                        PreparedStatement stmt = getStatement("select tourid, tourname from tour where lower(tourdesc) like concat('%',?,'%');"); // need to use concat()
+                        stmt = getStatement("select tourid, tourname from tour where lower(tourdesc) like concat('%',?,'%');"); // need to use concat()
                         stmt.setString(1, desc.toLowerCase());
-                        ResultSet tourRs = stmt.executeQuery();
+                        tourRs = stmt.executeQuery();
                         ArrayList<String> arr = new ArrayList<>();
                         int i=1;
                         while (tourRs.next()){
@@ -61,6 +71,10 @@ public class SQLDatabaseEngine extends DatabaseEngine {
                 } catch (SQLException e){
                         log.info("Searching tours by description failed!");
                         return null;
+                } finally {
+                        try{if(stmt!=null)stmt.close();}catch(SQLException e){}
+                        try{if(tourRs!=null)tourRs.close();}catch(SQLException e){}
+                        try{if(connection!=null)connection.close();}catch(SQLException e){}    
                 }
         }
         
@@ -73,10 +87,14 @@ public class SQLDatabaseEngine extends DatabaseEngine {
          * @param lastfivequestions
          * @return boolean indicator for whether insertion is successful
          */
-        protected boolean insertQuestion(String lineid, String fullquestion, String lastfivequestions){
+        protected boolean insertQuestion(String lineid, String fullquestion, String lastfivequestions){              
+                PreparedStatement stmt = null;
+                PreparedStatement stmt2 = null;
+                ResultSet qidRs = null;
                 try{
-                        PreparedStatement stmt = getStatement("insert into question values (?,?,?,?,false);");
-                        ResultSet qidRs = getStatement("select max(qid) from question;").executeQuery();
+                        stmt = getStatement("insert into question values (?,?,?,?);");
+                        stmt2 = getStatement("select max(qid) from question;");
+                        qidRs = stmt2.executeQuery();
                         int currentQid = qidRs.next() ? qidRs.getInt(1) : 0; // need to see if there is any record now
                         stmt.setInt(1, currentQid+1);
                         stmt.setString(2, lineid);
@@ -88,17 +106,20 @@ public class SQLDatabaseEngine extends DatabaseEngine {
                 } catch (SQLException e) {
                         log.info("Insertion into Question table failed!");
                         return false;
-                } 
+                } finally{
+                        try{if(stmt!=null)stmt.close();}catch(SQLException e){}
+                        try{if(stmt2!=null)stmt2.close();}catch(SQLException e){}
+                        try{if(qidRs!=null)stmt2.close();}catch(SQLException e){}
+                        try{if(connection!=null)connection.close();}catch(SQLException e){}                        
+                }
         }
         
         // made private since only used in SQLDatabaseEngine now 
         // query can be Strings with question mark like "select * from Booker where LineID=?;" and use setString() to set it later
 	private PreparedStatement getStatement(String query) throws SQLException {
 		try{       
-                        if (this.connection != null)
-                                this.connection.close();
-                        this.connection = this.getConnection();
-                        PreparedStatement stmt = this.connection.prepareStatement(query);
+                        connection = getConnection();
+                        PreparedStatement stmt = connection.prepareStatement(query);
                         return stmt;
                 } catch (URISyntaxException e) {
                         log.info("URI Syntax problem with URI: " + System.getenv("DATABASE_URL"));
