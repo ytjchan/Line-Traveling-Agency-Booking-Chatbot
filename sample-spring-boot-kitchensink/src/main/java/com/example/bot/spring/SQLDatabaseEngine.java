@@ -103,7 +103,7 @@ public class SQLDatabaseEngine extends DatabaseEngine {
 	private PreparedStatement getStatement(String query) throws SQLException {
 		try{
                         this.connection = this.getConnection();
-                        PreparedStatement stmt = this.connect.prepareStatement(query);
+                        PreparedStatement stmt = this.connection.prepareStatement(query);
                         return stmt;
                 } catch (URISyntaxException e) {
                         log.info("URI Syntax problem with URI: " + System.getenv("DATABASE_URL"));
