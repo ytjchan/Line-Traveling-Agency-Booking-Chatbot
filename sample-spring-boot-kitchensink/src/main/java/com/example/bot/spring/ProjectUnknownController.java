@@ -13,8 +13,8 @@ public class ProjectUnknownController {
         if (buffer.size()<5)
             return;
         
-        String lastFiveQuestions;
-        String fullQuestion;
+        String lastFiveQuestions = "";
+        String fullQuestion = "empty";
         
         for (String question: buffer) {
             if (question.length() < 200) { // we ignore questions whose length lager than 200
