@@ -65,7 +65,7 @@ public class SQLDatabaseEngine extends DatabaseEngine {
     			}
     			try {
     				if(sb.length()!=0) {
-    					sb.append("; ");
+    					sb.append("\n ");
     				}
     				
     				//ResultSet keywordRs = getStatement(testsql).executeQuery();
