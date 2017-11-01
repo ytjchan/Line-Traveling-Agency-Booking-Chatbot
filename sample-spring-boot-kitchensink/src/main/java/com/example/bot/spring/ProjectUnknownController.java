@@ -2,7 +2,7 @@ package com.example.bot.spring;
 
 public class ProjectUnknownController {
     
-    private dbEngine = new SQLDatabaseEngnie();
+    private SQLDatabaseEngine dbEngine = new SQLDatabaseEngine();
     
     public ProjectUnknownController() {}
     
