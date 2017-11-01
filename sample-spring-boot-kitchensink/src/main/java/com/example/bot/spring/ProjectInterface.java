@@ -115,7 +115,7 @@ public class ProjectInterface {
 			//TODO: call enquiry controller
 		} else if (checkFAQ()) {
 			//TODO: call FAQ handler
-			replyText="FAQ result is "+controller.faq.search(text);
+			replyText="FAQ result is:\n"+controller.faq.search(text);
 	
 			
 			replyType="text";
@@ -174,9 +174,6 @@ public class ProjectInterface {
 		//TODO: check if state is faq
 		//lookup faq table in database to see if input message matches any stored questions
 		//should be accessible from ANY state
-		
-		
-		
 		String text=null;
 		for(int i=0;i<buffer.size();i++) {
 			text=buffer.poll();
