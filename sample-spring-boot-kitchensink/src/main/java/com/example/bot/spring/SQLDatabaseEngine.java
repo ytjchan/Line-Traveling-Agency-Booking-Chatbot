@@ -11,6 +11,8 @@ import java.util.ArrayList;
 @Slf4j
 public class SQLDatabaseEngine extends DatabaseEngine {
         
+        private Connection connection;
+        
         /**
          * Return all keywords available in FAQ table
          * @return String of all keywords concatenated and separated by ', ' 
@@ -27,6 +29,8 @@ public class SQLDatabaseEngine extends DatabaseEngine {
                 } catch (SQLException e){
                         log.info("Searching for all keywords failed!");
                         return null;
+                } finally {
+                        this.connection.close();
                 }
                 
         }
@@ -60,6 +64,8 @@ public class SQLDatabaseEngine extends DatabaseEngine {
                 } catch (SQLException e){
                         log.info("Searching tours by description failed!");
                         return null;
+                } finally {
+                        this.connection.close();
                 }
         }
         
@@ -87,6 +93,8 @@ public class SQLDatabaseEngine extends DatabaseEngine {
                 } catch (SQLException e) {
                         log.info("Insertion into Question table failed!");
                         return false;
+                } finally {
+                        this.connection.close();
                 }
         }
         
@@ -94,8 +102,8 @@ public class SQLDatabaseEngine extends DatabaseEngine {
         // query can be Strings with question mark like "select * from Booker where LineID=?;" and use setString() to set it later
 	private PreparedStatement getStatement(String query) throws SQLException {
 		try{
-                        Connection c = this.getConnection();
-                        PreparedStatement stmt = c.prepareStatement(query);
+                        this.connection = this.getConnection();
+                        PreparedStatement stmt = this.connect.prepareStatement(query);
                         return stmt;
                 } catch (URISyntaxException e) {
                         log.info("URI Syntax problem with URI: " + System.getenv("DATABASE_URL"));
