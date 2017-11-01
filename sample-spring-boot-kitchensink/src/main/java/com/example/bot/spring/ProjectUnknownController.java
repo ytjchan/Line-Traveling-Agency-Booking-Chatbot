@@ -9,7 +9,7 @@ public class ProjectUnknownController {
     public void HandleUnknown (Queue<String> buffer, String userID) {
         //we store 5 questions each time, otherwise we don't store it.
         if (buffer.size()<5)
-            return
+            return;
         
         String lastFiveQuestions;
         String fullQuestion;
