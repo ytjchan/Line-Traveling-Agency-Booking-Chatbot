@@ -17,7 +17,7 @@ public class ProjectUnknownController {
         String fullQuestion;
         
         for (String question: buffer) {
-            if (qustion.length() < 200) { // we ignore questions whose length lager than 200
+            if (question.length() < 200) { // we ignore questions whose length lager than 200
                 lastFiveQuestions += question + "*";
                 fullQuestion = question;
             }
