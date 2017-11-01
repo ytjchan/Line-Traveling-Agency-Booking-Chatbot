@@ -7,12 +7,21 @@ public class ProjectUnknownController {
     public ProjectUnknownController() {}
     
     public void HandleUnknown (Queue<String> buffer, String userID) {
+        //we store 5 questions each time, otherwise we don't store it.
+        if (buffer.size()<5)
+            return
+        
+        String lastFiveQuestions;
+        String fullQuestion;
         
         for (String question: buffer) {
-        //TODO: insert question into Question table with userID as key
-        //need DatabaseEngine, but it is not ready yet
-            
+            if (qustion.length() < 200) { // we ignore questions whose length lager than 200
+                lastFiveQuestions += question + "*";
+                fullQuestion = question;
+            }
         }
+        
+        this.dbEngine.insertQuestion(userID,fullQuestion,lastFiveQuestions);
+        
     }
-    
 }
