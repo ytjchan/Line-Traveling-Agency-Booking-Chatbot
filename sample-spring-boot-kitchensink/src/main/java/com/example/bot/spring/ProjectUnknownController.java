@@ -2,17 +2,16 @@ package com.example.bot.spring;
 
 public class ProjectUnknownController {
     
-    private dbEngine = new SQLDatabaseEngnie();
+    private SQLDatabaseEngine dbEngine = new SQLDatabaseEngine();
     
     public ProjectUnknownController() {}
     
-    public void HandleUnknown (Queue<String> buffer, String userID) {
+    public void HandleUnknown (String question, String userID) {
         
-        for (String question: buffer) {
-        //TODO: insert question into Question table with userID as key
-        //need DatabaseEngine, but it is not ready yet
-            
-        }
+        String fullQuestion = question;
+        String lastFiveQuestions = " ";
+        
+        this.dbEngine.insertQuestion(userID,fullQuestion,lastFiveQuestions);
+        
     }
-    
 }
