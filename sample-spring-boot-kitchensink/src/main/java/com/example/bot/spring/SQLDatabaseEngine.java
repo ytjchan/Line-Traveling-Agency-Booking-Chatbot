@@ -75,7 +75,7 @@ public class SQLDatabaseEngine extends DatabaseEngine {
          */
         protected boolean insertQuestion(String lineid, String fullquestion, String lastfivequestions){
                 try{
-                        PreparedStatement stmt = getStatement("insert into question values (?,?,?,?);");
+                        PreparedStatement stmt = getStatement("insert into question values (?,?,?,?,false);");
                         ResultSet qidRs = getStatement("select max(qid) from question;").executeQuery();
                         int currentQid = qidRs.next() ? qidRs.getInt(1) : 0; // need to see if there is any record now
                         stmt.setInt(1, currentQid+1);
