@@ -7,6 +7,7 @@ public class ProjectMasterController {
 	public ProjectSearchController search = new ProjectSearchController();
 	public ProjectEnqController enq = new ProjectEnqController();
 	public ProjectFAQHandler faq = new ProjectFAQHandler();
+	public ProjectUnknownController unknown = new ProjectUnknownController();
 	
 	public ProjectMasterController() {} 
 	
