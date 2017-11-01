@@ -121,14 +121,13 @@ public class ProjectInterface {
 			
 			replyText = "Sorry, I did not understand: " + text + ". We will relay this message to a staff member who will contact you if your question is valid.";
 			replyType = "unknown";
-			controller.unknown.HandleUnknown(buffer,userID); //this actually does nothing now
-            buffer.clear(); //clear the buffer after insert questions to database
+			controller.unknown.HandleUnknown(text,this.userID);
 		}
 			
 	}
     
-    public void setUserID (String userID) {
-        this.userID = userID;
+    public void setUserID (String userId) {
+        this.userID = userId;
     }
 	
 	public boolean checkInitState() {
