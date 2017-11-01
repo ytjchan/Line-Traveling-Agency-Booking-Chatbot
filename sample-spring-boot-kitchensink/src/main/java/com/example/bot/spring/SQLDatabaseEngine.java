@@ -11,33 +11,32 @@ import java.util.ArrayList;
 @Slf4j
 public class SQLDatabaseEngine extends DatabaseEngine {
         
-        private Connection connection;
+        //private Connection connection; // removed since we need to either use a finally block to close it or use try-with-resources to close it automatically (latter is eaier to code in)
         
         /**
          * Return all keywords available in FAQ table
          * @return String of all keywords concatenated and separated by ', ' 
          */
         protected String searchAllKeywords(){
-                PreparedStatement stmt = null;
-                ResultSet keywordRs = null;
-                try{
-
+                try (
+                        Connection c = getConnection();
+                        PreparedStatement stmt = c.prepareStatement("select keyword from faq;");
+                        ) // Java try-with-resources
+                {
                         StringBuilder sb = new StringBuilder();
-                        stmt = getStatement("select keyword from faq;");
-                        keywordRs = stmt.executeQuery();
+                        ResultSet keywordRs = stmt.executeQuery(); // ResultSet is automatically closed when stmt is closed
                         while (keywordRs.next()){
                                 sb.append(keywordRs.getString(1));
                                 sb.append(", ");
                         }
                         return sb.toString();
+                } catch (URISyntaxException e){
+                        log.info("URI Syntax problem with URI: " + System.getenv("DATABASE_URL"));
                 } catch (SQLException e){
                         log.info("Searching for all keywords failed!");
-                        return null;
-                } finally {
-                        try{if(stmt!=null)stmt.close();}catch(SQLException e){}
-                        try{if(keywordRs!=null)keywordRs.close();}catch(SQLException e){}
-                        try{if(connection!=null)connection.close();}catch(SQLException e){} 
                 }
+                return null;
+
         }
         
         /**
@@ -50,12 +49,13 @@ public class SQLDatabaseEngine extends DatabaseEngine {
          * @return String array of formatted search results (see above)
          */
         protected String[] searchTourByDesc(String desc){
-                PreparedStatement stmt = null;
-                ResultSet tourRs = null;
-                try{
-                        stmt = getStatement("select tourid, tourname from tour where lower(tourdesc) like concat('%',?,'%');"); // need to use concat()
+                try (
+                        Connection c = getConnection();
+                        PreparedStatement stmt = c.prepareStatement("select tourid, tourname from tour where lower(tourdesc) like concat('%',?,'%');"); // need to use concat()
+                        ) // Java try-with-resources
+                {
                         stmt.setString(1, desc.toLowerCase());
-                        tourRs = stmt.executeQuery();
+                        ResultSet tourRs = stmt.executeQuery(); // ResultSet is closed automatically when stmt is closed
                         ArrayList<String> arr = new ArrayList<>();
                         int i=1;
                         while (tourRs.next()){
@@ -68,14 +68,13 @@ public class SQLDatabaseEngine extends DatabaseEngine {
                                 i++;
                         }
                         return arr.toArray(new String[0]);
+                } catch (URISyntaxException e){
+                        log.info("URI Syntax problem with URI: " + System.getenv("DATABASE_URL"));
                 } catch (SQLException e){
                         log.info("Searching tours by description failed!");
-                        return null;
-                } finally {
-                        try{if(stmt!=null)stmt.close();}catch(SQLException e){}
-                        try{if(tourRs!=null)tourRs.close();}catch(SQLException e){}
-                        try{if(connection!=null)connection.close();}catch(SQLException e){}    
                 }
+                return null;
+
         }
         
         // protected = access within same package and subclasses (=derived class)
@@ -88,13 +87,13 @@ public class SQLDatabaseEngine extends DatabaseEngine {
          * @return boolean indicator for whether insertion is successful
          */
         protected boolean insertQuestion(String lineid, String fullquestion, String lastfivequestions){              
-                PreparedStatement stmt = null;
-                PreparedStatement stmt2 = null;
-                ResultSet qidRs = null;
-                try{
-                        stmt = getStatement("insert into question values (?,?,?,?);");
-                        stmt2 = getStatement("select max(qid) from question;");
-                        qidRs = stmt2.executeQuery();
+                try (
+                        Connection c = getConnection();
+                        PreparedStatement stmt = c.prepareStatement("insert into question values (?,?,?,?);");
+                        PreparedStatement stmt2 = c.prepareStatement(("select max(qid) from question;"));
+                        ) // Java try-with-resources will close the connection for us
+                {
+                        ResultSet qidRs = stmt2.executeQuery(); // ResultSet will close automatically after the PrepareStatement is closed
                         int currentQid = qidRs.next() ? qidRs.getInt(1) : 0; // need to see if there is any record now
                         stmt.setInt(1, currentQid+1);
                         stmt.setString(2, lineid);
@@ -103,29 +102,15 @@ public class SQLDatabaseEngine extends DatabaseEngine {
                         stmt.executeUpdate();
                         log.info("Inserted record into Question table with qid= " + (currentQid+1));
                         return true;
+                } catch (URISyntaxException e){
+                        log.info("URI Syntax problem with URI: " + System.getenv("DATABASE_URL"));
                 } catch (SQLException e) {
                         log.info("Insertion into Question table failed!");
-                        return false;
-                } finally{
-                        try{if(stmt!=null)stmt.close();}catch(SQLException e){}
-                        try{if(stmt2!=null)stmt2.close();}catch(SQLException e){}
-                        try{if(qidRs!=null)stmt2.close();}catch(SQLException e){}
-                        try{if(connection!=null)connection.close();}catch(SQLException e){}                        
                 }
+                return false;
         }
         
-        // made private since only used in SQLDatabaseEngine now 
-        // query can be Strings with question mark like "select * from Booker where LineID=?;" and use setString() to set it later
-	private PreparedStatement getStatement(String query) throws SQLException {
-		try{       
-                        connection = getConnection();
-                        PreparedStatement stmt = connection.prepareStatement(query);
-                        return stmt;
-                } catch (URISyntaxException e) {
-                        log.info("URI Syntax problem with URI: " + System.getenv("DATABASE_URL"));
-                        throw new SQLException("URI Syntax problem with URI: " + System.getenv("DATABASE_URL"));
-                }
-	}
+        // removed since we must either use a finally block to close the connection OR create a connectoin in try-with-resouces block
         
 	private Connection getConnection() throws URISyntaxException, SQLException {
 		Connection connection;
