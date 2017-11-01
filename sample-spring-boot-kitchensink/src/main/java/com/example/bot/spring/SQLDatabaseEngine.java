@@ -29,10 +29,7 @@ public class SQLDatabaseEngine extends DatabaseEngine {
                 } catch (SQLException e){
                         log.info("Searching for all keywords failed!");
                         return null;
-                } finally {
-                        this.connection.close();
-                }
-                
+                }              
         }
         
         /**
@@ -64,8 +61,6 @@ public class SQLDatabaseEngine extends DatabaseEngine {
                 } catch (SQLException e){
                         log.info("Searching tours by description failed!");
                         return null;
-                } finally {
-                        this.connection.close();
                 }
         }
         
@@ -93,15 +88,15 @@ public class SQLDatabaseEngine extends DatabaseEngine {
                 } catch (SQLException e) {
                         log.info("Insertion into Question table failed!");
                         return false;
-                } finally {
-                        this.connection.close();
-                }
+                } 
         }
         
         // made private since only used in SQLDatabaseEngine now 
         // query can be Strings with question mark like "select * from Booker where LineID=?;" and use setString() to set it later
 	private PreparedStatement getStatement(String query) throws SQLException {
-		try{
+		try{       
+                        if (this.connection != null)
+                                this.connection.close();
                         this.connection = this.getConnection();
                         PreparedStatement stmt = this.connection.prepareStatement(query);
                         return stmt;
