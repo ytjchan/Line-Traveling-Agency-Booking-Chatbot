@@ -31,6 +31,22 @@ public class SQLDatabaseEngine extends DatabaseEngine {
                 
         }
         
+        
+        //helper function to check whether duplicate keyword exist
+        private boolean checkduplicate(int currentString,String s,String[] textlist) {
+        	boolean skip=false;
+        	for(int i=0;i<currentString-1;i++) {
+    			if(s.toLowerCase().equals(textlist[i].toLowerCase())) {
+    				skip=true;
+    				//for test
+    				//return "deplicate";
+    			}
+    		}
+        	return skip;
+        }
+        
+        
+        
         /**
          * Return keywords available in FAQ table that match one or more keywords in the input sentance
          * @return String of all matched answers concatenated and separated by '; ' 
@@ -52,15 +68,19 @@ public class SQLDatabaseEngine extends DatabaseEngine {
     			String s=textlist[k];
     			skip=false;
     			currentString++;
+    			
+    			/*
     			for(int i=0;i<currentString-1;i++) {
         			if(s.toLowerCase().equals(textlist[i].toLowerCase())) {
         				skip=true;
         				//for test
         				//return "deplicate";
         			}
-        		}
+        		}*/
     			
-    			if(skip) {
+    			
+    			
+    			if(checkduplicate(currentString,s,textlist)) {
     				continue;
     			}
     			try {
