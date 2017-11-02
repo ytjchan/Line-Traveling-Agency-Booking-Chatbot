@@ -114,6 +114,11 @@ public class ProjectInterface {
 			//TODO: call enquiry controller
 		} else if (checkFAQ()) {
 			//TODO: call FAQ handler
+            replyText="FAQ result is:\n"+controller.faq.search(text);
+            
+            
+            replyType="text";
+
 		} else {
 			//TODO: call unknown controller
 			//find some way to send message to staff, and/or store result in database
@@ -165,13 +170,25 @@ public class ProjectInterface {
 		return false;
 	}
 	
-	public boolean checkFAQ() {
-		//TODO: check if state is faq
-		//lookup faq table in database to see if input message matches any stored questions
-		//should be accessible from ANY state
-		
-		//for test case, remove when you're actually done
-		return false;
-	}
+    public boolean checkFAQ() {
+        //TODO: check if state is faq
+        //lookup faq table in database to see if input message matches any stored questions
+        //should be accessible from ANY state
+        String text=null;
+        for(int i=0;i<buffer.size();i++) {
+            text=buffer.poll();
+            buffer.add(text);
+        }
+        
+        StringBuilder newsb=new StringBuilder();
+        if(controller.faq.search(text).equals(newsb.toString()))
+            return false;
+        //for test case, remove when you're actually done
+        return true;
+        
+        //for test case, remove when you're actually done
+        
+    }
+
 
 }
