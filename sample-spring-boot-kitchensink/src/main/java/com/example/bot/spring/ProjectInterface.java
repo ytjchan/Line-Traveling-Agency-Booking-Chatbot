@@ -97,9 +97,8 @@ public class ProjectInterface {
 	//this will change the reply type & reply 
 	public void process(String text) {
 		buffer.add(text);
-		if (buffer.size() > 5) {
+		if (buffer.size() > 5)
 			buffer.poll();
-		}
 		
 		if (checkInitState()) {
 			//TODO: call init controller
@@ -121,7 +120,7 @@ public class ProjectInterface {
 			
 			replyText = "Sorry, I did not understand: " + text + ". We will relay this message to a staff member who will contact you if your question is valid.";
 			replyType = "unknown";
-			controller.unknown.HandleUnknown(text,this.userID);
+			controller.unknown.handleUnknown(this.userID, text, buffer.toArray(new String[0])); // passes buffer as a String array for easier manipulation
 		}
 			
 	}

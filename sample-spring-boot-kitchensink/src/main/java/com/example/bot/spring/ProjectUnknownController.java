@@ -2,16 +2,18 @@ package com.example.bot.spring;
 
 public class ProjectUnknownController {
     
-    private SQLDatabaseEngine dbEngine = new SQLDatabaseEngine();
+    private final SQLDatabaseEngine dbEngine = new SQLDatabaseEngine();
     
     public ProjectUnknownController() {}
     
-    public void HandleUnknown (String question, String userID) {
-        
-        String fullQuestion = question;
-        String lastFiveQuestions = " ";
-        
-        this.dbEngine.insertQuestion(userID,fullQuestion,lastFiveQuestions);
-        
-    }
+    public void handleUnknown (String userID, String fullQuestion, String[] questionArray) {
+            StringBuilder sb = new StringBuilder();
+            int i = 1;
+            for (String question: questionArray){
+                    sb.append(i++).append(". ");
+                    sb.append(question);
+                    sb.append("||");
+            }
+            dbEngine.insertQuestion(userID,fullQuestion,sb.toString());
+
 }
