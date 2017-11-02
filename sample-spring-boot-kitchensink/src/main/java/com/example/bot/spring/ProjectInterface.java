@@ -97,9 +97,8 @@ public class ProjectInterface {
 	//this will change the reply type & reply 
 	public void process(String text) {
 		buffer.add(text);
-		if (buffer.size() > 5) {
+		if (buffer.size() > 5)
 			buffer.poll();
-		}
 		
 		if (checkInitState()) {
 			//TODO: call init controller
@@ -115,17 +114,18 @@ public class ProjectInterface {
 			//TODO: call enquiry controller
 		} else if (checkFAQ()) {
 			//TODO: call FAQ handler
-			replyText="FAQ result is "+controller.faq.search(text);
-	
-			
-			replyType="text";
+            replyText="FAQ result is:\n"+controller.faq.search(text);
+            
+            
+            replyType="text";
+
 		} else {
 			//TODO: call unknown controller
 			//find some way to send message to staff, and/or store result in database
 			
 			replyText = "Sorry, I did not understand: " + text + ". We will relay this message to a staff member who will contact you if your question is valid.";
 			replyType = "unknown";
-			controller.unknown.HandleUnknown(text,this.userID);
+			controller.unknown.handleUnknown(this.userID, text, buffer.toArray(new String[0])); // passes buffer as a String array for easier manipulation
 		}
 			
 	}
@@ -170,27 +170,25 @@ public class ProjectInterface {
 		return false;
 	}
 	
-	public boolean checkFAQ() {
-		//TODO: check if state is faq
-		//lookup faq table in database to see if input message matches any stored questions
-		//should be accessible from ANY state
-		
-		
-		
-		String text=null;
-		for(int i=0;i<buffer.size();i++) {
-			text=buffer.poll();
-			buffer.add(text);
-		}
-		
-		StringBuilder newsb=new StringBuilder();
-		if(controller.faq.search(text).equals(newsb.toString()))
-			return false;
-		//for test case, remove when you're actually done
-		return true;
-		
-		//for test case, remove when you're actually done
-	
-	}
+    public boolean checkFAQ() {
+        //TODO: check if state is faq
+        //lookup faq table in database to see if input message matches any stored questions
+        //should be accessible from ANY state
+        String text=null;
+        for(int i=0;i<buffer.size();i++) {
+            text=buffer.poll();
+            buffer.add(text);
+        }
+        
+        StringBuilder newsb=new StringBuilder();
+        if(controller.faq.search(text).equals(newsb.toString()))
+            return false;
+        //for test case, remove when you're actually done
+        return true;
+        
+        //for test case, remove when you're actually done
+        
+    }
+
 
 }
