@@ -103,7 +103,7 @@ public class ProjectInterface {
 		if (checkInitState()) {
 			//TODO: call init controller
 			state = "init";
-			replyCarousel = ProjectInitController.createMessage();
+			replyCarousel = controller.init.createMessage();
 			replyText = "Carousel message for init state";
 			replyType = "carousel";
 		} else if (checkSearchState()) {
