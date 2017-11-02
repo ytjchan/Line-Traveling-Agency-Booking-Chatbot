@@ -74,14 +74,14 @@ public class SQLDatabaseEngine extends DatabaseEngine {
                 for (String s : textlist) { // more readable
                         skip=false;
                         currentString++;
-                        for(int i=0;i<currentString-1;i++) {
+                        /*for(int i=0;i<currentString-1;i++) {
                                 if(s.toLowerCase().equals(textlist[i].toLowerCase())) {
                                         skip=true;
                                         //for test
                                         //return "deplicate";
                                 }
-                        }
-                        if(skip)
+                        }*/
+                        if(checkduplicate(currentString,s,textlist))
                                 continue;
                         try (
                                 Connection c = getConnection();
