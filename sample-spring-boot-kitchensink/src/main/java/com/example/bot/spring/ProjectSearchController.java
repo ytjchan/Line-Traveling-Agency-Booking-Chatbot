@@ -107,16 +107,7 @@ public class ProjectSearchController {
 	
 	public void process(String text) {
 		try {
-			//testing
-			if (text.toLowerCase().contains("keywords")) {
-				replyType = "text";
-				replyText = "keywords: ";
-				for (String str : keywords) {
-					replyText += str + ", ";
-				}
-				return;
-			}
-			 
+			//enter keyword & update
 			if (state.equals("keywordInput")) {
 				keywords.add(text);
 				state = "display";
@@ -143,6 +134,7 @@ public class ProjectSearchController {
 				return;
 			}
 			
+			//show dates of tour
 			if (text.toLowerCase().contains("show dates of ")) {
 				state = "display";
 				replyType = "text";
@@ -160,15 +152,17 @@ public class ProjectSearchController {
 				return;
 			}
 			
+			//move to enter keyword state
 			if (text.toLowerCase().contains("add filter")) {
 				replyType = "text";
 				replyText = "Please enter a keyword:";
 				state = "keywordInput";
 				return;
 			} 
+			
+			//enter date & update
 			if (text.toLowerCase().matches("(.*)(\\d{4})-(\\d{1,2})-(\\d{1,2}) to (\\d{4})-(\\d{1,2})-(\\d{1,2})(.*)")) {
 				state = "display";
-				//replyType = "carousel";
 				startDate = text.substring(0,10);
 				endDate = text.substring(14,24);
 				rs = db.searchTourByDesc(keywords, startDate, endDate);
@@ -182,8 +176,9 @@ public class ProjectSearchController {
 				}
 				return;
 			}
+			
+			//show next 5
 			if (text.toLowerCase().contains("next")) {
-				//show next 5
 				state = "display";
 				if (rsIndex == rs.size()) {
 					replyType = "text";
@@ -194,8 +189,9 @@ public class ProjectSearchController {
 				}
 				return;
 			}
+			
+			//show prev 5
 			if (text.toLowerCase().contains("previous") || text.toLowerCase().contains("back") || text.toLowerCase().contains("last")) {
-				//show previous 5
 				state = "display";
 				if (rsIndex <= 5) {
 					replyType = "text";
@@ -207,8 +203,9 @@ public class ProjectSearchController {
 				}
 				return;
 			}
+			
+			//new search
 			if ((keywords.isEmpty() && text.toLowerCase().contains("search")) || text.toLowerCase().contains("reset filters")) {
-				//new search
 				replyType = "carousel";
 				state = "display";
 				keywords.clear();
@@ -221,7 +218,6 @@ public class ProjectSearchController {
 				createSearchCarousel();
 				return;
 			}
-			
 			
 			//unknown
 			replyType = "text";
@@ -260,7 +256,7 @@ public class ProjectSearchController {
 			)
 		);
 		
-		
+		//content
 		for (int i=rsIndex, max=rsIndex+5; i<max && i<rs.size(); i++) {
 			columns.add(
 				new CarouselColumn(
@@ -281,6 +277,8 @@ public class ProjectSearchController {
 			);
 			rsIndex ++;
 		}
+		
+		//1st column (info)
 		String info = "To search for tours within a period, enter the start and end dates in the following format:\nYYYY-MM-DD to YYYY-MM-DD\n\nCurrently showing:\n"
 				+ (((rsIndex-1)/5)*5+1) + "-"  + rsIndex + " of " + rs.size() + " results\n\nKeywords: ";
 		for (String str : keywords) {
@@ -288,7 +286,6 @@ public class ProjectSearchController {
 		}
 		info += "\n\n";
 		info += "Start Date: " + startDate + "\nEnd Date: " + endDate;
-		
 		columns.set(0,
 			new CarouselColumn(
 				"https://images-na.ssl-images-amazon.com/images/I/61G%2BdmtkeeL._SX355_.jpg",
@@ -302,7 +299,7 @@ public class ProjectSearchController {
 			)
 		);
 		
-		
+		//last column (next, prev)
 		columns.add(
             new CarouselColumn(
             	"https://thefrailestthing.files.wordpress.com/2010/07/ellipsis.png",
