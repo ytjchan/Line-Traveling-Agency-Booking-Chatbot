@@ -72,33 +72,27 @@ import java.net.URI;
 
 
 public class ProjectInitController {
-	private static String [] imgs = ProjectInterface.IMAGE_NAMES;
-	private static String [] uris = new String[imgs.length];
+	private final String [] imgs = ProjectInterface.IMAGE_NAMES;
+    public ProjectInitController(){}
 	
-	static {
-		for (int i=0; i<imgs.length; i++)
-			uris[i] = KitchenSinkController.createUri(imgs[i]);
-	}
-	
-	public static CarouselTemplate createMessage() {
+	public CarouselTemplate createMessage() {
+        SQLDatabaseEngine db = new SQLDatabaseEngine();
         CarouselTemplate carouselTemplate = new CarouselTemplate(
     		Arrays.asList(	//uris[1]
-        		new CarouselColumn(uris[1], "3111 Travel", "Welcome to 3111 Travel, the leading China travel agency.", 
+        		new CarouselColumn(KitchenSinkController.createUri(imgs[1]), "3111 Travel", "Welcome to 3111 Travel, the leading China travel agency.", 
             		Arrays.asList(
         				new MessageAction("Recommendations", "Recommend me a trip"),
         				new MessageAction("Search for trips", "Search for trips")
     				)
         		),			//uris[2]
-                new CarouselColumn(uris[2], "About the chatbot", "Press the buttons, or type cancel at any time to go back.", 
+                new CarouselColumn(KitchenSinkController.createUri(imgs[2]), "About the chatbot", "Press the buttons, or type cancel at any time to go back.", 
             		Arrays.asList(
-	    				new PostbackAction("FAQ Keywords", "Work-in-progress: select all keywords from DB"), //TODO: use db to select all possible keywords
+	    				new PostbackAction("FAQ Keywords", "Keywords available are: "+db.searchAllKeywords()),
 	    				new URIAction("Our website", "https://github.com/khwang0/2017F-COMP3111")
     				)
         		)
     		)
 		);
         return carouselTemplate;
-//        TemplateMessage templateMessage = new TemplateMessage("Carousel alt text", carouselTemplate);
-//        return templateMessage;
 	}
 }

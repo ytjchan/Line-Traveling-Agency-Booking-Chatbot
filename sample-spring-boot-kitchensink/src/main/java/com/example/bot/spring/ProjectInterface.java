@@ -75,21 +75,10 @@ import java.util.LinkedList;
 
 public class ProjectInterface {
 	//TODO define image addresses
-	public static final String [] IMAGE_NAMES = {
-		"/static/gather.jpg",
-		"/static/gd1.jpg",
-		"/static/beach3.jpg",
-		"TODO",
-		"TODO",
-		"TODO",
-		"TODO",
-		"TODO",
-		"TODO",
-		"TODO"
-	};
+	public static final String [] IMAGE_NAMES = {"/static/gather.jpg","/static/gd1.jpg","/static/beach3.jpg","TODO","TODO","TODO","TODO","TODO","TODO","TODO"};
 	
 	public String inputText = "";
-	public String state = "start";			//define the state i.e. init, search, book, enq
+	public String state = "init";			//define the state i.e. init, search, book, enq
 	public Queue<String> buffer = new LinkedList<String>();	//for unknown case
 	public Instant lastMessageTime = Instant.MIN;	//for check initial state
 	
@@ -97,26 +86,26 @@ public class ProjectInterface {
 	public String replyText;		//for replyType: text
 	public String replyImageAddress;
 	public CarouselTemplate replyCarousel;
-	
+    public String userID;           //need user's Line ID to support desired functions
+    
 	public ProjectMasterController controller = new ProjectMasterController();
 	
-	public ProjectInterface() {}
+	public ProjectInterface() {
+		
+	}
 	
 	//this will change the reply type & reply 
 	public void process(String text) {
 		buffer.add(text);
-		if (buffer.size() > 5) {
+		if (buffer.size() > 5)
 			buffer.poll();
-		}
 		
 		if (checkInitState(text)) {
-			//TODO: call init controller
 			state = "init";
-			replyCarousel = ProjectInitController.createMessage();
+			replyCarousel = controller.init.createMessage();
 			replyText = "Carousel message for init state";
 			replyType = "carousel";
 		} else if (checkSearchState(text)) {
-			//TODO: call tour search controller
 			state = "search";
 			controller.search.process(text);
 			replyType = controller.search.replyType;
@@ -127,26 +116,31 @@ public class ProjectInterface {
 		} else if (checkEnqState()) {
 			//TODO: call enquiry controller
 		} else if (checkFAQ()) {
-			//TODO: call FAQ handler
+            replyText="FAQ result is:\n"+controller.faq.search(text);
+            
+            
+            replyType="text";
+
 		} else {
 			//TODO: call unknown controller
 			//find some way to send message to staff, and/or store result in database
 			
-			replyText = "Unknown received: " + text;
+			replyText = "Sorry, I did not understand: " + text + ". We will relay this message to a staff member who will contact you if your question is valid.";
 			replyType = "unknown";
+			controller.unknown.handleUnknown(this.userID, text, buffer.toArray(new String[0])); // passes buffer as a String array for easier manipulation
 		}
 			
 	}
+    
+    public void setUserID (String userId) {
+        this.userID = userId;
+    }
 	
 	public boolean checkInitState(String text) {
-		//TODO: check if state is initial
-		//use Instant lastMessageTime
 		//check if 15 minutes have passed since last message from user
 		//should be accessible from ANY state, after 15 minutes or 'cancel' statement
-		if (text.toLowerCase().equals("cancel")) {
-			return true;
-		}
-		boolean flag = lastMessageTime.plusSeconds(900).isBefore(Instant.now());
+		boolean flag = lastMessageTime.plusSeconds(900).isBefore(Instant.now()) || text.toLowerCase().equals("cancel");
+                
 		lastMessageTime = Instant.now();
 		return flag;
 		//for test case, remove when you're actually done
@@ -154,8 +148,7 @@ public class ProjectInterface {
 	}
 	
 	public boolean checkSearchState(String text) {
-		//TODO: check if state is search
-		//should be accessible from INIT state ONLY
+		//should be accessible from INIT state (search) or BOOK state (back)
 		if ((state.equals("init") && text.toLowerCase().contains("search")) || state.equals("book") && text.toLowerCase().contains("back")) {
 			controller.search.keywords.clear();
 			return true;
@@ -163,7 +156,7 @@ public class ProjectInterface {
 			return true;
 		} else {
 			return false;
-		}
+		}	
 	}
 	
 	public boolean checkBookState() {
@@ -182,13 +175,21 @@ public class ProjectInterface {
 		return false;
 	}
 	
-	public boolean checkFAQ() {
-		//TODO: check if state is faq
-		//lookup faq table in database to see if input message matches any stored questions
-		//should be accessible from ANY state
-		
-		//for test case, remove when you're actually done
-		return false;
-	}
+    public boolean checkFAQ() {
+        //TODO: check if state is faq
+        //lookup faq table in database to see if input message matches any stored questions
+        //should be accessible from ANY state
+        String text=null;
+        for(int i=0;i<buffer.size();i++) {
+            text=buffer.poll();
+            buffer.add(text);
+        }
+        
+        StringBuilder newsb=new StringBuilder();
+        if(controller.faq.search(text).equals(newsb.toString()))
+            return false;
+        return true;
+    }
+
 
 }

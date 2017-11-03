@@ -46,6 +46,19 @@ public class SQLDatabaseEngine extends DatabaseEngine {
 
         }
         
+        //helper function to check whether duplicate keyword exist
+        private boolean checkduplicate(int currentString,String s,String[] textlist) {
+        	boolean skip=false;
+        	for(int i=0;i<currentString-1;i++) {
+    			if(s.toLowerCase().equals(textlist[i].toLowerCase())) {
+    				skip=true;
+    				//for test
+    				//return "deplicate";
+    			}
+    		}
+        	return skip;
+        }
+        
         /**
          * Return keywords available in FAQ table that match one or more keywords in the input 
          * @param input_text A keyword that may exist in FAQ table
@@ -60,19 +73,18 @@ public class SQLDatabaseEngine extends DatabaseEngine {
     		//String result=null;
     		String sqlsentence="SELECT Answer FROM FAQ WHERE Keyword=?;"; // use ? with setString() or setInt() etc. to prevent SQL injection
     		//String testsql="SELECT * FROM FAQ";
-                
                 //this loop is used to check whether deplicate keywords appear,if so, ignore them
                 for (String s : textlist) { // more readable
                         skip=false;
                         currentString++;
-                        for(int i=0;i<currentString-1;i++) {
+                        /*for(int i=0;i<currentString-1;i++) {
                                 if(s.toLowerCase().equals(textlist[i].toLowerCase())) {
                                         skip=true;
                                         //for test
                                         //return "deplicate";
                                 }
-                        }
-                        if(skip)
+                        }*/
+                        if(checkduplicate(currentString,s,textlist))
                                 continue;
                         try (
                                 Connection c = getConnection();
@@ -145,7 +157,6 @@ public class SQLDatabaseEngine extends DatabaseEngine {
                 arr.add(temp);
             }
             return arr;
-
         }
         
         // protected = access within same package and subclasses (=derived class)
@@ -258,3 +269,5 @@ public class SQLDatabaseEngine extends DatabaseEngine {
     }
 
 }
+
+
