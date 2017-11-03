@@ -132,7 +132,7 @@ public class ProjectInterface {
 			//TODO: call unknown controller
 			//find some way to send message to staff, and/or store result in database
 			
-			replyText = "Received: " + text;
+			replyText = "Unknown received: " + text;
 			replyType = "unknown";
 		}
 			
@@ -143,7 +143,7 @@ public class ProjectInterface {
 		//use Instant lastMessageTime
 		//check if 15 minutes have passed since last message from user
 		//should be accessible from ANY state, after 15 minutes or 'cancel' statement
-		if (text.equals("reset")) {
+		if (text.toLowerCase().equals("cancel")) {
 			return true;
 		}
 		boolean flag = lastMessageTime.plusSeconds(900).isBefore(Instant.now());
@@ -159,7 +159,7 @@ public class ProjectInterface {
 		if ((state.equals("init") && text.toLowerCase().contains("search")) || state.equals("book") && text.toLowerCase().contains("back")) {
 			controller.search.keywords.clear();
 			return true;
-		} else if (state.equals("search") && !text.toLowerCase().contains("show") && !text.toLowerCase().contains("book")) {
+		} else if (state.equals("search") && !text.toLowerCase().contains("book")) {
 			return true;
 		} else {
 			return false;

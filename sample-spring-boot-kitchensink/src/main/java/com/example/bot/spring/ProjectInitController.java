@@ -81,41 +81,23 @@ public class ProjectInitController {
 	}
 	
 	public static CarouselTemplate createMessage() {
-//        CarouselTemplate carouselTemplate = new CarouselTemplate(
-//	        Arrays.asList(
-//				new CarouselColumn(uris[1], "3111 Travel", "Welcome! We are 3111 Travel, the leading China travel agency.", 
-//		    		Arrays.asList(
-//	    				new MessageAction("Recommendations", "Recommend me a trip"),
-//	    				new PostbackAction("Search trips", "Search for trips")
-//					)	
-//	    		),
-//		        new CarouselColumn(uris[2], "About chatbot", "Press the buttons, and type cancel anytime to go back.", 
-//		    		Arrays.asList(
-//	    				new PostbackAction("FAQ Keywords", "Work-in-progress: select all keywords from DB"), //TODO: use db to select all possible keywords
-//	    				new URIAction("Our website", "https://github.com/khwang0/2017F-COMP3111")
-//    				)
-//	    		)
-//			)
-//		);
-//        return carouselTemplate;
-	        CarouselTemplate carouselTemplate = new CarouselTemplate(
-	                Arrays.asList(
-	                		new CarouselColumn(uris[1], "3111 Travel", "Welcome to 3111 Travel, the leading China travel agency.", 
-	                        		Arrays.asList(
-	                        				new MessageAction("Recommendations", "Recommend me a trip"),
-	                        				new MessageAction("Search for trips", "Search for trips")
-	                        				)
-	                        		),
-	                        new CarouselColumn(uris[2], "About the chatbot", "Press the buttons, or type cancel at any time to go back.", 
-	                        		Arrays.asList(
-	                        				new PostbackAction("FAQ Keywords", "Work-in-progress: select all keywords from DB"), //TODO: use db to select all possible keywords
-	                        				new URIAction("Our website", "https://github.com/khwang0/2017F-COMP3111")
-	                        				)
-	                        		)
-	                		)
-	        		);
-	        return carouselTemplate;
-                
+        CarouselTemplate carouselTemplate = new CarouselTemplate(
+    		Arrays.asList(	//uris[1]
+        		new CarouselColumn(uris[1], "3111 Travel", "Welcome to 3111 Travel, the leading China travel agency.", 
+            		Arrays.asList(
+        				new MessageAction("Recommendations", "Recommend me a trip"),
+        				new MessageAction("Search for trips", "Search for trips")
+    				)
+        		),			//uris[2]
+                new CarouselColumn(uris[2], "About the chatbot", "Press the buttons, or type cancel at any time to go back.", 
+            		Arrays.asList(
+	    				new PostbackAction("FAQ Keywords", "Work-in-progress: select all keywords from DB"), //TODO: use db to select all possible keywords
+	    				new URIAction("Our website", "https://github.com/khwang0/2017F-COMP3111")
+    				)
+        		)
+    		)
+		);
+        return carouselTemplate;
 //        TemplateMessage templateMessage = new TemplateMessage("Carousel alt text", carouselTemplate);
 //        return templateMessage;
 	}
