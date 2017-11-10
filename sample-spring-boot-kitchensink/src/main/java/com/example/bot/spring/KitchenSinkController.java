@@ -93,6 +93,7 @@ public class KitchenSinkController {
 	@Autowired
 	private LineMessagingClient lineMessagingClient;
 	public ProjectInterface funInterface = new ProjectInterface();
+        private UserList userList = new UserList(this);
 
 	@EventMapping
 	public void handleTextMessageEvent(MessageEvent<TextMessageContent> event) throws Exception {
@@ -101,6 +102,7 @@ public class KitchenSinkController {
 		log.info("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 		TextMessageContent message = event.getMessage();
 		handleTextContent(event.getReplyToken(), event, message);
+                userList.update(event.getSource().getUserId());
 	}
 
 	@EventMapping
@@ -165,8 +167,13 @@ public class KitchenSinkController {
 
 	@EventMapping
 	public void handlePostbackEvent(PostbackEvent event) {
-		String replyToken = event.getReplyToken();
-		this.replyText(replyToken, event.getPostbackContent().getData());
+                String replyToken = event.getReplyToken();
+                if (userList.isInList(event.getSource().getUserId())){
+                        this.replyText(replyToken, event.getPostbackContent().getData());
+                        userList.update(event.getSource().getUserId()); // on button press eg carousel
+                } else { // User has expired
+                        this.replyText(replyToken, User.TIMEOUT_TEXT_MESSAGE);
+                }
 	}
 
 	@EventMapping
@@ -192,8 +199,9 @@ public class KitchenSinkController {
 			throw new RuntimeException(e);
 		}
 	}
-
-	private void replyText(@NonNull String replyToken, @NonNull String message) {
+        
+        // now has package access right
+	void replyText(@NonNull String replyToken, @NonNull String message) {
 		if (replyToken.isEmpty()) {
 			throw new IllegalArgumentException("replyToken must not be empty");
 		}
