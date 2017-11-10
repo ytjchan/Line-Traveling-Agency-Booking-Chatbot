@@ -91,9 +91,9 @@ public class KitchenSinkController {
 
 
 	@Autowired
-	private LineMessagingClient lineMessagingClient;
-	public ProjectInterface funInterface = new ProjectInterface();
-        private UserList userList = new UserList(this);
+	private LineMessagingClient lineMessagingClient;       
+        UserList userList = new UserList(this); // default access right
+	public ProjectInterface funInterface = new ProjectInterface(this, userList);
 
 	@EventMapping
 	public void handleTextMessageEvent(MessageEvent<TextMessageContent> event) throws Exception {
@@ -101,8 +101,8 @@ public class KitchenSinkController {
 		log.info("This is your entry point:");
 		log.info("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 		TextMessageContent message = event.getMessage();
-		handleTextContent(event.getReplyToken(), event, message);
                 userList.update(event.getSource().getUserId());
+		handleTextContent(event.getReplyToken(), event, message);
 	}
 
 	@EventMapping
@@ -222,8 +222,7 @@ public class KitchenSinkController {
 
         log.info("Got text message from {}: {}", replyToken, text);
 		
-        funInterface.setUserID(event.getSource().getUserId()); // pass userID to project interface
-        funInterface.process(text);
+        funInterface.process(text, event.getSource().getUserId());
         //now the replyType of funInterface will change depending on the text & userID
         
         //TODO manage the output reply based on the replyType

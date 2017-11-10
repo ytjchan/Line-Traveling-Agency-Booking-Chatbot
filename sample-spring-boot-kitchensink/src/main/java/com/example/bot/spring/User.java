@@ -7,6 +7,7 @@ import com.linecorp.bot.model.response.BotApiResponse;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import java.time.Instant;
+import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
 import retrofit2.Response;
@@ -16,12 +17,13 @@ import retrofit2.Response;
 public class User {
 	
 	private final String userId;
-        private String status = "init";
+        private String state = "new";
 	private Instant lastActivityTime;
         private TimerTask timeoutMessage;
 	private final Timer timer = new Timer();
 	private final UserList userList; // Users subscribe to a UserList
 	private final KitchenSinkController ksc; // needed in order to call reply
+        private LinkedList<String> buffer = new LinkedList<>();
         
         private final int TIMEOUT_TIME = 15*60*1000; // in milliseconds
         public final static String TIMEOUT_TEXT_MESSAGE = "*You have been in inactivity for 15mins, please restart by typing anything new*";
@@ -53,6 +55,16 @@ public class User {
                 log.info("Timeout renewed for user "+userId);
         }
         
+        public void updateBuffer(String text){
+                buffer.add(text);
+		if (buffer.size() > 5)
+			buffer.poll();
+        }
+        
+        public LinkedList<String> getBuffer(){
+                return buffer;
+        }
+        
         /**
          * User removes itself from UserList.
          */
@@ -70,19 +82,19 @@ public class User {
         }
     
         /**
-         * Mutator method of status.
-         * @param status Status to be set
+         * Mutator method of state.
+         * @param state State to be set
          */
-        public void setStatus(String status) {
-                this.status = status;
+        public void setState(String state) {
+                this.state = state;
         }
         
         /**
-         * Getter method of current status.
-         * @return Current status this user is in.
+         * Getter method of current state.
+         * @return Current state this user is in.
          */
-        public String getStatus() {
-                return status;
+        public String getState() {
+                return state;
         }
 	
 	/** 

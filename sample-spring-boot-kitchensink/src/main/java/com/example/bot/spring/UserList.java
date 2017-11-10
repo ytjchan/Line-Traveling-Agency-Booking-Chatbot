@@ -1,5 +1,6 @@
 package com.example.bot.spring;
 
+import java.util.LinkedList;
 import lombok.extern.slf4j.Slf4j;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -56,29 +57,53 @@ public class UserList {
         }
         
         /**
+         * Update the buffer  of a certain userId.
+         * @param userId User that we want to update its buffer
+         * @param text A String preparing to be added to buffer
+         */
+        public void updateBuffer(String userId, String text){
+                User user = findUser(userId);
+                if (user == null){
+                        log.info("Failed to update buffer! User "+userId+" not in UserList yet!");
+                        return;
+                }
+                user.updateBuffer(text);
+        }
+        
+        /**
+         * Getter method for the buffer of a certain userId.
+         * @param userId userId of the user
+         * @return LinkedList<String> buffer object, or null if User is not present in this UserList.
+         */
+        public LinkedList<String> getBuffer(String userId){
+                User user = findUser(userId);
+                if (user != null)
+                        return user.getBuffer();
+                return null;
+        }
+        
+        /**
          * Changes the specific User's status.
          * @param userId User to set status to
          * @param status New status for User
-         * @throws Exception Thrown if setStatus failed
          */
-        public void setStatus(String userId, String status) throws Exception{
+        public void setState(String userId, String state) {
                 User user = findUser(userId);
                 if (user == null) // User not found
-                        throw new Exception("Failed to set status: User "+userId+" is not found! (s/he expired?)");
-                user.setStatus(status);
+                        return;
+                user.setState(state);
         }
         
         /**
          * Get the current status of a specific User.
          * @param userId userId of the User to be changed.
          * @return String containing the current status of the user
-         * @throws Exception Thrown if the User does not exist in the UserList
          */
-        public String getStatus(String userId) throws Exception{
+        public String getState(String userId) {
                 User user = findUser(userId);
                 if (user == null)
-                        throw new Exception("Failed to get status: User "+userId+" is not found! (s/he expired?)");
-                return user.getStatus();
+                        return null;
+                return user.getState();
         }
         
         /** 
