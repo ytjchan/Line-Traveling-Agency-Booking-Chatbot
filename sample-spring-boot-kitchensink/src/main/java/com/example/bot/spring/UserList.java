@@ -12,6 +12,7 @@ public class UserList {
         
         /**
          * Constructor of UserList.
+	 * A controller is required as parameter in order for each User object to schedule their timeout messages.
          * @param ksc Reference to the controller to be used.
          */
         public UserList(KitchenSinkController ksc){
@@ -34,9 +35,9 @@ public class UserList {
         }
         
         /**
-         * Method to check if the user has been in inactivity or new user.
+         * Method to check if the user has been in inactivity or s/he is a new user.
          * @param userId userId of the user
-         * @return boolean indicator of whether the user is in the UserList
+         * @return boolean indicator of whether the user is in the UserList (ie inactive for 15mins or new user)
          */
         public boolean isInList(String userId){
                 return findUser(userId)!=null;
@@ -57,7 +58,8 @@ public class UserList {
         }
         
         /**
-         * Update the buffer  of a certain userId.
+         * Update the buffer of a certain userId.
+	 * The String text would be put into the buffer of the user, the buffer would contain up to 5 latest messages.
          * @param userId User that we want to update its buffer
          * @param text A String preparing to be added to buffer
          */
@@ -73,7 +75,7 @@ public class UserList {
         /**
          * Getter method for the buffer of a certain userId.
          * @param userId userId of the user
-         * @return LinkedList<String> buffer object, or null if User is not present in this UserList.
+         * @return LinkedList of String object as buffer of that user, or null if User is not present in this UserList.
          */
         public LinkedList<String> getBuffer(String userId){
                 User user = findUser(userId);
@@ -85,7 +87,7 @@ public class UserList {
         /**
          * Changes the specific User's status.
          * @param userId User to set status to
-         * @param status New status for User
+         * @param state New state for User
          */
         public void setState(String userId, String state) {
                 User user = findUser(userId);

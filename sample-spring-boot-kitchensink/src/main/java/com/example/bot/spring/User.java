@@ -17,19 +17,20 @@ import retrofit2.Response;
 public class User {
 	
 	private final String userId;
-        private String state = "new";
+	private String state = "new";
 	private Instant lastActivityTime;
-        private TimerTask timeoutMessage;
+	private TimerTask timeoutMessage;
 	private final Timer timer = new Timer();
 	private final UserList userList; // Users subscribe to a UserList
 	private final KitchenSinkController ksc; // needed in order to call reply
-        private LinkedList<String> buffer = new LinkedList<>();
+	private LinkedList<String> buffer = new LinkedList<>();
         
-        private final int TIMEOUT_TIME = 15*60*1000; // in milliseconds
-        public final static String TIMEOUT_TEXT_MESSAGE = "*You have been in inactivity for 15mins, please restart by typing anything new*";
+	private final int TIMEOUT_TIME = 15*60*1000; // in milliseconds
+	public final static String TIMEOUT_TEXT_MESSAGE = "*You have been in inactivity for 15mins, please restart by typing anything new*";
 	
         /**
          * Constructor of an User.
+	 * References to UserList and controller is required in order to remove User from UserList and schedule a timeout message.
          * @param userId userId referring to user's line account
          * @param userList A UserList object that the User registers to
          * @param ksc KitchenSinkController to start a reply on schedule
@@ -45,7 +46,9 @@ public class User {
 	}
 	
         /**
-         * Only update the user to renew his/her timeout time.
+         * Update the user to renew his/her timeout time.
+	 * His/her next timeout message would occur 15mins after this has been run.
+	 * S/he would be removed from UserList 15mins after as well.
          */
 	public void update() {
                 lastActivityTime = Instant.now();
@@ -55,12 +58,21 @@ public class User {
                 log.info("Timeout renewed for user "+userId);
         }
         
+	/**
+	 * Put a String into buffer, if buffer exceeds maximum size 5, remove the oldest one.
+	 * @param text String to be put into buffer
+	 */
         public void updateBuffer(String text){
                 buffer.add(text);
 		if (buffer.size() > 5)
 			buffer.poll();
         }
         
+	/**
+	 * Getter method to get the whole buffer for further usage.
+	 * The LinkedList is guaranteed to contain 5 String objects.
+	 * @return A LinkedList of String containing the last 5 messages
+	 */
         public LinkedList<String> getBuffer(){
                 return buffer;
         }
@@ -83,6 +95,7 @@ public class User {
     
         /**
          * Mutator method of state.
+	 * Set the state of this User object to another one.
          * @param state State to be set
          */
         public void setState(String state) {
@@ -104,6 +117,9 @@ public class User {
 	class TimeoutMessage extends TimerTask {
 
 		@Override
+		/**
+		 * Overriding TimerTask so that run() would be run on schedule.
+		 */
 		public void run() {
                         log.info("Attempting to send timeout message to user "+userId);
                         // The following can be potentially replaced by a class.
