@@ -83,7 +83,7 @@ public class ProjectSearchController {
 	public String startDate;	
 	public String endDate 	= "9999-12-31";		//must be YYYY-MM-DD
 	
-	public String state = "display";
+//	public String state = "display";
 	public int currentOffset = 0;
 	
 	public String replyType;
@@ -105,12 +105,11 @@ public class ProjectSearchController {
 		startDate = dtf.format(localDate);
 	}
 	
-	public void process(String text) {
+	public void process(String text, String state) {
 		try {
 			//enter keyword & update
-			if (state.equals("keywordInput")) {
+			if (state.equals("search.keywordInput")) {
 				keywords.add(text);
-				state = "display";
 				rs = db.searchTourByDesc(keywords, startDate, endDate);
 				if (rs.size() > 0) {
 					replyType = "carousel";
@@ -125,7 +124,6 @@ public class ProjectSearchController {
 			
 			//show tour details
 			if (text.toLowerCase().contains("show details of ")) {
-				state = "display";
 				replyType = "text";
 				ArrayList<ArrayList<String>> temp = db.searchTourID(text.toLowerCase().replace("show details of ", ""), "tour");
 				replyText = temp.get(0).get(1) + "\n";
@@ -136,7 +134,6 @@ public class ProjectSearchController {
 			
 			//show dates of tour
 			if (text.toLowerCase().contains("show dates of ")) {
-				state = "display";
 				replyType = "text";
 				ArrayList<ArrayList<String>> temp = db.searchTourID(text.toLowerCase().replace("show dates of ", ""), "tour");
 				replyText = temp.get(0).get(1);
@@ -162,7 +159,6 @@ public class ProjectSearchController {
 			
 			//enter date & update
 			if (text.toLowerCase().matches("(.*)(\\d{4})-(\\d{1,2})-(\\d{1,2}) to (\\d{4})-(\\d{1,2})-(\\d{1,2})(.*)")) {
-				state = "display";
 				startDate = text.substring(0,10);
 				endDate = text.substring(14,24);
 				rs = db.searchTourByDesc(keywords, startDate, endDate);
@@ -179,7 +175,6 @@ public class ProjectSearchController {
 			
 			//show next 5
 			if (text.toLowerCase().contains("next")) {
-				state = "display";
 				if (rsIndex == rs.size()) {
 					replyType = "text";
 					replyText = "There are no more records!";
@@ -192,7 +187,6 @@ public class ProjectSearchController {
 			
 			//show prev 5
 			if (text.toLowerCase().contains("previous") || text.toLowerCase().contains("back") || text.toLowerCase().contains("last")) {
-				state = "display";
 				if (rsIndex <= 5) {
 					replyType = "text";
 					replyText = "You are at the start and there are no previous results.";
@@ -207,7 +201,6 @@ public class ProjectSearchController {
 			//new search
 			if ((keywords.isEmpty() && text.toLowerCase().contains("search")) || text.toLowerCase().contains("reset filters")) {
 				replyType = "carousel";
-				state = "display";
 				keywords.clear();
 				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 				LocalDate localDate = LocalDate.now();

@@ -106,13 +106,13 @@ public class ProjectInterface {
 			replyText = "Carousel message for init state";
 			replyType = "carousel";
 		} else if (checkSearchState(text)) {
-			state = "search";
-			controller.search.process(text);
+			controller.search.process(text, state);
 			replyType = controller.search.replyType;
 			replyText = controller.search.replyText;
 			replyCarousel = controller.search.replyCarousel;
-		} else if (checkBookState()) {
+		} else if (checkBookState(text)) {
 			//TODO: call booking controller
+			
 		} else if (checkEnqState()) {
 			//TODO: call enquiry controller
 		} else if (checkFAQ()) {
@@ -140,8 +140,8 @@ public class ProjectInterface {
 		//check if 15 minutes have passed since last message from user
 		//should be accessible from ANY state, after 15 minutes or 'cancel' statement
 		boolean flag = lastMessageTime.plusSeconds(900).isBefore(Instant.now()) || text.toLowerCase().equals("cancel");
-                
 		lastMessageTime = Instant.now();
+		
 		return flag;
 		//for test case, remove when you're actually done
 		//return false;
@@ -149,22 +149,36 @@ public class ProjectInterface {
 	
 	public boolean checkSearchState(String text) {
 		//should be accessible from INIT state (search) or BOOK state (back)
-		if ((state.equals("init") && text.toLowerCase().contains("search")) || state.equals("book") && text.toLowerCase().contains("back")) {
+		//internal state moved to this state string to avoid race condition with multi-user
+		if ((state.equals("init") && text.toLowerCase().contains("search")) || state.contains("book") && text.toLowerCase().contains("back")) {
 			controller.search.keywords.clear();
+			state = "search.display";
 			return true;
-		} else if (state.equals("search") && !text.toLowerCase().contains("book")) {
+		} else if (state.equals("search.display") && text.toLowerCase().contains("add filter")) {
+			state = "search.keywordMessage";
+			return true;
+		} else if (state.equals("search.keywordMessage")) {
+			state = "search.keywordInput";
+			return true;
+		} else if (state.contains("search")) {
+			state = "search.display";
 			return true;
 		} else {
 			return false;
 		}	
 	}
 	
-	public boolean checkBookState() {
+	public boolean checkBookState(String text) {
 		//TODO: check if state is book
 		//should be accessible from SEARCH (result) state ONLY
-		
-		//for test case, remove when you're actually done
-		return false;
+		//is really
+		if (state.equals("search") && text.toLowerCase().contains("book"))	{
+			return true;
+		} else if (state.contains("book") && !text.toLowerCase().contains("back")) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	public boolean checkEnqState() {
