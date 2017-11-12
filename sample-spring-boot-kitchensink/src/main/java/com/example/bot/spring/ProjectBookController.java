@@ -90,7 +90,7 @@ public class ProjectBookController {
 		//	A: it is, do nothing
 		//	B: it is not, ask for name, hkid, age, phone number
 		//
-		//2. Ask for no. of adults, no. of children, no. of adults, special requests]
+		//2. Ask for no. of adults, no. of children (4 - 11), no. of toddlers (3 or less), special requests]
 		//3. throw a confirmation message
 		
 //		if (state.equals(anObject)) {

@@ -250,21 +250,37 @@ public class KitchenSinkController {
 //    			break;
 //        }
         
-        switch (text) {
-        	case "profile":  {
-                String userId = event.getSource().getUserId();
-                this.replyText(replyToken, userId);
-                break;
-            }
-        	default: {
-        		//try multi message
-        		List<Message> temp = new LinkedList<Message> ();
-        		temp.add(new TextMessage("one"));
-        		temp.add(new TextMessage("two"));
-        		this.reply(replyToken, temp);
-        	}
-        }
+
+//		//try multi message
+//		List<Message> temp = new LinkedList<Message> ();
+//		temp.add(new TextMessage("one"));
+//		temp.add(new TextMessage("two"));
+//		this.reply(replyToken, temp);
         
+        //try mixed multi message
+        List<Message> temp = new LinkedList<Message>();
+        temp.add(new TextMessage("one"));
+        String imageUrl = createUri("/static/buttons/1040.jpg");
+        CarouselTemplate carouselTemplate = new CarouselTemplate(
+                Arrays.asList(
+                        new CarouselColumn(imageUrl, "hoge", "fuga", Arrays.asList(
+                                new URIAction("Go to line.me",
+                                              "https://line.me"),
+                                new PostbackAction("Say hello1",
+                                                   "hello ã�“ã‚“ã�«ã�¡ã�¯")
+                        )),
+                        new CarouselColumn(imageUrl, "hoge", "fuga", Arrays.asList(
+                                new PostbackAction("è¨€ hello2",
+                                                   "hello ã�“ã‚“ã�«ã�¡ã�¯",
+                                                   "hello ã�“ã‚“ã�«ã�¡ã�¯"),
+                                new MessageAction("Say message",
+                                                  "Rice=ç±³")
+                        ))
+                ));
+        TemplateMessage templateMessage = new TemplateMessage("Carousel alt text", carouselTemplate);
+        temp.add(templateMessage);
+        this.reply(replyToken, temp);
+
         
         /*
         switch (text) {
