@@ -86,6 +86,7 @@ public class ProjectInterface {
 	public String replyText;		//for replyType: text
 	public String replyImageAddress;
 	public CarouselTemplate replyCarousel;
+	public List<Message> replyList;
     public String userID;           //need user's Line ID to support desired functions
     
 	public ProjectMasterController controller = new ProjectMasterController();

@@ -245,6 +245,9 @@ public class KitchenSinkController {
     			this.replyText(replyToken, funInterface.replyText);
     			break;
     		}
+    		case "mixed": {
+    			this.reply(replyToken, funInterface.replyList);
+    		}
     		default:
     			break;
         }
