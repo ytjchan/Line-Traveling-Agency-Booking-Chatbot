@@ -78,10 +78,33 @@ import java.time.format.DateTimeFormatter;
 
 public class ProjectBookController {
 	private SQLDatabaseEngine db = new SQLDatabaseEngine();
-	
+	public String replyText = "";
 	
 	public ProjectBookController() {
 		
 	}
 	//TODO: define methods to handle bookings
+	public void process(String text, String state, String userID) {
+		//1. Check if user is in booker table
+		//		select * from booker where lineid = ?
+		//	A: it is, do nothing
+		//	B: it is not, ask for name, hkid, age, phone number
+		//
+		//2. Ask for no. of adults, no. of children, no. of adults, special requests]
+		//3. throw a confirmation message
+		
+//		if (state.equals(anObject)) {
+//			
+//		} else if (state.equals(anObject)) {
+//			
+//		} else if (state.equals(anObject)) {
+//			
+//		} else if (state.equals(anObject)) {
+//			
+//		} else if (state.equals(anObject)) {
+//			
+//		} else if (state.equals(anObject)) {
+//			
+//		}
+	}
 }

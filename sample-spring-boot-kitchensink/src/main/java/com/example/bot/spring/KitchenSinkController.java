@@ -83,6 +83,7 @@ import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.URI;
+import java.util.LinkedList;
 
 @Slf4j
 @LineMessageHandler
@@ -214,39 +215,60 @@ public class KitchenSinkController {
 
         log.info("Got text message from {}: {}", replyToken, text);
 		
-        funInterface.setUserID(event.getSource().getUserId()); // pass userID to project interface
-        funInterface.process(text);
-        //now the replyType of funInterface will change depending on the text & userID
+//        funInterface.setUserID(event.getSource().getUserId()); // pass userID to project interface
+//        funInterface.process(text);
+//        //now the replyType of funInterface will change depending on the text & userID
+//        
+//        //TODO manage the output reply based on the replyType
+//        
+//        switch (funInterface.replyType) {
+//    		case "text":{
+//    			//test case
+//    			this.replyText(replyToken, funInterface.replyText);
+//    			break;
+//    		}
+//    		case "image":{
+//    			//base on funInterface.replyImageAddress
+//    			break;
+//    		}
+//    		case "carousel":{
+//    			//base on funInterface.replyCarousel
+//    			TemplateMessage templateMessage = new TemplateMessage("Welcome to 3111 Travel", funInterface.replyCarousel);
+//                this.reply(replyToken, templateMessage);
+//    			break;
+//    		}
+//    		case "confirm":{
+//    			//the message is always the same, i.e. yes & no refer to provided codes
+//    			break;
+//    		}
+//    		case "unknown":{
+//    			//the message is always the same, e.g. "sorry i did not understand that"
+//    			this.replyText(replyToken, funInterface.replyText);
+//    			break;
+//    		}
+//    		default:
+//    			break;
+//        }
         
-        //TODO manage the output reply based on the replyType
-        
-        switch (funInterface.replyType) {
-    		case "text":{
-    			//test case
-    			this.replyText(replyToken, funInterface.replyText);
-    			break;
-    		}
-    		case "image":{
-    			//base on funInterface.replyImageAddress
-    			break;
-    		}
-    		case "carousel":{
-    			//base on funInterface.replyCarousel
-    			TemplateMessage templateMessage = new TemplateMessage("Welcome to 3111 Travel", funInterface.replyCarousel);
-                this.reply(replyToken, templateMessage);
-    			break;
-    		}
-    		case "confirm":{
-    			//the message is always the same, i.e. yes & no refer to provided codes
-    			break;
-    		}
-    		case "unknown":{
-    			//the message is always the same, e.g. "sorry i did not understand that"
-    			this.replyText(replyToken, funInterface.replyText);
-    			break;
-    		}
-    		default:
-    			break;
+        switch (text) {
+        	case "profile":  {
+                String userId = event.getSource().getUserId();
+                if (userId != null) {
+                    lineMessagingClient
+                            .getProfile(userId)
+                            .whenComplete(new ProfileGetter (this, replyToken));
+                } else {
+                    this.replyText(replyToken, "Bot can't use profile API without user ID");
+                }
+                break;
+            }
+        	default: {
+        		//try multi message
+        		List<Message> temp = new LinkedList<Message> ();
+        		temp.add(new TextMessage("one"));
+        		temp.add(new TextMessage("two"));
+        		this.reply(replyToken, temp);
+        	}
         }
         
         

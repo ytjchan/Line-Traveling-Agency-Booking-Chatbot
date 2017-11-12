@@ -112,7 +112,9 @@ public class ProjectInterface {
 			replyCarousel = controller.search.replyCarousel;
 		} else if (checkBookState(text)) {
 			//TODO: call booking controller
-			
+			controller.book.process(text, state, userID);
+			replyType = "text";
+			replyText = controller.book.replyText;
 		} else if (checkEnqState()) {
 			//TODO: call enquiry controller
 		} else if (checkFAQ()) {
@@ -172,7 +174,7 @@ public class ProjectInterface {
 		//TODO: check if state is book
 		//should be accessible from SEARCH (result) state ONLY
 		//is really
-		if (state.equals("search") && text.toLowerCase().contains("book"))	{
+		if (state.contains("search") && text.toLowerCase().contains("book"))	{
 			return true;
 		} else if (state.contains("book") && !text.toLowerCase().contains("back")) {
 			return true;
