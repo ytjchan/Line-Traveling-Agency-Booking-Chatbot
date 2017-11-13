@@ -100,8 +100,9 @@ public class ProjectBookController {
 		
 		
 		if (state.equals("book.init")) {
+			ArrayList<ArrayList<String>> temp;
 			try {
-				ArrayList<ArrayList<String>> temp = db.searchBookerForLineID(userID);
+				temp = db.searchBookerForLineID(userID);
 			} catch (URISyntaxException e) {
 				replyList.add(new TextMessage("URI Syntax problem with URI: " + System.getenv("DATABASE_URL")));
 				return "book.error";
