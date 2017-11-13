@@ -153,7 +153,7 @@ public class ProjectInterface {
 	public boolean checkSearchState(String text) {
 		//should be accessible from INIT state (search) or BOOK state (back)
 		//internal state moved to this state string to avoid race condition with multi-user
-		if ((state.equals("init") && text.toLowerCase().contains("search")) || state.contains("book") && text.toLowerCase().contains(".back")) {
+		if ((state.equals("init") && text.toLowerCase().contains("search")) || state.contains("book") && text.toLowerCase().contains("back")) {
 			controller.search.keywords.clear();
 			state = "search.display";
 			return true;
