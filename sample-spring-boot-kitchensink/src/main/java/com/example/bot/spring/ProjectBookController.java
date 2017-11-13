@@ -103,14 +103,10 @@ public class ProjectBookController {
 			try {
 				ArrayList<ArrayList<String>> temp = db.searchBookerForLineID(userID);
 			} catch (URISyntaxException e) {
-				replyType = "text";
-				replyText = "URI Syntax problem with URI: " + System.getenv("DATABASE_URL");
-				state = "error";
+				replyList.add(new TextMessage("URI Syntax problem with URI: " + System.getenv("DATABASE_URL")));
 				return "book.error";
 			} catch (SQLException e) {
-				replyType = "text";
-				replyText = "Searching tours by description failed!";
-				state = "error";
+				replyList.add(new TextMessage("Searching tours by description failed!"));
 				return "book.error";
 			}
 			if (temp.isEmpty()) {
