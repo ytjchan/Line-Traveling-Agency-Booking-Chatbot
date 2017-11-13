@@ -163,7 +163,7 @@ public class ProjectInterface {
 		} else if (state.equals("search.keywordMessage")) {
 			state = "search.keywordInput";
 			return true;
-		} else if (state.contains("search")) {
+		} else if (state.contains("search") && !text.toLowerCase().contains("book")) {
 			state = "search.display";
 			return true;
 		} else {

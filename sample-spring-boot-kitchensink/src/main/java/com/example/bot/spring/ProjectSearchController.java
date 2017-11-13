@@ -89,10 +89,6 @@ public class ProjectSearchController {
 	public String replyType;
 	public String replyText;
 	public CarouselTemplate replyCarousel;
-
-//	private static String[] imgs;
-//	private static String[] uris;
-//	private static String[] baseUris = new String[2];
 	
 	public ArrayList<ArrayList<String>> rs;
 	public int rsIndex = 0;
