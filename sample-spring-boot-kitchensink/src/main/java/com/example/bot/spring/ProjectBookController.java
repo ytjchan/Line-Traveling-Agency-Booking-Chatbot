@@ -78,13 +78,13 @@ import java.time.format.DateTimeFormatter;
 
 public class ProjectBookController {
 	private SQLDatabaseEngine db = new SQLDatabaseEngine();
-	public String replyText = "";
+	public List<Message> replyList = new LinkedList<Message>();
 	
 	public ProjectBookController() {
 		
 	}
 	//TODO: define methods to handle bookings
-	public void process(String text, String state, String userID) {
+	public String process(String text, String state, String userID) {
 		//1. Check if user is in booker table
 		//		select * from booker where lineid = ?
 		//	A: it is, do nothing
@@ -92,19 +92,43 @@ public class ProjectBookController {
 		//
 		//2. Ask for no. of adults, no. of children (4 - 11), no. of toddlers (3 or less), special requests]
 		//3. throw a confirmation message
+		replyList.clear();
 		
-//		if (state.equals(anObject)) {
-//			
-//		} else if (state.equals(anObject)) {
-//			
-//		} else if (state.equals(anObject)) {
-//			
-//		} else if (state.equals(anObject)) {
-//			
-//		} else if (state.equals(anObject)) {
-//			
-//		} else if (state.equals(anObject)) {
-//			
-//		}
+		//assuming book command is something like:  *book [id]
+		String tourID = text.substring(text.toLowerCase().indexOf("book")+5);
+		
+		if (state.equals("book.init")) {
+			ArrayList<ArrayList<String>> temp = db.searchBookerForLineID(userID);
+			if (temp.isEmpty()) {
+				//prompt for personal details
+				replyList.add(new TextMessage("Since this is your first time booking a tour with us, we require some personal information."));
+				replyList.add(new TextMessage("If you would like to go back to tour results, enter .back (including the full stop)"));
+				replyList.add(new TextMessage("Please enter your name: "));
+				return "book.name";
+			} else {
+				//prompt for booking details
+				replyList.add(new TextMessage("Since this is your first time booking a tour with us, we require some personal information."));
+				replyList.add(new TextMessage("If you would like to go back to tour results, enter .back (including the full stop)"));
+				replyList.add(new TextMessage("Please enter your name: "));
+			}
+		} else if (state.equals("book.name")) {
+			
+		} else if (state.equals("book.hkid")) {
+			
+		} else if (state.equals("book.age")) {
+			
+		} else if (state.equals("book.phoneno")) {
+			
+		} else if (state.equals("book.adults")) {
+			
+		} else if (state.equals("book.children")) {
+			
+		} else if (state.equals("book.toddlers")) {
+			
+		} else if (state.equals("book.requests")) {
+			
+		} else if (state.equals("book.confirm")) {
+			
+		}
 	}
 }

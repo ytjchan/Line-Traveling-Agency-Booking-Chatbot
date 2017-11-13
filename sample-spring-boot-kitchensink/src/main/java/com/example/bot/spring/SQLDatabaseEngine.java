@@ -117,13 +117,6 @@ public class SQLDatabaseEngine extends DatabaseEngine {
          */
         protected ArrayList<ArrayList<String>> searchTourByDesc(LinkedList<String> keywords, String startDate, String endDate) throws URISyntaxException, SQLException {
             Connection c = getConnection();
-            //String temp = "select * from tour where tourdate between to_date(?,\\'yyyy-mm-dd\\') and to_date(?,\\'yyyy-mm-dd\\')";
-//            String template = "select * from tour where tourid in "
-//    			+ "(select subT.tourid from "
-//        			+ "(select tof.tourid, tof.tourdate as startdate, tof.tourdate+t.tourlength as enddate "
-//        			+ "from tour as t "
-//        				+ "join touroffering as tof on t.tourid = tof.tourid) as subT "
-//				+ "where ? <= startdate and ? >= enddate)";
             String template = 
     		"select tourid, tourname, tourdesc, tourlength from ("
     			+ "select subT.tourid, subT.offerid, subT.startdate, subt.tourname, subt.tourdesc, subt.tourlength from ("
@@ -221,8 +214,6 @@ public class SQLDatabaseEngine extends DatabaseEngine {
 		
 	    Connection c = getConnection();
 	    PreparedStatement stmt = c.prepareStatement(
-	//"select * from tour where tourid in (select distinct subT.tourid from (select tof.tourid, tof.tourdate from tour as t join touroffering as tof on t.tourid = tof.tourid) as subT where DATE ? <= subT.tourdate)"
-	//"select * from tour where tourid in (select distinct subT.tourid from (select tof.tourid, tof.tourdate from tour as t join touroffering as tof on t.tourid = tof.tourid) as subT where ? <= subT.tourdate)"
 		"select tourid, tourname, tourdesc, tourlength from ("
 			+ "select subT.tourid, subT.offerid, subT.startdate, subt.tourname, subt.tourdesc, subt.tourlength from ("
 				+ "select tof.tourid, tof.offerid, tof.tourdate as startdate, tof.tourdate+t.tourlength as enddate, t.tourname, t.tourdesc, t.tourlength "
@@ -247,8 +238,11 @@ public class SQLDatabaseEngine extends DatabaseEngine {
 
     }
     
-    /*
-     * 
+    /**
+     * Search input table for matching tour ID
+     * @param in - tourID
+     * @param table - name of table to be searched
+     * @return 2-dimensional ArrayList of search results
      */
     protected ArrayList<ArrayList<String>> searchTourID(String in, String table) throws URISyntaxException, SQLException {
     	Connection c = getConnection();
@@ -267,7 +261,32 @@ public class SQLDatabaseEngine extends DatabaseEngine {
     	}
     	return arr;
     }
-
+    
+    
+    /**
+     * Search booker table for matching line ID
+     * @param in - lineID
+     * @return 2-dimensional arraylist of search results
+     */
+    protected ArrayList<ArrayList<String>> searchBookerForLineID(String in) throws URISyntaxException, SQLException {
+    	Connection c = getConnection();
+    	String template = "select * from booker where lower(lineid) = lower(?)";
+    	PreparedStatement stmt = c.prepareStatement(template);
+    	stmt.setString(1, in);
+    	ResultSet tourRs = stmt.executeQuery();
+    	ArrayList<ArrayList<String>> arr= new ArrayList<>();
+    	while (tourRs.next()) {
+    		ArrayList<String> temp = new ArrayList<String>();
+    		temp.add(tourRs.getString(1));	//lineid
+            temp.add(tourRs.getString(2));	//name
+            temp.add(tourRs.getString(3));	//hkid
+            temp.add(Integer.toString(tourRs.getInt(4)));	//phoneno
+            temp.add(Integer.toString(tourRs.getInt(5)));	//age
+            arr.add(temp);
+    	}
+    	return arr;
+    }
+    
 }
 
 

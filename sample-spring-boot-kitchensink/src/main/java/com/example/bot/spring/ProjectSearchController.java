@@ -138,7 +138,7 @@ public class ProjectSearchController {
 				ArrayList<ArrayList<String>> temp = db.searchTourID(text.toLowerCase().replace("show dates of ", ""), "tour");
 				replyText = temp.get(0).get(1);
 				temp = db.searchTourID(text.toLowerCase().replace("show dates of ", ""), "touroffering");
-				replyText += " (" + temp.get(0).get(1) + ")";
+				replyText += " (" + temp.get(0).get(0) + ")";
 				if (temp.size() > 0) {
 					for (ArrayList<String> str : temp) {
 						replyText += "\n-" + str.get(2);

@@ -215,40 +215,43 @@ public class KitchenSinkController {
 
         log.info("Got text message from {}: {}", replyToken, text);
 		
-//        funInterface.setUserID(event.getSource().getUserId()); // pass userID to project interface
-//        funInterface.process(text);
-//        //now the replyType of funInterface will change depending on the text & userID
-//        
-//        //TODO manage the output reply based on the replyType
-//        
-//        switch (funInterface.replyType) {
-//    		case "text":{
-//    			//test case
-//    			this.replyText(replyToken, funInterface.replyText);
-//    			break;
-//    		}
-//    		case "image":{
-//    			//base on funInterface.replyImageAddress
-//    			break;
-//    		}
-//    		case "carousel":{
-//    			//base on funInterface.replyCarousel
-//    			TemplateMessage templateMessage = new TemplateMessage("Welcome to 3111 Travel", funInterface.replyCarousel);
-//                this.reply(replyToken, templateMessage);
-//    			break;
-//    		}
-//    		case "confirm":{
-//    			//the message is always the same, i.e. yes & no refer to provided codes
-//    			break;
-//    		}
-//    		case "unknown":{
-//    			//the message is always the same, e.g. "sorry i did not understand that"
-//    			this.replyText(replyToken, funInterface.replyText);
-//    			break;
-//    		}
-//    		default:
-//    			break;
-//        }
+        funInterface.setUserID(event.getSource().getUserId()); // pass userID to project interface
+        funInterface.process(text);
+        //now the replyType of funInterface will change depending on the text & userID
+        
+        //TODO manage the output reply based on the replyType
+        
+        switch (funInterface.replyType) {
+    		case "text":{
+    			//test case
+    			this.replyText(replyToken, funInterface.replyText);
+    			break;
+    		}
+    		case "image":{
+    			//base on funInterface.replyImageAddress
+    			break;
+    		}
+    		case "carousel":{
+    			//base on funInterface.replyCarousel
+    			TemplateMessage templateMessage = new TemplateMessage("Welcome to 3111 Travel", funInterface.replyCarousel);
+                this.reply(replyToken, templateMessage);
+    			break;
+    		}
+    		case "confirm":{
+    			//the message is always the same, i.e. yes & no refer to provided codes
+    			break;
+    		}
+    		case "unknown":{
+    			//the message is always the same, e.g. "sorry i did not understand that"
+    			this.replyText(replyToken, funInterface.replyText);
+    			break;
+    		}
+    		case "mixed": {
+    			this.reply(replyToken, funInterface.replyList);
+    		}
+    		default:
+    			break;
+        }
         
 
 //		//try multi message
@@ -257,29 +260,29 @@ public class KitchenSinkController {
 //		temp.add(new TextMessage("two"));
 //		this.reply(replyToken, temp);
         
-        //try mixed multi message
-        List<Message> temp = new LinkedList<Message>();
-        temp.add(new TextMessage("one"));
-        String imageUrl = createUri("/static/buttons/1040.jpg");
-        CarouselTemplate carouselTemplate = new CarouselTemplate(
-                Arrays.asList(
-                        new CarouselColumn(imageUrl, "hoge", "fuga", Arrays.asList(
-                                new URIAction("Go to line.me",
-                                              "https://line.me"),
-                                new PostbackAction("Say hello1",
-                                                   "hello ã�“ã‚“ã�«ã�¡ã�¯")
-                        )),
-                        new CarouselColumn(imageUrl, "hoge", "fuga", Arrays.asList(
-                                new PostbackAction("è¨€ hello2",
-                                                   "hello ã�“ã‚“ã�«ã�¡ã�¯",
-                                                   "hello ã�“ã‚“ã�«ã�¡ã�¯"),
-                                new MessageAction("Say message",
-                                                  "Rice=ç±³")
-                        ))
-                ));
-        TemplateMessage templateMessage = new TemplateMessage("Carousel alt text", carouselTemplate);
-        temp.add(templateMessage);
-        this.reply(replyToken, temp);
+//        //try mixed multi message
+//        List<Message> temp = new LinkedList<Message>();
+//        temp.add(new TextMessage("one"));
+//        String imageUrl = createUri("/static/buttons/1040.jpg");
+//        CarouselTemplate carouselTemplate = new CarouselTemplate(
+//                Arrays.asList(
+//                        new CarouselColumn(imageUrl, "hoge", "fuga", Arrays.asList(
+//                                new URIAction("Go to line.me",
+//                                              "https://line.me"),
+//                                new PostbackAction("Say hello1",
+//                                                   "hello ã�“ã‚“ã�«ã�¡ã�¯")
+//                        )),
+//                        new CarouselColumn(imageUrl, "hoge", "fuga", Arrays.asList(
+//                                new PostbackAction("è¨€ hello2",
+//                                                   "hello ã�“ã‚“ã�«ã�¡ã�¯",
+//                                                   "hello ã�“ã‚“ã�«ã�¡ã�¯"),
+//                                new MessageAction("Say message",
+//                                                  "Rice=ç±³")
+//                        ))
+//                ));
+//        TemplateMessage templateMessage = new TemplateMessage("Carousel alt text", carouselTemplate);
+//        temp.add(templateMessage);
+//        this.reply(replyToken, temp);
 
         
         /*

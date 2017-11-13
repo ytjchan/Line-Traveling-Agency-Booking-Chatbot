@@ -82,10 +82,11 @@ public class ProjectInterface {
 	public Queue<String> buffer = new LinkedList<String>();	//for unknown case
 	public Instant lastMessageTime = Instant.MIN;	//for check initial state
 	
-	public String replyType;		//i.e. text, image, carousel, confirm, unknown
+	public String replyType;		//i.e. text, image, carousel, confirm, unknown, mixed
 	public String replyText;		//for replyType: text
 	public String replyImageAddress;
 	public CarouselTemplate replyCarousel;
+	public List<Message> replyList;
     public String userID;           //need user's Line ID to support desired functions
     
 	public ProjectMasterController controller = new ProjectMasterController();
@@ -113,8 +114,8 @@ public class ProjectInterface {
 		} else if (checkBookState(text)) {
 			//TODO: call booking controller
 			controller.book.process(text, state, userID);
-			replyType = "text";
-			replyText = controller.book.replyText;
+			replyType = "mixed";
+			replyList = controller.book.replyList;
 		} else if (checkEnqState()) {
 			//TODO: call enquiry controller
 		} else if (checkFAQ()) {
@@ -152,7 +153,7 @@ public class ProjectInterface {
 	public boolean checkSearchState(String text) {
 		//should be accessible from INIT state (search) or BOOK state (back)
 		//internal state moved to this state string to avoid race condition with multi-user
-		if ((state.equals("init") && text.toLowerCase().contains("search")) || state.contains("book") && text.toLowerCase().contains("back")) {
+		if ((state.equals("init") && text.toLowerCase().contains("search")) || state.contains("book") && text.toLowerCase().contains(".back")) {
 			controller.search.keywords.clear();
 			state = "search.display";
 			return true;
@@ -174,9 +175,10 @@ public class ProjectInterface {
 		//TODO: check if state is book
 		//should be accessible from SEARCH (result) state ONLY
 		//is really
-		if (state.contains("search") && text.toLowerCase().contains("book"))	{
+		if (state.contains("search") && text.toLowerCase().contains("book")) {
+			state = "book.init";
 			return true;
-		} else if (state.contains("book") && !text.toLowerCase().contains("back")) {
+		} else if (state.contains("book") && !text.toLowerCase().contains(".back")) {
 			return true;
 		} else {
 			return false;
