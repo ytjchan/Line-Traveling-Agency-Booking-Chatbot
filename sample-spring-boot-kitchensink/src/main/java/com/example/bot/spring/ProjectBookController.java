@@ -97,8 +97,22 @@ public class ProjectBookController {
 		//assuming book command is something like:  *book [id]
 		String tourID = text.substring(text.toLowerCase().indexOf("book")+5);
 		
+		
+		
 		if (state.equals("book.init")) {
-			ArrayList<ArrayList<String>> temp = db.searchBookerForLineID(userID);
+			try {
+				ArrayList<ArrayList<String>> temp = db.searchBookerForLineID(userID);
+			} catch (URISyntaxException e) {
+				replyType = "text";
+				replyText = "URI Syntax problem with URI: " + System.getenv("DATABASE_URL");
+				state = "error";
+				return "book.error";
+			} catch (SQLException e) {
+				replyType = "text";
+				replyText = "Searching tours by description failed!";
+				state = "error";
+				return "book.error";
+			}
 			if (temp.isEmpty()) {
 				//prompt for personal details
 				replyList.add(new TextMessage("Since this is your first time booking a tour with us, we require some personal information."));
@@ -130,5 +144,6 @@ public class ProjectBookController {
 		} else if (state.equals("book.confirm")) {
 			
 		}
+		return "book.init";
 	}
 }
