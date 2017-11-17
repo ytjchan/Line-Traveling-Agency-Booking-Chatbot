@@ -249,7 +249,6 @@ public class ProjectSearchController {
 					searchState.rs.get(i).get(1).length() > 40 ? 
 						searchState.rs.get(i).get(1).substring(0, 35) + "..." : 
 						searchState.rs.get(i).get(1),
-					//temp[1],
 					searchState.rs.get(i).get(2).replace(" * ",", ").length() > 55 ?
 						searchState.rs.get(i).get(2).replace(" * ",", ").substring(0,54) + "...": 
 						searchState.rs.get(i).get(2).replace(" * ",", "),
