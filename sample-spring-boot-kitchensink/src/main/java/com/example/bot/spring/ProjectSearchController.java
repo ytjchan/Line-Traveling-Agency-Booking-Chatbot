@@ -192,8 +192,8 @@ public class ProjectSearchController {
 				searchState.rs = db.searchAllTour();
 				searchState.rsIndex = 0;
 				createSearchCarousel(searchState);
-//				replyType = "text";
-//				replyText = rs.get(0).get(1);
+				replyType = "text";
+				replyText = "record count: " + searchState.rs.size();
 				return;
 			}
 			
