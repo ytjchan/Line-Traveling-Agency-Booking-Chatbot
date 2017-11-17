@@ -131,10 +131,17 @@ public class ProjectSearchController {
 				String start = dtf.format(localDate);
 				
 				if (temp.size() > 0) {
+					boolean hasrecords = false;
 					for (ArrayList<String> str : temp) {
-						if (str.get(2).compareTo(start) > 0)
+						if (str.get(2).compareTo(start) > 0) {
 							replyText += "\n-" + str.get(2);
+							hasrecords = true;
+						}
 					}
+					if (!hasrecords) {
+						replyText += " has no available tours!";
+					}
+					
 				} else {
 					replyText += " has no available tours!";
 				}
