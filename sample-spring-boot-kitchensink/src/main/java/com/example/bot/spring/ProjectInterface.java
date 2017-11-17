@@ -100,8 +100,11 @@ public class ProjectInterface {
 		buffer.add(text);
 		if (buffer.size() > 5)
 			buffer.poll();
-		
-		if (checkInitState(text)) {
+		if (state=="init" && text.toLowerCase().contains("recommend")) {
+			replyType = "text";
+			replyText = controller.init.recommendTrip(userID);
+			
+		} else if (checkInitState(text)) {
 			state = "init";
 			replyCarousel = controller.init.createMessage();
 			replyText = "Carousel message for init state";
@@ -114,12 +117,11 @@ public class ProjectInterface {
 			replyCarousel = controller.search.replyCarousel;
 		} else if (checkBookState()) {
 			//TODO: call booking controller
-		} else if (checkEnqState()) {
-			//TODO: call enquiry controller
+		} else if (checkEnqState(text)) {
+			replyType = "text";
+			replyText = controller.enq.bookingEnq(userID);
 		} else if (checkFAQ()) {
             replyText="FAQ result is:\n"+controller.faq.search(text);
-            
-            
             replyType="text";
 
 		} else {
@@ -168,12 +170,13 @@ public class ProjectInterface {
 		return false;
 	}
 	
-	public boolean checkEnqState() {
+	public boolean checkEnqState(String text) {
 		//TODO: check if state is enq
-		//should be accessible from INIT state ONLY
+		if (state == "init" && text.toLowerCase().contains("enquiry"))
+			return true;
+		else
+			return false;
 		
-		//for test case, remove when you're actually done
-		return false;
 	}
 	
     public boolean checkFAQ() {

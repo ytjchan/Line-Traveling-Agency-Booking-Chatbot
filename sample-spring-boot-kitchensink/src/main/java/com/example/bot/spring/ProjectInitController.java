@@ -5,8 +5,10 @@ import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.sql.SQLException;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -69,6 +71,7 @@ import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 
 
 public class ProjectInitController {
@@ -90,9 +93,36 @@ public class ProjectInitController {
 	    				new PostbackAction("FAQ Keywords", "Keywords available are: "+db.searchAllKeywords()),
 	    				new URIAction("Our website", "https://github.com/khwang0/2017F-COMP3111")
     				)
-        		)
+        		),
+                new CarouselColumn("https://images-na.ssl-images-amazon.com/images/I/61G%2BdmtkeeL._SX355_.jpg",
+                		"About booking","Press the button, or type enquiry to view your booking record",
+                		Arrays.asList(
+        	    				new MessageAction("Booking enquiry", "enquiry")
+        	    			)
+                	)
     		)
 		);
         return carouselTemplate;
+	}
+	
+	public String recommendTrip (String userId) {
+		SQLDatabaseEngine db = new SQLDatabaseEngine();
+		ArrayList<String> rs = new ArrayList<String>();
+		String result="";
+		
+		try {
+			rs = db.getRecommendation(userId);
+		} catch (URISyntaxException e){
+		} catch (SQLException e) {}
+		
+		if (rs.size()==0)
+			return "Sorry, we don't have recommendation for you.";
+		else {
+			result+="tourId: " + rs.get(0) +"\n";
+			result+="tourDate: " + rs.get(2) + "\n";
+			result+="hotel: " + rs.get(4) + "\n";
+			result+="price: " + rs.get(5); 
+		}
+		return result;
 	}
 }

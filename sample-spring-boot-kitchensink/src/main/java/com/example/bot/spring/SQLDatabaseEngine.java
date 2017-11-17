@@ -243,6 +243,9 @@ public class SQLDatabaseEngine extends DatabaseEngine {
                 temp.add(tourRs.getString(4));	//length (days)
                 arr.add(temp);
         }
+        c.close();
+        stmt.close();
+        tourRs.close();
         return arr;
 
     }
@@ -265,9 +268,59 @@ public class SQLDatabaseEngine extends DatabaseEngine {
             temp.add(tourRs.getString(4));	//length (days)	|	tourguidelineid
             arr.add(temp);
     	}
+    	c.close();
+    	stmt.close();
+    	tourRs.close();
     	return arr;
     }
+    
+    protected ArrayList<ArrayList<String>> searchBookingById(String userId) throws URISyntaxException, SQLException {
+    		ArrayList<ArrayList<String>> rs = new ArrayList<>();
+    		try (
+                Connection c = getConnection();
+                PreparedStatement stmt = c.prepareStatement("select * from Booking where LineId = ?");
+                )
+    		{
+    			stmt.setString(1, userId);
+    			ResultSet bookRs = stmt.executeQuery();
+    			while (bookRs.next()) {
+    				ArrayList<String> temp = new ArrayList<String>();
+    				for (int i=2;i<10;i++)
+    					temp.add(bookRs.getString(i));
+    				rs.add(temp);
+    			}	
+    		}
+    		if (rs.size()==0)
+    			return null;
+    		else
+    			return rs;
+    }
 
+    protected ArrayList<String> getRecommendation(String userId) throws URISyntaxException, SQLException {
+    	ArrayList<String> result = new ArrayList<String>();
+    		try (
+                Connection c = getConnection();
+                PreparedStatement stmt = c.prepareStatement(
+                		"select * from TourOffering where tourId in ("
+                			+"select substr(offerid,1,5) from booking where lineId = ? )"
+                			+"and tourdate > ?"
+                			+"order by price desc"
+                	);
+    		)
+    		{
+    			LocalDate localDate = LocalDate.now();
+    			stmt.setString(1, userId);
+    			stmt.setDate(2, java.sql.Date.valueOf(localDate));
+    			ResultSet rs = stmt.executeQuery();
+    			
+    			if (rs.next())
+    				for (int i=1; i<7; i++)
+    					result.add(rs.getString(i));
+    			else
+    				result = null;
+    		}
+    		return result;
+    }
 }
 
 
