@@ -79,38 +79,28 @@ import java.time.format.DateTimeFormatter;
 public class ProjectSearchController {
 	private SQLDatabaseEngine db = new SQLDatabaseEngine();
 	
-	public LinkedList<String> keywords = new LinkedList<String>();
-	public String startDate;	
-	public String endDate 	= "9999-12-31";		//must be YYYY-MM-DD
-	
-//	public String state = "display";
-	public int currentOffset = 0;
-	
 	public String replyType;
 	public String replyText;
 	public CarouselTemplate replyCarousel;
 	
-	public ArrayList<ArrayList<String>> rs;
-	public int rsIndex = 0;
+	public ProjectSearchController() {}
 	
-	public ProjectSearchController() {
-//		baseUris[0] = KitchenSinkController.createUri(ProjectInterface.IMAGE_NAMES[3]);
-//		baseUris[1] = KitchenSinkController.createUri(ProjectInterface.IMAGE_NAMES[4]);
-		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		LocalDate localDate = LocalDate.now();
-		startDate = dtf.format(localDate);
-	}
-	
-	public void process(String text, String state) {
+	public void process(String text, String state, SearchState searchState) {
+//		String startDate = searchState.startDate;
+//		String endDate = searchState.endDate;
+//		LinkedList<String> keywords = searchState.keywords;
+//		ArrayList<ArrayList<String>> rs = searchState.rs;
+//		String substate = searchState.substate;
+		
 		try {
 			//enter keyword & update
-			if (state.equals("search.keywordInput")) {
-				keywords.add(text);
-				rs = db.searchTourByDesc(keywords, startDate, endDate);
-				if (rs.size() > 0) {
+			if (searchState.substate.equals("keywordInput")) {
+				searchState.keywords.add(text);
+				searchState.rs = db.searchTourByDesc(searchState.keywords, searchState.startDate, searchState.endDate);
+				if (searchState.rs.size() > 0) {
 					replyType = "carousel";
-					rsIndex = 0;
-					createSearchCarousel();
+					searchState.rsIndex = 0;
+					createSearchCarousel(searchState);
 				} else {
 					replyType = "text";
 					replyText = "Sorry, it appears we do not have any available tours that match your criteria. Try changing your date range or reset your filters using the Reset filters button or by typing:\n Reset filters";
@@ -155,13 +145,13 @@ public class ProjectSearchController {
 			
 			//enter date & update
 			if (text.toLowerCase().matches("(.*)(\\d{4})-(\\d{1,2})-(\\d{1,2}) to (\\d{4})-(\\d{1,2})-(\\d{1,2})(.*)")) {
-				startDate = text.substring(0,10);
-				endDate = text.substring(14,24);
-				rs = db.searchTourByDesc(keywords, startDate, endDate);
-				if (rs.size() > 0) {
+				searchState.startDate = text.substring(0,10);
+				searchState.endDate = text.substring(14,24);
+				searchState.rs = db.searchTourByDesc(searchState.keywords, searchState.startDate, searchState.endDate);
+				if (searchState.rs.size() > 0) {
 					replyType = "carousel";
-					rsIndex = 0;
-					createSearchCarousel();
+					searchState.rsIndex = 0;
+					createSearchCarousel(searchState);
 				} else {
 					replyType = "text";
 					replyText = "Sorry, it appears we do not have any available tours that match your criteria. Try changing your date range or reset your filters using the Reset filters button or by typing:\n Reset filters";
@@ -171,42 +161,48 @@ public class ProjectSearchController {
 			
 			//show next 5
 			if (text.toLowerCase().contains("next")) {
-				if (rsIndex == rs.size()) {
+				if (searchState.rsIndex == searchState.rs.size()) {
 					replyType = "text";
 					replyText = "There are no more records!";
 				} else {
 					replyType = "carousel";
-					createSearchCarousel();
+					createSearchCarousel(searchState);
 				}
 				return;
 			}
 			
 			//show prev 5
 			if (text.toLowerCase().contains("previous") || text.toLowerCase().contains("back") || text.toLowerCase().contains("last")) {
-				if (rsIndex <= 5) {
+				if (searchState.rsIndex <= 5) {
 					replyType = "text";
 					replyText = "You are at the start and there are no previous results.";
 				} else {
 					replyType = "carousel";
-					rsIndex = ((rsIndex-1)/5-1)*5;	//get current 5 (or less), move to previous 5, find index
-					createSearchCarousel();
+					searchState.rsIndex = ((searchState.rsIndex-1)/5-1)*5;	//get current 5 (or less), move to previous 5, find index
+					createSearchCarousel(searchState);
 				}
 				return;
 			}
 			
 			//new search
-			if ((keywords.isEmpty() && text.toLowerCase().contains("search")) || text.toLowerCase().contains("reset filters")) {
+			if ((searchState.keywords.isEmpty() && text.toLowerCase().contains("search")) || text.toLowerCase().contains("reset filters")) {
 				replyType = "carousel";
-				keywords.clear();
-				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-				LocalDate localDate = LocalDate.now();
-				startDate = dtf.format(localDate);
-				endDate = "9999-12-31";		//must be YYYY-MM-DD
-				rs = db.searchAllTour();
-				rsIndex = 0;
-				createSearchCarousel();
+				searchState.keywords.clear();
+				searchState.resetDates();
+				searchState.rs = db.searchAllTour();
+				searchState.rsIndex = 0;
+				createSearchCarousel(searchState);
+//				replyType = "text";
+//				replyText = rs.get(0).get(1);
 				return;
 			}
+			
+			if (searchState.substate.equals("display")) {
+				replyType = "carousel";
+				createSearchCarousel(searchState);
+				return;
+			}
+			
 			
 			//unknown
 			replyType = "text";
@@ -228,7 +224,7 @@ public class ProjectSearchController {
 	//1ST column is a menu
 	//2 onwards is up to 5 results from rs
 	//Last column is show more menu
-	public void createSearchCarousel() {
+	public void createSearchCarousel(SearchState searchState) { //int rsIndex, ArrayList<ArrayList<String>> rs, LinkedList<String> keywords) {
 		List<CarouselColumn> columns = new LinkedList<CarouselColumn>();
 		
 		//dummy
@@ -246,35 +242,35 @@ public class ProjectSearchController {
 		);
 		
 		//content
-		for (int i=rsIndex, max=rsIndex+5; i<max && i<rs.size(); i++) {
+		for (int i=searchState.rsIndex, max=searchState.rsIndex+5; i<max && i<searchState.rs.size(); i++) {
 			columns.add(
 				new CarouselColumn(
 					"https://www.scienceabc.com/wp-content/uploads/2017/02/Thailand-beach-sand.jpg",
-					rs.get(i).get(1).length() > 40 ? 
-						rs.get(i).get(1).substring(0, 35) + "..." : 
-						rs.get(i).get(1),
+					searchState.rs.get(i).get(1).length() > 40 ? 
+						searchState.rs.get(i).get(1).substring(0, 35) + "..." : 
+						searchState.rs.get(i).get(1),
 					//temp[1],
-					rs.get(i).get(2).replace(" * ",", ").length() > 55 ?
-						rs.get(i).get(2).replace(" * ",", ").substring(0,54) + "...": 
-						rs.get(i).get(2).replace(" * ",", "),
+					searchState.rs.get(i).get(2).replace(" * ",", ").length() > 55 ?
+						searchState.rs.get(i).get(2).replace(" * ",", ").substring(0,54) + "...": 
+						searchState.rs.get(i).get(2).replace(" * ",", "),
 					Arrays.asList(
-						new MessageAction("Details", "Show details of " + rs.get(i).get(0)),
-	                    new MessageAction("Show dates", "Show dates of " + rs.get(i).get(0)),
-	                    new MessageAction("Book", "Book " + rs.get(i).get(0))
+						new MessageAction("Details", "Show details of " + searchState.rs.get(i).get(0)),
+	                    new MessageAction("Show dates", "Show dates of " + searchState.rs.get(i).get(0)),
+	                    new MessageAction("Book", "Book " + searchState.rs.get(i).get(0))
                     )
 				)
 			);
-			rsIndex ++;
+			searchState.rsIndex ++;
 		}
 		
 		//1st column (info)
 		String info = "To search for tours within a period, enter the start and end dates in the following format:\nYYYY-MM-DD to YYYY-MM-DD\n\nCurrently showing:\n"
-				+ (((rsIndex-1)/5)*5+1) + "-"  + rsIndex + " of " + rs.size() + " results\n\nKeywords: ";
-		for (String str : keywords) {
+				+ (((searchState.rsIndex-1)/5)*5+1) + "-"  + searchState.rsIndex + " of " + searchState.rs.size() + " results\n\nKeywords: ";
+		for (String str : searchState.keywords) {
 			info += str + ", ";
 		}
 		info += "\n\n";
-		info += "Start Date: " + startDate + "\nEnd Date: " + endDate;
+		info += "Start Date: " + searchState.startDate + "\nEnd Date: " + searchState.endDate;
 		columns.set(0,
 			new CarouselColumn(
 				"https://images-na.ssl-images-amazon.com/images/I/61G%2BdmtkeeL._SX355_.jpg",
@@ -295,10 +291,10 @@ public class ProjectSearchController {
         		"Check out more",
         		"To see more results, press the buttons below.", 
                 Arrays.asList(
-                    rsIndex == rs.size() ?
+            		searchState.rsIndex == searchState.rs.size() ?
                 		new PostbackAction("(end of results)","There are no more results!"):
                 		new MessageAction("Show next 5", "Next 5"),
-                    rsIndex <= 5 ?
+            		searchState.rsIndex <= 5 ?
                 		new PostbackAction("(start of results)","There are no results before these!"):
                 		new MessageAction("Show previous 5", "Previous 5"),
                     new MessageAction("Back to welcome", "Cancel")

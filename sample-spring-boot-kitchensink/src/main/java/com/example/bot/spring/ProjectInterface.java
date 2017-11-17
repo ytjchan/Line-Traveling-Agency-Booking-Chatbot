@@ -73,108 +73,110 @@ import java.net.URI;
 //extra imports
 import java.util.LinkedList;
 
+@Slf4j
 public class ProjectInterface {
 	//TODO define image addresses
 	public static final String [] IMAGE_NAMES = {"/static/gather.jpg","/static/gd1.jpg","/static/beach3.jpg","TODO","TODO","TODO","TODO","TODO","TODO","TODO"};
-	
-	public String inputText = "";
-	public String state = "init";			//define the state i.e. init, search, book, enq
-	public Queue<String> buffer = new LinkedList<String>();	//for unknown case
-	public Instant lastMessageTime = Instant.MIN;	//for check initial state
-	
-	public String replyType;		//i.e. text, image, carousel, confirm, unknown, mixed
+		
+	public String replyType;		//i.e. text, image, carousel, confirm, unknown
 	public String replyText;		//for replyType: text
 	public String replyImageAddress;
 	public CarouselTemplate replyCarousel;
 	public List<Message> replyList;
-    public String userID;           //need user's Line ID to support desired functions
     
-	public ProjectMasterController controller = new ProjectMasterController();
+	private ProjectMasterController controller = new ProjectMasterController();
+    private final KitchenSinkController ksc;
+    protected final UserList userList; 
 	
-	public ProjectInterface() {
-		
+	public ProjectInterface(KitchenSinkController ksc, UserList userList) {
+		this.ksc = ksc;
+        this.userList = userList;
 	}
 	
-	//this will change the reply type & reply 
-	public void process(String text) {
-		buffer.add(text);
-		if (buffer.size() > 5)
-			buffer.poll();
+	/**
+	 * Checks what state the user is in and calls appropriate controllers.
+	 * Checking is done by calling state-check helper functions.
+	 * Changes replyType, replyText, replyCarousel and replyList appropriately.
+	 * @param text - Input text received from user
+	 * @param userId - The userID of the user
+	 */
+	public void process(String text, String userId) {
+        log.info(userList.toString());
+		userList.updateBuffer(userId, text);
 		
-		if (checkInitState(text)) {
-			state = "init";
-			replyCarousel = controller.init.createMessage();
-			replyText = "Carousel message for init state";
+		String state = userList.getState(userId);
+		if (state.equals("new") || text.toLowerCase().equals("cancel")) {
+            userList.setState(userId, "init");
+            replyCarousel = controller.init.createMessage();
 			replyType = "carousel";
-		} else if (checkSearchState(text)) {
-			controller.search.process(text, state);
+		} else if (checkSearchState(text,userId)) {
+			userList.setState(userId, "search");
+			controller.search.process(text, state, userList.getSearchState(userId));
 			replyType = controller.search.replyType;
 			replyText = controller.search.replyText;
 			replyCarousel = controller.search.replyCarousel;
-		} else if (checkBookState(text)) {
+		} else if (checkBookState(text, state)) {
 			//TODO: call booking controller
-			controller.book.process(text, state, userID);
+			controller.book.process(text, state, userId);
 			replyType = "mixed";
 			replyList = controller.book.replyList;
 		} else if (checkEnqState()) {
 			//TODO: call enquiry controller
-		} else if (checkFAQ()) {
+		} else if (checkFAQ(text)) {
             replyText="FAQ result is:\n"+controller.faq.search(text);
-            
-            
             replyType="text";
-
 		} else {
 			//TODO: call unknown controller
 			//find some way to send message to staff, and/or store result in database
 			
 			replyText = "Sorry, I did not understand: " + text + ". We will relay this message to a staff member who will contact you if your question is valid.";
 			replyType = "unknown";
-			controller.unknown.handleUnknown(this.userID, text, buffer.toArray(new String[0])); // passes buffer as a String array for easier manipulation
+			controller.unknown.handleUnknown(userId, text, userList.getBuffer(userId).toArray(new String[0])); // passes buffer as a String array for easier manipulation
 		}
 			
 	}
-    
-    public void setUserID (String userId) {
-        this.userID = userId;
-    }
-	
-	public boolean checkInitState(String text) {
-		//check if 15 minutes have passed since last message from user
-		//should be accessible from ANY state, after 15 minutes or 'cancel' statement
-		boolean flag = lastMessageTime.plusSeconds(900).isBefore(Instant.now()) || text.toLowerCase().equals("cancel");
-		lastMessageTime = Instant.now();
-		
-		return flag;
-		//for test case, remove when you're actually done
-		//return false;
-	}
-	
-	public boolean checkSearchState(String text) {
-		//should be accessible from INIT state (search) or BOOK state (back)
-		//internal state moved to this state string to avoid race condition with multi-user
+
+	/**
+	 * Checks if the state is 'search'
+	 * Some conditions are checked implicitly by other checks called prior
+	 * @param text - Input text received from user
+	 * @param state - Previous state
+	 * @return true if it is, false if it isn't
+	 */
+	public boolean checkSearchState(String text, String userId) {
+		SearchState searchState = userList.getSearchState(userId);
+		String state = userList.getState(userId);
 		if ((state.equals("init") && text.toLowerCase().contains("search"))) {
-			controller.search.keywords.clear();
-			state = "search.new";
+			searchState.keywords.clear();
+			searchState.substate = "display";
 			return true;
-		} else if (state.contains("book") && text.toLowerCase().contains("back")) {
-			state = "search.display";
-			return true
-		} else if (state.equals("search.display") && text.toLowerCase().contains("add filter")) {
-			state = "search.keywordMessage";
+		} else if (state.equals("book") && text.toLowerCase().contains(".back")) {
+			userList.setState(userId, "search");
+			searchState.rsIndex = 0;
+			searchState.substate = "display";
 			return true;
-		} else if (state.equals("search.keywordMessage")) {
-			state = "search.keywordInput";
+		} else if (state.equals("search") && !searchState.substate.equals("keywordMessage") && text.toLowerCase().contains("add filter")) {
+			searchState.substate = "keywordMessage";
+			return true;
+		} else if (state.equals("search") && searchState.substate.equals("keywordMessage")) {
+			searchState.substate = "keywordInput";
 			return true;
 		} else if (state.contains("search") && !text.toLowerCase().contains("book")) {
-			state = "search.display";
+			searchState.substate = "display";
 			return true;
 		} else {
 			return false;
 		}	
 	}
 	
-	public boolean checkBookState(String text) {
+	/**
+	 * Checks if the state is 'book'
+	 * Some conditions are checked implicitly by other checks called prior
+	 * @param text - Input text received from user
+	 * @param state - Previous state
+	 * @return true if it is, false if it isn't
+	 */
+	public boolean checkBookState(String text, String state) {
 		//TODO: check if state is book
 		//should be accessible from SEARCH (result) state ONLY
 		//is really
@@ -196,16 +198,10 @@ public class ProjectInterface {
 		return false;
 	}
 	
-    public boolean checkFAQ() {
+    public boolean checkFAQ(String text) {
         //TODO: check if state is faq
         //lookup faq table in database to see if input message matches any stored questions
-        //should be accessible from ANY state
-        String text=null;
-        for(int i=0;i<buffer.size();i++) {
-            text=buffer.poll();
-            buffer.add(text);
-        }
-        
+        //should be accessible from ANY state        
         StringBuilder newsb=new StringBuilder();
         if(controller.faq.search(text).equals(newsb.toString()))
             return false;
