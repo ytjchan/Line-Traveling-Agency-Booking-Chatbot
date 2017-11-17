@@ -116,6 +116,9 @@ public class SQLDatabaseEngine extends DatabaseEngine {
          * @return String array of formatted search results (see above)
          */
         protected ArrayList<ArrayList<String>> searchTourByDesc(LinkedList<String> keywords, String startDate, String endDate) throws URISyntaxException, SQLException {
+        	if (keywords.isEmpty) {
+        		return searchAllTour();
+        	}
             Connection c = getConnection();
             String template = 
     		"select tourid, tourname, tourdesc, tourlength from ("
