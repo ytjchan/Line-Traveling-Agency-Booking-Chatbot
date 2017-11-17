@@ -91,8 +91,9 @@ public class KitchenSinkController {
 
 
 	@Autowired
-	private LineMessagingClient lineMessagingClient;
-	public ProjectInterface funInterface = new ProjectInterface();
+	private LineMessagingClient lineMessagingClient;       
+        UserList userList = new UserList(this); // default access right
+	public ProjectInterface funInterface = new ProjectInterface(this, userList);
 
 	@EventMapping
 	public void handleTextMessageEvent(MessageEvent<TextMessageContent> event) throws Exception {
@@ -100,6 +101,7 @@ public class KitchenSinkController {
 		log.info("This is your entry point:");
 		log.info("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 		TextMessageContent message = event.getMessage();
+                userList.update(event.getSource().getUserId());
 		handleTextContent(event.getReplyToken(), event, message);
 	}
 
@@ -165,8 +167,13 @@ public class KitchenSinkController {
 
 	@EventMapping
 	public void handlePostbackEvent(PostbackEvent event) {
-		String replyToken = event.getReplyToken();
-		this.replyText(replyToken, event.getPostbackContent().getData());
+                String replyToken = event.getReplyToken();
+                if (userList.isInList(event.getSource().getUserId())){
+                        this.replyText(replyToken, event.getPostbackContent().getData());
+                        userList.update(event.getSource().getUserId()); // on button press eg carousel
+                } else { // User has expired
+                        this.replyText(replyToken, User.TIMEOUT_TEXT_MESSAGE);
+                }
 	}
 
 	@EventMapping
@@ -192,8 +199,9 @@ public class KitchenSinkController {
 			throw new RuntimeException(e);
 		}
 	}
-
-	private void replyText(@NonNull String replyToken, @NonNull String message) {
+        
+        // now has package access right
+	void replyText(@NonNull String replyToken, @NonNull String message) {
 		if (replyToken.isEmpty()) {
 			throw new IllegalArgumentException("replyToken must not be empty");
 		}
@@ -214,8 +222,7 @@ public class KitchenSinkController {
 
         log.info("Got text message from {}: {}", replyToken, text);
 		
-        funInterface.setUserID(event.getSource().getUserId()); // pass userID to project interface
-        funInterface.process(text);
+        funInterface.process(text, event.getSource().getUserId());
         //now the replyType of funInterface will change depending on the text & userID
         
         //TODO manage the output reply based on the replyType
