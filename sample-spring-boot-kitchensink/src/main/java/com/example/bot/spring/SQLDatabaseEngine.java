@@ -221,13 +221,12 @@ public class SQLDatabaseEngine extends DatabaseEngine {
 			+ "select subT.tourid, subT.offerid, subT.startdate, subt.tourname, subt.tourdesc, subt.tourlength from ("
 				+ "select tof.tourid, tof.offerid, tof.tourdate as startdate, tof.tourdate+t.tourlength as enddate, t.tourname, t.tourdesc, t.tourlength "
 					+ "from tour as t join touroffering as tof on t.tourid = tof.tourid) as subT "
-		//	+ "where ? <= startdate) as outT "
-			+ ") as outT "
+			+ "where ? <= startdate) as outT "
 		+ "group by tourid, tourname, tourdesc, tourlength order by min(startdate) asc"
 		);
         //stmt.setString(1, dtf.format(localDate));
 	    //stmt.setString(1, "2017-11-03");
-	    //stmt.setDate(1, java.sql.Date.valueOf(localDate));
+	    stmt.setDate(1, java.sql.Date.valueOf(localDate));
         ResultSet tourRs = stmt.executeQuery(); // ResultSet is closed automatically when stmt is closed
         ArrayList<ArrayList<String>> arr = new ArrayList<>();
         while (tourRs.next()){

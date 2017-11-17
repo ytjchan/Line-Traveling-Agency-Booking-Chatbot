@@ -125,9 +125,15 @@ public class ProjectSearchController {
 				replyText = temp.get(0).get(1);
 				temp = db.searchTourID(text.toLowerCase().replace("show dates of ", ""), "touroffering");
 				replyText += " (" + temp.get(0).get(0) + ")";
+				
+				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+				LocalDate localDate = LocalDate.now();
+				String start = dtf.format(localDate);
+				
 				if (temp.size() > 0) {
 					for (ArrayList<String> str : temp) {
-						replyText += "\n-" + str.get(2);
+						if (str.get(2).compareTo(start) > 0)
+							replyText += "\n-" + str.get(2);
 					}
 				} else {
 					replyText += " has no available tours!";
@@ -192,8 +198,8 @@ public class ProjectSearchController {
 				searchState.rs = db.searchAllTour();
 				searchState.rsIndex = 0;
 				createSearchCarousel(searchState);
-				replyType = "text";
-				replyText = "record count: " + searchState.rs.size();
+//				replyType = "text";
+//				replyText = "record count: " + searchState.rs.size();
 				return;
 			}
 			
