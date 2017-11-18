@@ -168,6 +168,11 @@ public class ProjectInterface {
             return false;
         return true;
     }
+    public String getStaffID() {
+    	String id=null;
+    	id=controller.unknown.getStaffId();
+    	return id;
+    }
 
 
 }

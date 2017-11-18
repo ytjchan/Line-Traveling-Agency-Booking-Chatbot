@@ -40,6 +40,7 @@ import com.google.common.io.ByteStreams;
 import com.linecorp.bot.client.LineMessagingClient;
 import com.linecorp.bot.client.MessageContentResponse;
 import com.linecorp.bot.model.ReplyMessage;
+import com.linecorp.bot.model.PushMessage;
 import com.linecorp.bot.model.action.MessageAction;
 import com.linecorp.bot.model.action.PostbackAction;
 import com.linecorp.bot.model.action.URIAction;
@@ -200,6 +201,38 @@ public class KitchenSinkController {
 		}
 	}
         
+	//!!!!!!!test push message
+	//id means staff id
+	private void send(@NonNull String id, @NonNull Message message) {
+		send(id, Collections.singletonList(message));
+	}
+	private void send(@NonNull String id, @NonNull List<Message> messages) {
+		
+		
+		
+		try {
+			BotApiResponse apiResponse = lineMessagingClient.pushMessage(new PushMessage(id, messages)).get();
+			log.info("Sent messages: {}", apiResponse);
+		} catch (InterruptedException | ExecutionException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	private void sendText(@NonNull String id, @NonNull String message) {
+		if (id.isEmpty()) {
+			throw new IllegalArgumentException("id must not be empty");
+		}
+		if (message.length() > 1000) {
+			message = message.substring(0, 1000 - 2) + "..";
+		}
+		String[] allstaffid=id.split(";");
+		for(String eachstaffid : allstaffid) {
+			if(eachstaffid.isEmpty())
+				continue;
+		this.send(eachstaffid, new TextMessage(message));
+		}
+	}
+	
+	
         // now has package access right
 	void replyText(@NonNull String replyToken, @NonNull String message) {
 		if (replyToken.isEmpty()) {
@@ -250,6 +283,13 @@ public class KitchenSinkController {
     		case "unknown":{
     			//the message is always the same, e.g. "sorry i did not understand that"
     			this.replyText(replyToken, funInterface.replyText);
+    			
+    			
+    			//Cloud change this line
+    			//send the unknown message to the staff whose id is stored in ProjectInterface
+    			String texttostaff="Here is a unknown messages from user_"+replyToken+" : "+text;
+    			if( !(funInterface.getStaffID()==null||funInterface.getStaffID().isEmpty() ) )
+    			this.sendText(funInterface.getStaffID(), texttostaff);
     			break;
     		}
     		case "mixed": {
@@ -292,14 +332,14 @@ public class KitchenSinkController {
                                         new URIAction("Go to line.me",
                                                       "https://line.me"),
                                         new PostbackAction("Say hello1",
-                                                           "hello ã�“ã‚“ã�«ã�¡ã�¯")
+                                                           "hello 茫锟解�溍ｂ�氣�溍ｏ拷芦茫锟铰∶ｏ拷炉")
                                 )),
                                 new CarouselColumn(imageUrl, "hoge", "fuga", Arrays.asList(
-                                        new PostbackAction("è¨€ hello2",
-                                                           "hello ã�“ã‚“ã�«ã�¡ã�¯",
-                                                           "hello ã�“ã‚“ã�«ã�¡ã�¯"),
+                                        new PostbackAction("猫篓鈧� hello2",
+                                                           "hello 茫锟解�溍ｂ�氣�溍ｏ拷芦茫锟铰∶ｏ拷炉",
+                                                           "hello 茫锟解�溍ｂ�氣�溍ｏ拷芦茫锟铰∶ｏ拷炉"),
                                         new MessageAction("Say message",
-                                                          "Rice=ç±³")
+                                                          "Rice=莽卤鲁")
                                 ))
                         ));
                 TemplateMessage templateMessage = new TemplateMessage("Carousel alt text", carouselTemplate);

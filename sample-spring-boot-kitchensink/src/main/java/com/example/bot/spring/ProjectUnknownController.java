@@ -15,5 +15,13 @@ public class ProjectUnknownController {
                     sb.append("||");
             }
             dbEngine.insertQuestion(userID,fullQuestion,sb.toString());
+            
+            
+    }
+  //add a new function to get staff id form database StaffId table--cloud
+    public String getStaffId() {
+    	
+    	return dbEngine.getStaffId();
+   
     }
 }
