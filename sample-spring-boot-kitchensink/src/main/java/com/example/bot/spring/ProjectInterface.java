@@ -88,6 +88,8 @@ public class ProjectInterface {
         private final KitchenSinkController ksc;
         private final UserList userList; 
 	
+	Message message = null; // placeholder, if all Controllers can return a Message object/a List of Nessage objects after processsing, we can just ask the Controllers return Message to KSC
+	
 	public ProjectInterface(KitchenSinkController ksc, UserList userList) {
 		this.ksc = ksc;
                 this.userList = userList;
@@ -99,9 +101,11 @@ public class ProjectInterface {
                 log.info(userList.toString());
 		userList.updateBuffer(userId, text);
 		
+		message = null; // since not all Controllers can return Message object right now
+		
 		if (userList.getState(userId).equals("new") || text.toLowerCase().equals("cancel")) {
                         userList.setState(userId, "init");
-                        replyCarousel = controller.init.createMessage();
+                        message = controller.init.createMessage();
 			replyText = "Carousel message for init state";
 			replyType = "carousel";
 		} else if (checkSearchState(text, userId)) {

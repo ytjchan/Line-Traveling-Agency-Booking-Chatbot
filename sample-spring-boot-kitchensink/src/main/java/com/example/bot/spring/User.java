@@ -120,24 +120,8 @@ public class User {
 		 * Overriding TimerTask so that run() would be run on schedule.
 		 */
 		public void run() {
-                        log.info("Attempting to send timeout message to user " + userId);
-                        // The following can be potentially replaced by a class.
-                        
+                        log.info("Attempting to send timeout message to user " + userId);          
                         pusher = new ProjectPusher(userId, TIMEOUT_TEXT_MESSAGE);
-                        /*
-                        TextMessage textMessage = new TextMessage(TIMEOUT_TEXT_MESSAGE);
-                        PushMessage pushMessage = new PushMessage(userId, textMessage);
-                        Response<BotApiResponse> response;
-                        try {
-                                response = LineMessagingServiceBuilder
-                                        .create(System.getenv("LINE_BOT_CHANNEL_TOKEN"))
-                                        .build()
-                                        .pushMessage(pushMessage)
-                                        .execute();
-                        } catch (IOException e) {
-                                log.info(e.toString());
-                        }
-                        */
                         remove();
 		}
 		

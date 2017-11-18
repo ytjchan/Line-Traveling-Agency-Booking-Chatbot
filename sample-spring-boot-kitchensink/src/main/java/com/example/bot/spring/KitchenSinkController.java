@@ -83,6 +83,7 @@ import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.URI;
+import java.util.ArrayList;
 
 @Slf4j
 @LineMessageHandler
@@ -156,7 +157,11 @@ public class KitchenSinkController {
 	@EventMapping
 	public void handleFollowEvent(FollowEvent event) {
 		String replyToken = event.getReplyToken();
-		this.replyText(replyToken, "Got followed event");
+		MessageFactory mf = new MessageFactory("/static/prof.jpg");
+		List<Message> messages = new ArrayList<>();
+		messages.add(mf.createTextMessage("Welcome to COMP3111! \nTo start your journey, just type in anything. \nTo go back to front page, type 'cancel' at anytime. \nHave a nice trip!")); 
+		messages.add(mf.createImageMessage());
+		this.reply(replyToken, messages);
 	}
 
 	@EventMapping
@@ -225,6 +230,10 @@ public class KitchenSinkController {
         funInterface.process(text, event.getSource().getUserId());
         //now the replyType of funInterface will change depending on the text & userID
         
+	// TODO make controllers return Message object or a List<Message> so we can just reply(replyToken, message)
+	if (funInterface.message != null)
+		reply(replyToken, funInterface.message);
+	
         //TODO manage the output reply based on the replyType
         
         switch (funInterface.replyType) {
