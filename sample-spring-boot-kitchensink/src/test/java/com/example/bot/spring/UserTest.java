@@ -14,42 +14,47 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { User.class, UserTest.class, UserList.class})
+@SpringBootTest(classes = { UserTest.class, User.class, UserList.class })
 
 /**
  * JUnit Test of User
  */
+//FIXME how to fix this: java.lang.IllegalStateException: Failed to load ApplicationContext
 public class UserTest {
 	
 	@Autowired
-	User user;
+	private User user;
 	
 	@Autowired
-	UserList
+	private static UserList userList;
 	
 	public UserTest() {
 	}
 	
 	@BeforeClass
 	public static void setUpClass() {
-		
+		userList = new UserList();
 	}
 	
 	@AfterClass
 	public static void tearDownClass() {
+		userList = null;
 	}
 	
 	@Before
 	public void setUp() {
-		user = new User(, )
+		user = new User("COMP3111FUN", userList);
 	}
 	
 	@After
 	public void tearDown() {
+		if (userList.isInList("COMP3111FUN"))
+			user.remove();
 	}
 
 	/**
@@ -58,9 +63,7 @@ public class UserTest {
 	@Test
 	public void testUpdate() {
 		System.out.println("update");
-		User instance = null;
-		instance.update();
-		
+		user.update();
 	}
 
 	/**
@@ -69,11 +72,23 @@ public class UserTest {
 	@Test
 	public void testUpdateBuffer() {
 		System.out.println("updateBuffer");
-		String text = "";
-		User instance = null;
-		instance.updateBuffer(text);
-		// TODO review the generated test code and remove the default call to fail.
-		fail("The test case is a prototype.");
+		// Test if messages added are in 
+		user.updateBuffer("MESSSAGE1");
+		user.updateBuffer("MESSSAGE2");
+		user.updateBuffer("MESSSAGE3");
+		user.updateBuffer("MESSSAGE4");
+		user.updateBuffer("MESSSAGE5");
+		assertEquals(5, user.getBuffer().size());
+		assertEquals("MESSSAGE1", user.getBuffer().get(0));
+		assertEquals("MESSSAGE2", user.getBuffer().get(1));
+		assertEquals("MESSSAGE3", user.getBuffer().get(2));
+		assertEquals("MESSSAGE4", user.getBuffer().get(3));
+		assertEquals("MESSSAGE5", user.getBuffer().get(4));
+		// Test if first message is removed when 6th is added
+		user.updateBuffer("MESSSAGE6");
+		assertEquals(5, user.getBuffer().size());
+		assertEquals("MESSAGE2", user.getBuffer().get(0));
+		assertEquals("MESSSAGE6", user.getBuffer().get(4));
 	}
 
 	/**
@@ -82,24 +97,23 @@ public class UserTest {
 	@Test
 	public void testGetBuffer() {
 		System.out.println("getBuffer");
-		User instance = null;
-		LinkedList<String> expResult = null;
-		LinkedList<String> result = instance.getBuffer();
-		assertEquals(expResult, result);
-		// TODO review the generated test code and remove the default call to fail.
-		fail("The test case is a prototype.");
+		// Test if buffer is empty initially
+		assertTrue(user.getBuffer().isEmpty());
+		// Test if getBuffer can return the right buffer.
+		user.updateBuffer("MESSSAGE1");
+		assertFalse(user.getBuffer().isEmpty());
+		assertEquals("MESSAGE1", user.getBuffer().get(0));
 	}
 
 	/**
 	 * Test of remove method, of class User.
+	 * User should no longer be in the userList.
 	 */
 	@Test
 	public void testRemove() {
 		System.out.println("remove");
-		User instance = null;
-		instance.remove();
-		// TODO review the generated test code and remove the default call to fail.
-		fail("The test case is a prototype.");
+		user.remove();
+		assertFalse(userList.isInList("COMP3111FUN"));
 	}
 
 	/**
@@ -108,12 +122,7 @@ public class UserTest {
 	@Test
 	public void testGetUserId() {
 		System.out.println("getUserId");
-		User instance = null;
-		String expResult = "";
-		String result = instance.getUserId();
-		assertEquals(expResult, result);
-		// TODO review the generated test code and remove the default call to fail.
-		fail("The test case is a prototype.");
+		assertEquals("COMP3111FUN", user.getUserId());
 	}
 
 	/**
@@ -122,11 +131,9 @@ public class UserTest {
 	@Test
 	public void testSetState() {
 		System.out.println("setState");
-		String state = "";
-		User instance = null;
-		instance.setState(state);
-		// TODO review the generated test code and remove the default call to fail.
-		fail("The test case is a prototype.");
+		user.setState("DEAD THANKS TO PROJECT");
+		assertNotEquals("new", user.getState());
+		assertEquals("DEAD THANKS TO PROJECT", user.getState());
 	}
 
 	/**
@@ -135,12 +142,17 @@ public class UserTest {
 	@Test
 	public void testGetState() {
 		System.out.println("getState");
-		User instance = null;
-		String expResult = "";
-		String result = instance.getState();
-		assertEquals(expResult, result);
-		// TODO review the generated test code and remove the default call to fail.
-		fail("The test case is a prototype.");
+		assertEquals("new", user.getState());
+	}
+	
+	/**
+	 * Test of TimeoutMessage, the inner class of User.
+	 */
+	@Test
+	public void testTimeoutMessage() {
+		User.TimeoutMessage tm = user.new TimeoutMessage();
+		tm.run();
+		assertNotNull(tm);
 	}
 	
 }
