@@ -78,7 +78,7 @@ import java.time.format.DateTimeFormatter;
 
 public class ProjectBookController {
 	private SQLDatabaseEngine db = new SQLDatabaseEngine();
-	public List<Message> replyList = new LinkedList<Message>();
+	public List<com.sun.xml.internal.ws.api.message.Message> replyList = new LinkedList<Message>();
 	
 	public ProjectBookController() {
 		
@@ -93,6 +93,10 @@ public class ProjectBookController {
 		//2. Ask for no. of adults, no. of children (4 - 11), no. of toddlers (3 or less), special requests]
 		//3. throw a confirmation message
 		replyList.clear();
+		
+		replyList.add(new TextMessage("In booking state"));
+		return;
+		
 		
 		//assuming book command is something like:  *book [id]
 		String tourID = text.substring(text.toLowerCase().indexOf("book")+5);
