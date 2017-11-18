@@ -12,6 +12,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import retrofit2.Response;
 
+
 @Slf4j
 /** User class to store all users that have not timed out (ie 15mins of inactivity). */
 public class User {
@@ -23,8 +24,10 @@ public class User {
 	private final Timer timer = new Timer();
 	private final UserList userList; // Users subscribe to a UserList
 	private LinkedList<String> buffer = new LinkedList<>();
+	private ProjectPusher pusher;
         
-	private final int TIMEOUT_TIME = 15*60*1000; // in milliseconds
+	private final int TIMEOUT_TIME = 5*1000; // in milliseconds
+	//private final int TIMEOUT_TIME = 15*60*1000; // in milliseconds
 	public final static String TIMEOUT_TEXT_MESSAGE = "*You have been in inactivity for 15mins, please restart by typing anything new*";
 	
         /**
@@ -118,8 +121,11 @@ public class User {
 		 * Overriding TimerTask so that run() would be run on schedule.
 		 */
 		public void run() {
-                        log.info("Attempting to send timeout message to user "+userId);
+                        log.info("Attempting to send timeout message to user " + userId);
                         // The following can be potentially replaced by a class.
+                        
+                        pusher = new ProjectPusher(userId, TIMEOUT_TEXT_MESSAGE);
+                        /*
                         TextMessage textMessage = new TextMessage(TIMEOUT_TEXT_MESSAGE);
                         PushMessage pushMessage = new PushMessage(userId, textMessage);
                         Response<BotApiResponse> response;
@@ -132,6 +138,7 @@ public class User {
                         } catch (IOException e) {
                                 log.info(e.toString());
                         }
+                        */
                         remove();
 		}
 		
