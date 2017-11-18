@@ -206,37 +206,7 @@ public class KitchenSinkController {
 		}
 	}
         
-	//!!!!!!!test push message
-	//id means staff id
-	private void send(@NonNull String id, @NonNull Message message) {
-		send(id, Collections.singletonList(message));
-	}
-	private void send(@NonNull String id, @NonNull List<Message> messages) {
-		
-		
-		
-		try {
-			BotApiResponse apiResponse = lineMessagingClient.pushMessage(new PushMessage(id, messages)).get();
-			log.info("Sent messages: {}", apiResponse);
-		} catch (InterruptedException | ExecutionException e) {
-			throw new RuntimeException(e);
-		}
-	}
-	private void sendText(@NonNull String id, @NonNull String message) {
-		if (id.isEmpty()) {
-			throw new IllegalArgumentException("id must not be empty");
-		}
-		if (message.length() > 1000) {
-			message = message.substring(0, 1000 - 2) + "..";
-		}
-		String[] allstaffid=id.split(";");
-		for(String eachstaffid : allstaffid) {
-			if(eachstaffid.isEmpty())
-				continue;
-		this.send(eachstaffid, new TextMessage(message));
-		}
-	}
-	
+	// removed since ProjectPusher is ready, but thanks for your investigation, Cloud.
 	
         // now has package access right
 	void replyText(@NonNull String replyToken, @NonNull String message) {
@@ -292,14 +262,6 @@ public class KitchenSinkController {
     		case "unknown":{
     			//the message is always the same, e.g. "sorry i did not understand that"
     			this.replyText(replyToken, funInterface.replyText);
-    			
-    			
-    			//Cloud change this line
-    			//send the unknown message to the staff whose id is stored in ProjectInterface
-    			String texttostaff="Here is a unknown messages from user_"+replyToken+" : "+text;
-    			if( !(funInterface.getStaffID()==null||funInterface.getStaffID().isEmpty() ) )
-    			this.sendText(funInterface.getStaffID(), texttostaff);
-    			break;
     		}
     		case "mixed": {
     			this.reply(replyToken, funInterface.replyList);
