@@ -23,6 +23,7 @@ public class User {
 	private final Timer timer = new Timer();
 	private final UserList userList; // Users subscribe to a UserList
 	private LinkedList<String> buffer = new LinkedList<>();
+	private ProjectPusher pusher;
         
 	//temp for 10 sec
 	private final int TIMEOUT_TIME = 10*1000; // in milliseconds
@@ -120,8 +121,11 @@ public class User {
 		 * Overriding TimerTask so that run() would be run on schedule.
 		 */
 		public void run() {
-                        log.info("Attempting to send timeout message to user "+userId);
+                        log.info("Attempting to send timeout message to user " + userId);
                         // The following can be potentially replaced by a class.
+                        
+                        pusher = new ProjectPusher(userId, TIMEOUT_TEXT_MESSAGE);
+                        /*
                         TextMessage textMessage = new TextMessage(TIMEOUT_TEXT_MESSAGE);
                         PushMessage pushMessage = new PushMessage(userId, textMessage);
                         Response<BotApiResponse> response;
@@ -134,6 +138,7 @@ public class User {
                         } catch (IOException e) {
                                 log.info(e.toString());
                         }
+                        */
                         remove();
 		}
 		
