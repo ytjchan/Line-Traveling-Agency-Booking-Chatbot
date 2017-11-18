@@ -24,7 +24,9 @@ public class User {
 	private final UserList userList; // Users subscribe to a UserList
 	private LinkedList<String> buffer = new LinkedList<>();
         
-	private final int TIMEOUT_TIME = 15*60*1000; // in milliseconds
+	//temp for 10 sec
+	private final int TIMEOUT_TIME = 10*1000; // in milliseconds
+	//private final int TIMEOUT_TIME = 15*60*1000; // in milliseconds
 	public final static String TIMEOUT_TEXT_MESSAGE = "*You have been in inactivity for 15mins, please restart by typing anything new*";
 	
         /**
