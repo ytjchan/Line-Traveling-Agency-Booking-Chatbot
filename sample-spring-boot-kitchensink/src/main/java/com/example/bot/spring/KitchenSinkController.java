@@ -161,6 +161,10 @@ public class KitchenSinkController {
 		List<Message> messages = new ArrayList<>();
 		messages.add(mf.createTextMessage("Welcome to COMP3111! \nTo start your journey, just type in anything. \nTo go back to front page, type 'cancel' at anytime. \nHave a nice trip!")); 
 		messages.add(mf.createImageMessage());
+		ProjectPusher pp = new ProjectPusher(event.getSource().getUserId());
+		pp.pushText("A1","A2","A3","A4","A5","A6");
+		pp.pushMessage(mf.createImageMessage(), mf.createImageMessage());
+		ProjectPusher.pushTextShorthand(event.getSource().getUserId(), "B1","B2","B3","B4","B5","B6");
 		this.reply(replyToken, messages);
 	}
 

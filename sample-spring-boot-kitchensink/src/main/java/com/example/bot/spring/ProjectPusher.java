@@ -28,16 +28,23 @@ public class ProjectPusher {
 	}
 	
 	/**
-	 * Push a text message to the user specified by userId in constructor.
-	 * This can push up to 2000 characters in a message.
+	 * Push 1 to 5 text messages to the user specified by userId in constructor.
+	 * Each message can push up to 2000 characters.
+	 * Thanks to varargs, can pass up to 5 Strings in parameter to push multuple messages in a time.
 	 * @see https://developers.line.me/en/docs/messaging-api/reference/#text
-	 * @param text A String up to 2000 characters.
+	 * @see https://docs.oracle.com/javase/1.5.0/docs/guide/language/varargs.html
+	 * @param texts 1 to 5 Strings, each up to 2000 characters.
 	 */
-	public void pushText(String text) {
-		log.info("Attempting to push to " + userId);
+	public void pushText(String... texts) {
+		log.info("Attempting to push"+texts.length+" texts to " + userId);
 		Response<BotApiResponse> response;
+		ArrayList<Message> messageList = new ArrayList<>();
 		MessageFactory mf = new MessageFactory();
-		PushMessage pushMessage = new PushMessage(userId, mf.createTextMessage(text));
+		for (int i=0; i<5 && i<texts.length; i++)
+			messageList.add(mf.createTextMessage(texts[i]));
+		if (messageList.isEmpty())
+			return;
+		PushMessage pushMessage = new PushMessage(userId, messageList);
 		try {
 			response = LineMessagingServiceBuilder
 					.create(System.getenv("LINE_BOT_CHANNEL_TOKEN"))
@@ -50,7 +57,7 @@ public class ProjectPusher {
 	}
 	
 	/**
-	 * Push a Message (of any subclasses of Message) to the user specified by userId in constructor.
+	 * Push 1 to 5 Messages (of any subclasses of Message) to the user specified by userId in constructor.
 	 * This pushes generic kind of Message by exploiting polymorphism.
 	 * Can utilize {@link com.example.bot.spring.MessageFactory MessageFactory} to create desired type of Message object.
 	 * Thanks to varargs, can pass up to 5 messages or only 1 each time.
@@ -80,15 +87,17 @@ public class ProjectPusher {
 	}
 	
 	/**
-	 * Shorthand method to reply a text message on the user specified by userId.
+	 * Shorthand method to reply 1 to 5 text message on the user specified by userId.
 	 * This avoids the need to create a ProjectPush before hand, but only allows one message pushed each time.
-	 * @param userId The userId that should recieve the text message.
+	 * Thanks to varargs, can pass up to 5 Strings in parameter to push multuple messages in a time.
 	 * @see https://developers.line.me/en/docs/messaging-api/reference/#text
-	 * @param text A String up to 2000 characters.
+	 * @see https://docs.oracle.com/javase/1.5.0/docs/guide/language/varargs.html
+	 * @param userId The userId that should recieve the text message.
+	 * @param texts 1 to 5 Strings, each up to 2000 characters.
 	 */
-	public static void pushMessage(String userId, String text) {
+	public static void pushTextShorthand(String userId, String... texts) {
 		log.info("Attempting to push to " + userId);
 		ProjectPusher pp = new ProjectPusher(userId);
-		pp.pushText(text);
+		pp.pushText(texts);
 	}
 }
