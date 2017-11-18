@@ -262,10 +262,11 @@ public class KitchenSinkController {
     		case "unknown":{
     			//the message is always the same, e.g. "sorry i did not understand that"
     			this.replyText(replyToken, funInterface.replyText);
+			break;
     		}
     		case "mixed": {
     			this.reply(replyToken, funInterface.replyList);
-				break;
+			break;
     		}
     		default:
     			break;

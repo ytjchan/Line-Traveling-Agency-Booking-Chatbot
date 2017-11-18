@@ -273,7 +273,7 @@ public class SQLDatabaseEngine extends DatabaseEngine {
       	StringBuilder sb = new StringBuilder();
     	
     	
-    		String sqlsentence="SELECT * FROM StaffId;"; 
+    		String sqlsentence="SELECT * FROM Staff;"; 
 
 
                         try (
