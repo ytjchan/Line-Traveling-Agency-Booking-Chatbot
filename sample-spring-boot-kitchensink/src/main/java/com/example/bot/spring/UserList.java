@@ -8,15 +8,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class UserList {
 	
 	private CopyOnWriteArrayList<User> users = new CopyOnWriteArrayList<>();
-        private final KitchenSinkController ksc;
         
         /**
          * Constructor of UserList.
 	 * A controller is required as parameter in order for each User object to schedule their timeout messages.
-         * @param ksc Reference to the controller to be used.
          */
-        public UserList(KitchenSinkController ksc){
-                this.ksc = ksc;
+        public UserList(){
         }
         
         /**
@@ -51,7 +48,7 @@ public class UserList {
                 User user = findUser(userId);
                 if (user == null) {// User not found
                         log.info("Adding a new user of userId "+userId);
-                        users.add(new User(userId, this, ksc));
+                        users.add(new User(userId, this));
                 }
                 else
                         user.update();

@@ -22,7 +22,6 @@ public class User {
 	private TimerTask timeoutMessage;
 	private final Timer timer = new Timer();
 	private final UserList userList; // Users subscribe to a UserList
-	private final KitchenSinkController ksc; // needed in order to call reply
 	private LinkedList<String> buffer = new LinkedList<>();
         
 	private final int TIMEOUT_TIME = 15*60*1000; // in milliseconds
@@ -33,11 +32,9 @@ public class User {
 	 * References to UserList and controller is required in order to remove User from UserList and schedule a timeout message.
          * @param userId userId referring to user's line account
          * @param userList A UserList object that the User registers to
-         * @param ksc KitchenSinkController to start a reply on schedule
          */
-	public User(String userId, UserList userList, KitchenSinkController ksc) {
+	public User(String userId, UserList userList) {
 		this.userId = userId;
-		this.ksc = ksc;
                 this.userList = userList;
                 timeoutMessage = new TimeoutMessage();
                 timer.schedule(timeoutMessage, TIMEOUT_TIME);
