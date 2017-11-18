@@ -142,4 +142,11 @@ public class UserList {
             return null;
 		return user.getSearchState();
     }
+    
+    public BookState getBookState(String userId) {
+    	User user = findUser(userId);
+    	if (user == null)
+            return null;
+		return user.getBookState();
+    }
 }

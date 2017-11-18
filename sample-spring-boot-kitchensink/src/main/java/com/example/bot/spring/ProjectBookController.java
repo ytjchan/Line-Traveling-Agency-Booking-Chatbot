@@ -84,7 +84,7 @@ public class ProjectBookController {
 		
 	}
 	//TODO: define methods to handle bookings
-	public String process(String text, String state, String userID) {
+	public void process(String text, String state, BookState bookState, String userId) {
 		//1. Check if user is in booker table
 		//		select * from booker where lineid = ?
 		//	A: it is, do nothing
@@ -99,48 +99,47 @@ public class ProjectBookController {
 		
 		
 		
-		if (state.equals("book.init")) {
-			ArrayList<ArrayList<String>> temp;
+		if (bookState.substate.equals("init")) {
+			ArrayList<ArrayList<String>> temp = new ArrayList<ArrayList<String>>();
 			try {
-				temp = db.searchBookerForLineID(userID);
+				temp = db.searchBookerForLineID(userId);
 			} catch (URISyntaxException e) {
 				replyList.add(new TextMessage("URI Syntax problem with URI: " + System.getenv("DATABASE_URL")));
-				return "book.error";
+				bookState.substate = "error";
 			} catch (SQLException e) {
 				replyList.add(new TextMessage("Searching tours by description failed!"));
-				return "book.error";
+				bookState.substate = "error";
 			}
 			if (temp.isEmpty()) {
 				//prompt for personal details
 				replyList.add(new TextMessage("Since this is your first time booking a tour with us, we require some personal information."));
 				replyList.add(new TextMessage("If you would like to go back to tour results, enter .back (including the full stop)"));
 				replyList.add(new TextMessage("Please enter your name: "));
-				return "book.name";
+				bookState.substate = "name";
 			} else {
 				//prompt for booking details
 				replyList.add(new TextMessage("Since this is your first time booking a tour with us, we require some personal information."));
 				replyList.add(new TextMessage("If you would like to go back to tour results, enter .back (including the full stop)"));
 				replyList.add(new TextMessage("Please enter your name: "));
 			}
-		} else if (state.equals("book.name")) {
+		} else if (bookState.substate.equals("name")) {
 			
-		} else if (state.equals("book.hkid")) {
+		} else if (bookState.substate.equals("hkid")) {
 			
-		} else if (state.equals("book.age")) {
+		} else if (bookState.substate.equals("age")) {
 			
-		} else if (state.equals("book.phoneno")) {
+		} else if (bookState.substate.equals("phoneno")) {
 			
-		} else if (state.equals("book.adults")) {
+		} else if (bookState.substate.equals("adults")) {
 			
-		} else if (state.equals("book.children")) {
+		} else if (bookState.substate.equals("children")) {
 			
-		} else if (state.equals("book.toddlers")) {
+		} else if (bookState.substate.equals("toddlers")) {
 			
-		} else if (state.equals("book.requests")) {
+		} else if (bookState.substate.equals("requests")) {
 			
-		} else if (state.equals("book.confirm")) {
+		} else if (bookState.substate.equals("confirm")) {
 			
 		}
-		return "book.init";
 	}
 }

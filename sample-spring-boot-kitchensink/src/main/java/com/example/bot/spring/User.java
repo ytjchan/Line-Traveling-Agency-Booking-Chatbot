@@ -36,7 +36,7 @@ public class User {
 	private SearchState searchState = new SearchState(); 
 	
 	//the following variables are for handling the booking state
-	private String bookState = "new";
+	private BookState bookState = new BookState();
 	
 	
     /**
@@ -155,5 +155,9 @@ public class User {
 	
 	public SearchState getSearchState() {
 		return searchState;
+	}
+	
+	public BookState getBookState() {
+		return bookState;
 	}
 }

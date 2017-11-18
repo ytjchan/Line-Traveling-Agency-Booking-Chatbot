@@ -115,9 +115,9 @@ public class ProjectInterface {
 			replyType = controller.search.replyType;
 			replyText = controller.search.replyText;
 			replyCarousel = controller.search.replyCarousel;
-		} else if (checkBookState(text, state)) {
+		} else if (checkBookState(text, userId)) {
 			//TODO: call booking controller
-			controller.book.process(text, state, userId);
+			controller.book.process(text, state, userList.getBookState(userId), userId);
 			replyType = "mixed";
 			replyList = controller.book.replyList;
 		} else if (checkEnqState()) {
@@ -176,10 +176,12 @@ public class ProjectInterface {
 	 * @param state - Previous state
 	 * @return true if it is, false if it isn't
 	 */
-	public boolean checkBookState(String text, String state) {
+	public boolean checkBookState(String text, String userId) {
 		//TODO: check if state is book
 		//should be accessible from SEARCH (result) state ONLY
 		//is really
+		BookState bookState = userList.getBookState(userId);
+		String state = userList.getState(userId);
 		if (state.contains("search") && text.toLowerCase().contains("book")) {
 			state = "book.init";
 			return true;
