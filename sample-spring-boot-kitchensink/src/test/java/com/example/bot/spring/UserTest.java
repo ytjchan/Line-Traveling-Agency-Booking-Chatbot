@@ -14,13 +14,13 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { UserTest.class, User.class, UserList.class })
-
+@ContextConfiguration(classes=UserTestConfig.class, loader=AnnotationConfigContextLoader.class)
 /**
  * JUnit Test of User
  */
@@ -28,33 +28,14 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class UserTest {
 	
 	@Autowired
-	private User user;
-	
-	@Autowired
-	private static UserList userList;
+	private User user;	
 	
 	public UserTest() {
 	}
 	
-	@BeforeClass
-	public static void setUpClass() {
-		userList = new UserList();
-	}
-	
-	@AfterClass
-	public static void tearDownClass() {
-		userList = null;
-	}
-	
 	@Before
 	public void setUp() {
-		user = new User("COMP3111FUN", userList);
-	}
-	
-	@After
-	public void tearDown() {
-		if (userList.isInList("COMP3111FUN"))
-			user.remove();
+		this.user = new User("COMP3111FUN", new UserList());
 	}
 
 	/**
@@ -73,22 +54,22 @@ public class UserTest {
 	public void testUpdateBuffer() {
 		System.out.println("updateBuffer");
 		// Test if messages added are in 
-		user.updateBuffer("MESSSAGE1");
-		user.updateBuffer("MESSSAGE2");
-		user.updateBuffer("MESSSAGE3");
-		user.updateBuffer("MESSSAGE4");
-		user.updateBuffer("MESSSAGE5");
+		user.updateBuffer("MESSAGE1");
+		user.updateBuffer("MESSAGE2");
+		user.updateBuffer("MESSAGE3");
+		user.updateBuffer("MESSAGE4");
+		user.updateBuffer("MESSAGE5");
 		assertEquals(5, user.getBuffer().size());
-		assertEquals("MESSSAGE1", user.getBuffer().get(0));
-		assertEquals("MESSSAGE2", user.getBuffer().get(1));
-		assertEquals("MESSSAGE3", user.getBuffer().get(2));
-		assertEquals("MESSSAGE4", user.getBuffer().get(3));
-		assertEquals("MESSSAGE5", user.getBuffer().get(4));
+		assertEquals("MESSAGE1", user.getBuffer().get(0));
+		assertEquals("MESSAGE2", user.getBuffer().get(1));
+		assertEquals("MESSAGE3", user.getBuffer().get(2));
+		assertEquals("MESSAGE4", user.getBuffer().get(3));
+		assertEquals("MESSAGE5", user.getBuffer().get(4));
 		// Test if first message is removed when 6th is added
-		user.updateBuffer("MESSSAGE6");
+		user.updateBuffer("MESSAGE6");
 		assertEquals(5, user.getBuffer().size());
 		assertEquals("MESSAGE2", user.getBuffer().get(0));
-		assertEquals("MESSSAGE6", user.getBuffer().get(4));
+		assertEquals("MESSAGE6", user.getBuffer().get(4));
 	}
 
 	/**
@@ -100,7 +81,7 @@ public class UserTest {
 		// Test if buffer is empty initially
 		assertTrue(user.getBuffer().isEmpty());
 		// Test if getBuffer can return the right buffer.
-		user.updateBuffer("MESSSAGE1");
+		user.updateBuffer("MESSAGE1");
 		assertFalse(user.getBuffer().isEmpty());
 		assertEquals("MESSAGE1", user.getBuffer().get(0));
 	}
@@ -113,7 +94,6 @@ public class UserTest {
 	public void testRemove() {
 		System.out.println("remove");
 		user.remove();
-		assertFalse(userList.isInList("COMP3111FUN"));
 	}
 
 	/**
@@ -151,8 +131,9 @@ public class UserTest {
 	@Test
 	public void testTimeoutMessage() {
 		User.TimeoutMessage tm = user.new TimeoutMessage();
-		tm.run();
 		assertNotNull(tm);
+		tm.run();
+		assertFalse(tm.cancel());
 	}
 	
 }

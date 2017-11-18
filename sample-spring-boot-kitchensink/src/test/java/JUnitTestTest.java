@@ -8,6 +8,7 @@ public class JUnitTestTest {
 	
 	@Test
 	public void testTrue() {
+		assertEquals("ONE", "ONE");
 		assertTrue(true);
 	}
 	
