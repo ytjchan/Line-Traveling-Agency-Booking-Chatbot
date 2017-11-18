@@ -78,7 +78,7 @@ import java.time.format.DateTimeFormatter;
 
 public class ProjectBookController {
 	private SQLDatabaseEngine db = new SQLDatabaseEngine();
-	public List<com.sun.xml.internal.ws.api.message.Message> replyList = new LinkedList<Message>();
+	public List<Message> replyList = new LinkedList<Message>();
 	
 	public ProjectBookController() {
 		
