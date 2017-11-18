@@ -86,11 +86,6 @@ public class ProjectSearchController {
 	public ProjectSearchController() {}
 	
 	public void process(String text, String state, SearchState searchState) {
-//		String startDate = searchState.startDate;
-//		String endDate = searchState.endDate;
-//		LinkedList<String> keywords = searchState.keywords;
-//		ArrayList<ArrayList<String>> rs = searchState.rs;
-//		String substate = searchState.substate;
 		
 		try {
 			//enter keyword & update

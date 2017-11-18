@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Queue;
+import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
@@ -72,6 +73,9 @@ import java.net.URI;
 
 //extra imports
 import java.util.LinkedList;
+import java.util.Timer;
+import java.util.TimerTask;
+import retrofit2.Response;
 
 @Slf4j
 public class ProjectInterface {
@@ -88,10 +92,40 @@ public class ProjectInterface {
     private final KitchenSinkController ksc;
     protected final UserList userList; 
 	
+//    private TimerTask discountPromotion;
+    
+    
 	public ProjectInterface(KitchenSinkController ksc, UserList userList) {
 		this.ksc = ksc;
         this.userList = userList;
+//        discountPromotion = new DiscountPromotion();
 	}
+	
+//	class DiscountPromotion extends TimerTask {
+//		@override
+//		public void run() {
+//            log.info("Attempting to send discount message to user "+userId);
+//            try {
+//            	controller.search.db.
+//            } catch (Exception e) {
+//            	
+//            }
+//
+//            String text = "3111 brings you discounts to tours in China! ";
+//            TextMessage textMessage = new TextMessage(TIMEOUT_TEXT_MESSAGE);
+//            PushMessage pushMessage = new PushMessage(userId, textMessage);
+//            Response<BotApiResponse> response;
+//            try {
+//                response = LineMessagingServiceBuilder
+//                    .create(System.getenv("LINE_BOT_CHANNEL_TOKEN"))
+//                    .build()
+//                    .pushMessage(pushMessage)
+//                    .execute();
+//            } catch (IOException e) {
+//                log.info(e.toString());
+//            }
+//		}
+//	}
 	
 	/**
 	 * Checks what state the user is in and calls appropriate controllers.
