@@ -24,7 +24,7 @@ public class User {
 	private final Timer timer = new Timer();
 	private final UserList userList; // Users subscribe to a UserList
 	private LinkedList<String> buffer = new LinkedList<>();
-	//private ProjectPusher pusher;
+	private ProjectPusher pusher;
         
 	//temp for 10 sec
 	private final int TIMEOUT_TIME = 10*1000; // in milliseconds
@@ -125,7 +125,7 @@ public class User {
                         log.info("Attempting to send timeout message to user " + userId);
                         // The following can be potentially replaced by a class.
                         
-                        new ProjectPusher(userId, TIMEOUT_TEXT_MESSAGE);
+                        pusher = new ProjectPusher(userId, TIMEOUT_TEXT_MESSAGE);
                         /*
                         TextMessage textMessage = new TextMessage(TIMEOUT_TEXT_MESSAGE);
                         PushMessage pushMessage = new PushMessage(userId, textMessage);
