@@ -123,8 +123,8 @@ public class User {
 		public void run() {
                         log.info("Attempting to send timeout message to user "+userId);
                         // The following can be potentially replaced by a class.
-                        TextMessage textMessage = new TextMessage(TIMEOUT_TEXT_MESSAGE);
-                        PushMessage pushMessage = new PushMessage(userId, textMessage);
+			MessageFactory mf = new MessageFactory();
+                        PushMessage pushMessage = new PushMessage(userId, mf.createTextMessage(TIMEOUT_TEXT_MESSAGE));
                         Response<BotApiResponse> response;
                         try {
                                 response = LineMessagingServiceBuilder
