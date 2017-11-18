@@ -55,5 +55,6 @@ public class ProjectInitControllerTest {
 	public void testCreateMessage() {
 		Message m = init.createMessage();
 		assertNotNull(m);
+		assertTrue(m instanceof Message);
 	}
 }
