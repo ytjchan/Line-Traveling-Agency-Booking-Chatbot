@@ -121,8 +121,8 @@ public class User {
 		 */
 		public void run() {
                         log.info("Attempting to send timeout message to user " + userId);          
-                        pusher = new ProjectPusher(userId, TIMEOUT_TEXT_MESSAGE);
-                        remove();
+			ProjectPusher.pushMessage(userId, TIMEOUT_TEXT_MESSAGE);
+			remove();
 		}
 		
 	}
