@@ -6,7 +6,12 @@ import java.util.ArrayList;
 
 public class ProjectEnqController {
 	public ProjectEnqController() {}
-	//TODO: define functions to handle booking enquiries
+	
+	/**
+	 * This method takes a userId as input, returns a String containing informaiton about that user's booking details
+	 * @param userID This is the userId of the user whose booking info will be returned
+	 * @return String This is a message of user's booking, including offerId, number of tourists, tour fee...
+	 */
 	public String bookingEnq(String userID) {
 		SQLDatabaseEngine db = new SQLDatabaseEngine();
 		ArrayList<ArrayList<String>> rs = new ArrayList<>();
