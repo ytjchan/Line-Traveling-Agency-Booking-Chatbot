@@ -273,7 +273,13 @@ public class SQLDatabaseEngine extends DatabaseEngine {
     	tourRs.close();
     	return arr;
     }
-    
+    /**
+     * This method takes userId as input and returns a 2D array as this userId's booking record in database.
+     * @param userId This is the userId that is used to find bookings in database
+     * @return ArrayList<ArrayList<String>> Return an array of records, each record is a String array.
+     * @throws URISyntaxException
+     * @throws SQLException
+     */
     protected ArrayList<ArrayList<String>> searchBookingById(String userId) throws URISyntaxException, SQLException {
     		ArrayList<ArrayList<String>> rs = new ArrayList<>();
     		try (
@@ -293,6 +299,13 @@ public class SQLDatabaseEngine extends DatabaseEngine {
     		return rs;
     }
 
+    /**
+     * This method take userId as input, returns a tour record as String array to recommend to the user.
+     * @param userId This is used to find a proper recommendation for the specific user
+     * @return ArrayList<String> This contains the information of the tour recommended to that user.
+     * @throws URISyntaxException
+     * @throws SQLException
+     */
     protected ArrayList<String> getRecommendation(String userId) throws URISyntaxException, SQLException {
     	ArrayList<String> result = new ArrayList<String>();
     		try (

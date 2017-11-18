@@ -104,7 +104,11 @@ public class ProjectInitController {
 		);
         return carouselTemplate;
 	}
-	
+	/**
+	 * This method returns a message of recommended tour according to the input userId.
+	 * @param userId This is used to identify the user and get a recommendation accordingly
+	 * @return String This contains the information of the recommeded tour.
+	 */
 	public String recommendTrip (String userId) {
 		SQLDatabaseEngine db = new SQLDatabaseEngine();
 		ArrayList<String> rs = new ArrayList<String>();

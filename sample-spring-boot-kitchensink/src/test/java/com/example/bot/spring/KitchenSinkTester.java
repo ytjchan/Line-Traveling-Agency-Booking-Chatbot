@@ -57,6 +57,9 @@ public class KitchenSinkTester {
 	@Autowired
 	private ProjectEnqController enq;
 	
+	@Test
+	public void test() {}
+	
 /*	
 	@Test
 	public void testBookingEnquiry() {
