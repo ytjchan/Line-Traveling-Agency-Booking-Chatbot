@@ -3,19 +3,32 @@ package com.example.bot.spring;
 import com.linecorp.bot.client.LineMessagingServiceBuilder;
 import com.linecorp.bot.model.PushMessage;
 import com.linecorp.bot.model.message.Message;
-import com.linecorp.bot.model.message.TextMessage;
 import com.linecorp.bot.model.response.BotApiResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import lombok.extern.slf4j.Slf4j;
 import retrofit2.Response;
 
+/**
+ * A class designed to push messages actively to users.
+ * Each time up to 5 messages of any type can be pushed.
+ * For example, 
+ * <pre> {@code 
+ * ProjectPusher pp = new ProjectPusher(userId);
+ * pp.pushText("A1","A2","A3","A4","A5","A6");
+ * MessageFactory mf = new MessageFactory();
+ * pp.pushMessage(mf.createImageMessage(), mf.createImageMessage());
+ * ProjectPusher.pushTextShorthand(event.getSource().getUserId(), "B1","B2","B3","B4","B5","B6");
+ * } </pre>
+ * would push 5 (A1 to A5) text messages, 2 images, and another 5 (B1 to B5) messages to the user immediately.
+ * Notice that A6 and B6 are ignored in case more than 5 messages are created.
+ */
 @Slf4j
 public class ProjectPusher {
 	/**
 	 * userId of the User that will receive the push message(s).
 	 */
-	private String userId;
+	private final String userId;
 	
 	/**
 	 * Constructor of ProjectPusher.
