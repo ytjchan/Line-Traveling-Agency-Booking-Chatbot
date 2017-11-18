@@ -92,7 +92,7 @@ public class KitchenSinkController {
 
 	@Autowired
 	private LineMessagingClient lineMessagingClient;       
-        UserList userList = new UserList(this); // default access right
+        UserList userList = new UserList(); // default access right
 	public ProjectInterface funInterface = new ProjectInterface(this, userList);
 
 	@EventMapping
