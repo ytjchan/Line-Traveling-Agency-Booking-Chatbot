@@ -100,10 +100,10 @@ public class ProjectInterface {
 		buffer.add(text);
 		if (buffer.size() > 5)
 			buffer.poll();
+		
 		if (state=="init" && text.toLowerCase().contains("recommend")) {
 			replyType = "text";
 			replyText = controller.init.recommendTrip(userID);
-			
 		} else if (checkInitState(text)) {
 			state = "init";
 			replyCarousel = controller.init.createMessage();

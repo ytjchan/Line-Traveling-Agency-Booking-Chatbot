@@ -46,11 +46,28 @@ import com.example.bot.spring.DatabaseEngine;
 
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { KitchenSinkTester.class, SQLDatabaseEngine.class })
+@SpringBootTest(classes = { KitchenSinkTester.class, SQLDatabaseEngine.class, ProjectInitController.class,ProjectEnqController.class })
 public class KitchenSinkTester {
 	@Autowired
 	private SQLDatabaseEngine databaseEngine;
 	
+	@Autowired
+	private ProjectInitController init;
+	
+	@Autowired
+	private ProjectEnqController enq;
+	
+/*	
 	@Test
-	public void testNotFound() throws Exception {}
+	public void testBookingEnquiry() {
+		String reply = enq.bookingEnq("hkgeorgechen");
+		assertThat(reply).isEqualTo("You don't have any booking in our database");
+	}
+	@Test
+	public void testRecommendTrip() {
+		String reply = init.recommendTrip("64562");
+		assertThat(reply).isNotEqualTo("Sorry, we don't have recommendation for you.");
+	}
+*/
+	
 }

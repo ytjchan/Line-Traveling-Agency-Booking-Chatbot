@@ -290,10 +290,7 @@ public class SQLDatabaseEngine extends DatabaseEngine {
     				rs.add(temp);
     			}	
     		}
-    		if (rs.size()==0)
-    			return null;
-    		else
-    			return rs;
+    		return rs;
     }
 
     protected ArrayList<String> getRecommendation(String userId) throws URISyntaxException, SQLException {
@@ -301,7 +298,7 @@ public class SQLDatabaseEngine extends DatabaseEngine {
     		try (
                 Connection c = getConnection();
                 PreparedStatement stmt = c.prepareStatement(
-                		"select * from TourOffering where tourId in ("
+                		"select * from TourOffering where tourId not in ("
                 			+"select substr(offerid,1,5) from booking where lineId = ? )"
                 			+"and tourdate > ?"
                 			+"order by price desc"
