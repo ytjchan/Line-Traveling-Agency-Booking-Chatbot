@@ -106,23 +106,38 @@ public class ProjectInterface {
 		
 		String state = userList.getState(userId);
 		if (state.equals("new") || text.toLowerCase().equals("cancel")) {
+			
             userList.setState(userId, "init");
+            userList.resetSearchState(userId);
+            userList.resetBookState(userId);
             replyCarousel = controller.init.createMessage();
 			replyType = "carousel";
-		} else if (checkSearchState(text,userId)) {
+			
+		} 
+		
+		else if (checkSearchState(text,userId)) {
+			
 			userList.setState(userId, "search");
 			controller.search.process(text, state, userList.getSearchState(userId));
 			replyType = controller.search.replyType;
 			replyText = controller.search.replyText;
 			replyCarousel = controller.search.replyCarousel;
-		} else if (checkBookState(text, userId)) {
-			//TODO: call booking controller
+			
+		} 
+		
+		else if (checkBookState(text, userId)) {
+
+			userList.setState(userId, "book");
 			controller.book.process(text, state, userList.getBookState(userId), userId);
 			replyType = "mixed";
 			replyList = controller.book.replyList;
-		} else if (checkEnqState()) {
+		} 
+		
+		else if (checkEnqState()) {
 			//TODO: call enquiry controller
-		} else if (checkFAQ(text)) {
+		} 
+		
+		else if (checkFAQ(text)) {
             replyText="FAQ result is:\n"+controller.faq.search(text);
             replyType="text";
 		} else {
@@ -147,10 +162,10 @@ public class ProjectInterface {
 		SearchState searchState = userList.getSearchState(userId);
 		String state = userList.getState(userId);
 		if ((state.equals("init") && text.toLowerCase().contains("search"))) {
-			searchState.keywords.clear();
+			userList.resetSearchState(userId);
 			searchState.substate = "display";
 			return true;
-		} else if (state.equals("book") && text.toLowerCase().contains(".back")) {
+		} else if (state.equals("book") && text.toLowerCase().equals(".back")) {
 			userList.setState(userId, "search");
 			searchState.rsIndex = 0;
 			searchState.substate = "display";
@@ -161,7 +176,7 @@ public class ProjectInterface {
 		} else if (state.equals("search") && searchState.substate.equals("keywordMessage")) {
 			searchState.substate = "keywordInput";
 			return true;
-		} else if (state.contains("search") && !text.toLowerCase().contains("book")) {
+		} else if (state.equals("search") && !text.toLowerCase().contains("book")) {
 			searchState.substate = "display";
 			return true;
 		} else {
@@ -182,8 +197,8 @@ public class ProjectInterface {
 		//is really
 		BookState bookState = userList.getBookState(userId);
 		String state = userList.getState(userId);
-		if (state.contains("search") && text.toLowerCase().contains("book")) {
-			state = "book.init";
+		if (state.equals("search") && text.toLowerCase().contains("book")) {
+            userList.resetBookState(userId);
 			return true;
 		} else if (state.contains("book") && !text.toLowerCase().contains(".back")) {
 			return true;

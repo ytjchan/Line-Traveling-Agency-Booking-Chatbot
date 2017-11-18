@@ -111,7 +111,7 @@ public class ProjectSearchController {
 			//show tour details
 			if (text.toLowerCase().contains("show details of ")) {
 				replyType = "text";
-				ArrayList<ArrayList<String>> temp = db.searchTourID(text.toLowerCase().replace("show details of ", ""), "tour");
+				ArrayList<ArrayList<String>> temp = db.searchTourID(text.toLowerCase().replace("show details of ", ""));
 				replyText = temp.get(0).get(1) + "\n";
 				replyText += "Duration: " + temp.get(0).get(3) + " days\n";
 				replyText += "-" + temp.get(0).get(2).replace(" * ", "\n-");
@@ -121,13 +121,13 @@ public class ProjectSearchController {
 			//show dates of tour
 			if (text.toLowerCase().contains("show dates of ")) {
 				replyType = "text";
-				ArrayList<ArrayList<String>> temp = db.searchTourID(text.toLowerCase().replace("show dates of ", ""), "tour");
+				ArrayList<ArrayList<String>> temp = db.searchTourID(text.toLowerCase().replace("show dates of ", ""));
 				replyText = temp.get(0).get(1);
-				temp = db.searchTourID(text.toLowerCase().replace("show dates of ", ""), "touroffering");
+				temp = db.searchTourOfferingID(text.toLowerCase().replace("show dates of ", ""));
 				replyText += " (" + temp.get(0).get(0) + ")";
 				
 				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-				LocalDate localDate = LocalDate.now();
+				LocalDate localDate = LocalDate.now().plusDays(3);
 				String start = dtf.format(localDate);
 				
 				if (temp.size() > 0) {
@@ -184,6 +184,13 @@ public class ProjectSearchController {
 				return;
 			}
 			
+			if (text.toLowerCase().equals(".back") && state.equals("book")) {
+				replyType = "carousel";
+				searchState.rsIndex = 0;
+				createSearchCarousel(searchState);
+				return;
+			}
+			
 			//show prev 5
 			if (text.toLowerCase().contains("previous") || text.toLowerCase().contains("back") || text.toLowerCase().contains("last")) {
 				if (searchState.rsIndex <= 5) {
@@ -210,19 +217,13 @@ public class ProjectSearchController {
 				return;
 			}
 			
-			if (searchState.substate.equals("display")) {
-				replyType = "carousel";
-				createSearchCarousel(searchState);
-				return;
-			}
-			
 			
 			//unknown
 			replyType = "text";
 			replyText = "Sorry, I didn't understand that.";
 		} catch (URISyntaxException e) {
 			replyType = "text";
-			replyText = "URI Syntax problem with URI: " + System.getenv("DATABASE_URL");
+			replyText = "URI Syntax problem with URI";
 			state = "error";
 		} catch (SQLException e) {
 			replyType = "text";

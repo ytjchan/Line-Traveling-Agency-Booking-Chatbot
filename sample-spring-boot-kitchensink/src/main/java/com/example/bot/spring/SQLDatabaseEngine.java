@@ -18,8 +18,6 @@ import java.time.format.DateTimeFormatter;
 @Slf4j
 public class SQLDatabaseEngine extends DatabaseEngine {
         
-        //private Connection connection; // removed since we need to either use a finally block to close it or use try-with-resources to close it automatically (latter is eaier to code in)
-        
         /**
          * Return all keywords available in FAQ table
          * @return String of all keywords concatenated and separated by ', ' 
@@ -152,6 +150,8 @@ public class SQLDatabaseEngine extends DatabaseEngine {
                 temp.add(tourRs.getString(4));	//length (days)
                 arr.add(temp);
             }
+            stmt.close();
+            c.close();
             return arr;
         }
         
@@ -188,7 +188,6 @@ public class SQLDatabaseEngine extends DatabaseEngine {
                 return false;
         }
         
-        // removed since we must either use a finally block to close the connection OR create a connectoin in try-with-resouces block
         
 	private Connection getConnection() throws URISyntaxException, SQLException {
 		Connection connection;
@@ -213,15 +212,15 @@ public class SQLDatabaseEngine extends DatabaseEngine {
      */
     protected ArrayList<ArrayList<String>> searchAllTour() throws URISyntaxException, SQLException {
     	DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		LocalDate localDate = LocalDate.now();
+		LocalDate localDate = LocalDate.now().plusDays(3);
 		
 	    Connection c = getConnection();
 	    PreparedStatement stmt = c.prepareStatement(
 		"select tourid, tourname, tourdesc, tourlength from ("
-			+ "select subT.tourid, subT.offerid, subT.startdate, subt.tourname, subt.tourdesc, subt.tourlength from ("
-				+ "select tof.tourid, tof.offerid, tof.tourdate as startdate, tof.tourdate+t.tourlength as enddate, t.tourname, t.tourdesc, t.tourlength "
+			+ "select subT.tourid, subT.startdate, subt.tourname, subt.tourdesc, subt.tourlength from ("
+				+ "select tof.tourid, tof.tourdate as startdate, tof.tourdate+t.tourlength as enddate, t.tourname, t.tourdesc, t.tourlength "
 					+ "from tour as t join touroffering as tof on t.tourid = tof.tourid) as subT "
-			+ "where ? <= startdate) as outT "
+			+ "where ? < startdate) as outT "
 		+ "group by tourid, tourname, tourdesc, tourlength order by min(startdate) asc"
 		);
         //stmt.setString(1, dtf.format(localDate));
@@ -237,19 +236,21 @@ public class SQLDatabaseEngine extends DatabaseEngine {
                 temp.add(tourRs.getString(4));	//length (days)
                 arr.add(temp);
         }
+        stmt.close();
+        c.close();
         return arr;
 
     }
     
     /**
-     * Search input table for matching tour ID
+     * Search tour table for matching tour ID
+     * Only returns first 4 columns, which is enough for TOUR table, but not for TOUROFFERING 
      * @param in - tourID
-     * @param table - name of table to be searched
      * @return 2-dimensional ArrayList of search results
      */
-    protected ArrayList<ArrayList<String>> searchTourID(String in, String table) throws URISyntaxException, SQLException {
+    protected ArrayList<ArrayList<String>> searchTourID(String in) throws URISyntaxException, SQLException {
     	Connection c = getConnection();
-    	String template = "select * from " + table + " where lower(tourid) = lower(?)";
+    	String template = "select * from tour where lower(tourid) = lower(?)";
     	PreparedStatement stmt = c.prepareStatement(template);
     	stmt.setString(1, in);
     	ResultSet tourRs = stmt.executeQuery();
@@ -257,25 +258,55 @@ public class SQLDatabaseEngine extends DatabaseEngine {
     	while (tourRs.next()) {
     		ArrayList<String> temp = new ArrayList<String>();
     		temp.add(tourRs.getString(1));	//tourid
-            temp.add(tourRs.getString(2));	//name	|	offerid
-            temp.add(tourRs.getString(3));	//desc	|	tourdate
-            temp.add(tourRs.getString(4));	//length (days)	|	tourguidelineid
+            temp.add(tourRs.getString(2));	//name
+            temp.add(tourRs.getString(3));	//desc
+            temp.add(tourRs.getString(4));	//length (days)
             arr.add(temp);
     	}
+    	stmt.close();
+        c.close();
+    	return arr;
+    }
+    
+    
+    protected ArrayList<ArrayList<String>> searchTourOfferingID(String in) throws URISyntaxException, SQLException {
+    	Connection c = getConnection();
+    	String template = "select tourid, concat(tourid,offerid), tourdate, tourguidelineid, hotel, price, maxcapacity, minrequirement, confirmed from touroffering where lower(tourid) = lower(?)";
+    	PreparedStatement stmt = c.prepareStatement(template);
+    	stmt.setString(1, in);
+    	ResultSet tourRs = stmt.executeQuery();
+    	ArrayList<ArrayList<String>> arr= new ArrayList<>();
+    	while (tourRs.next()) {
+    		ArrayList<String> temp = new ArrayList<String>();
+    		temp.add(tourRs.getString(1));	//tourid
+            temp.add(tourRs.getString(2));	//offerid
+            temp.add(tourRs.getString(3));	//tourdate
+            temp.add(tourRs.getString(4));	//tourguidelineid
+            temp.add(tourRs.getString(5));	//hotel
+            temp.add(tourRs.getString(6));	//price
+            temp.add(tourRs.getString(7));	//maxcapacity
+            temp.add(tourRs.getString(8));	//minreq
+            temp.add(tourRs.getString(9));	//confirmed
+            arr.add(temp);
+    	}
+    	stmt.close();
+        c.close();
     	return arr;
     }
     
     
     /**
      * Search booker table for matching line ID
-     * @param in - lineID
-     * @return 2-dimensional arraylist of search results
+     * @param id
+     * @return 2-dimensional arraylist of strings (there should only be 1 or 0 records)
+     * @throws URISyntaxException
+     * @throws SQLException
      */
-    protected ArrayList<ArrayList<String>> searchBookerForLineID(String in) throws URISyntaxException, SQLException {
+    protected ArrayList<ArrayList<String>> searchBookerForLineID(String id) throws URISyntaxException, SQLException {
     	Connection c = getConnection();
     	String template = "select * from booker where lower(lineid) = lower(?)";
     	PreparedStatement stmt = c.prepareStatement(template);
-    	stmt.setString(1, in);
+    	stmt.setString(1, id);
     	ResultSet tourRs = stmt.executeQuery();
     	ArrayList<ArrayList<String>> arr= new ArrayList<>();
     	while (tourRs.next()) {
@@ -283,13 +314,137 @@ public class SQLDatabaseEngine extends DatabaseEngine {
     		temp.add(tourRs.getString(1));	//lineid
             temp.add(tourRs.getString(2));	//name
             temp.add(tourRs.getString(3));	//hkid
-            temp.add(Integer.toString(tourRs.getInt(4)));	//phoneno
-            temp.add(Integer.toString(tourRs.getInt(5)));	//age
+            temp.add(tourRs.getString(4));	//phoneno
+            temp.add(tourRs.getString(5));	//age
             arr.add(temp);
     	}
+    	stmt.close();
+        c.close();
     	return arr;
     }
     
+    /**
+     * Inputs a new user into the booker table
+     * @param userId
+     * @param name
+     * @param hkid
+     * @param age
+     * @param phoneno
+     * @throws URISyntaxException
+     * @throws SQLException
+     */
+    protected void inputUserData(String userId, String name, String hkid, int age, int phoneno) throws URISyntaxException, SQLException {
+    	Connection c = getConnection();
+    	String template = "insert into booker values (?,?,?,?,?)";
+    	PreparedStatement stmt = c.prepareStatement(template);
+    	stmt.setString(1, userId);
+    	stmt.setString(2, name);
+    	stmt.setString(3, hkid);
+    	stmt.setInt(4, phoneno);
+    	stmt.setInt(5, age);
+    	stmt.executeUpdate();
+    	stmt.close();
+        c.close();
+    }
+    
+    protected void inputBooking(String userId, String offerId, int adults, int children, int toddlers, double tourfee, String requests) throws URISyntaxException, SQLException {
+    	String template = "insert into booking values (?,?,?,?,?,?,?,?,?)";
+    	Connection c = getConnection();
+    	PreparedStatement stmt = c.prepareStatement(template);
+    	stmt.setString(1, userId);
+    	stmt.setString(2, offerId);
+    	stmt.setInt(3, adults);
+    	stmt.setInt(4, children);
+    	stmt.setInt(5, toddlers);
+    	stmt.setDouble(6, tourfee);
+    	stmt.setDouble(7, 0);
+    	stmt.setString(8, requests);
+    	stmt.setBoolean(9, false);
+    	stmt.executeUpdate();
+    	stmt.close();
+        c.close();
+    }
+    
+    
+    
+    protected int getCurrentBookingCount(String offerId) throws URISyntaxException, SQLException {
+    	Connection c = getConnection();
+    	String template = "select sum(adults) + sum(children) + sum(toddlers) from booking where offerid = ? and cancelled = false";
+    	//String template = "select sum(adults) + sum(children) + sum(toddlers) from booking where cancelled = false";
+    	PreparedStatement stmt = c.prepareStatement(template);
+    	stmt.setString(1, offerId);
+    	ResultSet tourRs = stmt.executeQuery();
+    	if (tourRs.next()) {
+    		int temp = tourRs.getInt(1);
+    		stmt.close();
+            c.close();
+    		return temp;
+    	}
+    	stmt.close();
+        c.close();
+    	return 0;
+    }
+    
+    /**
+     * Decrements the remaining discounts of the input tour
+     * To be used after a tour has been booked with a discount active
+     * @param offerId The combined offerid used in the booking table, as well as the bookState class
+     * @throws URISyntaxException
+     * @throws SQLException
+     */
+    protected void decrementDiscount(String offerId) throws URISyntaxException, SQLException {
+    	String tourId = offerId.substring(0,5);
+    	String offerId_8 = offerId.substring(5);
+    	
+    	Connection c = getConnection();
+    	String template = "update discount set remaining = remaining - 1 where tourid = ? and offerid = ?";
+    	PreparedStatement stmt = c.prepareStatement(template);
+    	stmt.setString(1, tourId);
+    	stmt.setString(2, offerId_8);
+    	stmt.executeUpdate();
+    	stmt.close();
+        c.close();
+    }
+
+    
+    protected double getDiscount(String offerId) throws URISyntaxException, SQLException {
+    	String tourId = offerId.substring(0,5);
+    	String offerId_8 = offerId.substring(5);
+    	Connection c = getConnection();
+    	String template = "select discount from discount where tourid = ? and offerid = ? and remaining > 0";
+    	PreparedStatement stmt = c.prepareStatement(template);
+    	stmt.setString(1, tourId);
+    	stmt.setString(2, offerId_8);
+    	ResultSet tourRs = stmt.executeQuery();
+    	if (tourRs.next()) {
+    		double temp = tourRs.getDouble(1);
+    		stmt.close();
+            c.close();
+    		return temp;
+    	}
+    	stmt.close();
+        c.close();
+    	return 1;
+    }
+    
+    protected boolean checkDiscount(String offerId) throws URISyntaxException, SQLException {
+    	String tourId = offerId.substring(0,5);
+    	String offerId_8 = offerId.substring(5);
+    	Connection c = getConnection();
+    	String template = "select discount from discount where tourid = ? and offerid = ? and remaining > 0";
+    	PreparedStatement stmt = c.prepareStatement(template);
+    	stmt.setString(1, tourId);
+    	stmt.setString(2, offerId_8);
+    	ResultSet tourRs = stmt.executeQuery();
+    	if (tourRs.next()) {
+    		stmt.close();
+            c.close();
+    		return true;
+    	}
+    	stmt.close();
+        c.close();
+    	return false;
+    }
 }
 
 

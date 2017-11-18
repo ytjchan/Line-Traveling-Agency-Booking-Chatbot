@@ -149,4 +149,16 @@ public class UserList {
             return null;
 		return user.getBookState();
     }
+    
+    public void resetBookState(String userId) {
+    	User user = findUser(userId);
+    	if (user != null)
+    		user.resetBookState();
+	}
+	
+	public void resetSearchState(String userId) {
+		User user = findUser(userId);
+    	if (user != null)
+    		user.resetSearchState();
+	}
 }

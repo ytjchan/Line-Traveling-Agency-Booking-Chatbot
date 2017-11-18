@@ -160,4 +160,13 @@ public class User {
 	public BookState getBookState() {
 		return bookState;
 	}
+	
+	public void resetBookState() {
+		bookState = new BookState();
+	}
+	
+	public void resetSearchState() {
+		searchState = new SearchState();
+	}
+	
 }
