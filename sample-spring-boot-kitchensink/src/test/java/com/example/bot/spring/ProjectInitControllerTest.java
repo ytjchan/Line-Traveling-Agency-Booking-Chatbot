@@ -10,12 +10,25 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+// Below is necessary for JUnit Test with Spring
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+
+
 /**
  * Test cases for the class ProjectInitController.
- */
+ * You may want to follow the following @ statements
+*/
+
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = { ProjectInitControllerTest.class, ProjectInitController.class })
+
 public class ProjectInitControllerTest {
 	
-	ProjectInitController init;
+	@Autowired
+	private ProjectInitController init;
 	
 	@BeforeClass
 	public static void setUpClass() {
@@ -42,6 +55,5 @@ public class ProjectInitControllerTest {
 	public void testCreateMessage() {
 		Message m = init.createMessage();
 		assertNotNull(m);
-		assertTrue(m instanceof TemplateMessage);
 	}
 }
