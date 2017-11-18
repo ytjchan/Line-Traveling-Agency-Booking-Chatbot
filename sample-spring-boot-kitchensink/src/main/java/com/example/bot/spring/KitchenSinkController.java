@@ -225,6 +225,10 @@ public class KitchenSinkController {
         funInterface.process(text, event.getSource().getUserId());
         //now the replyType of funInterface will change depending on the text & userID
         
+	// TODO make controllers return Message object or a List<Message> so we can just reply(replyToken, message)
+	if (funInterface.message != null)
+		reply(replyToken, funInterface.message);
+	
         //TODO manage the output reply based on the replyType
         
         switch (funInterface.replyType) {

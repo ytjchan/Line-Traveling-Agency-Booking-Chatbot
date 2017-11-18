@@ -91,7 +91,7 @@ public class MessageFactory {
 				String topic = contents[c++];
 				String description = contents[c++];
 				ArrayList<Action> actions = new ArrayList<>();
-				for (int j=0; i<buttons; i++){
+				for (int j=0; j<buttons; j++){
 					actions.add(createAction(contents[c++], contents[c++], contents[c++]));
 				}
 				cc.add(new CarouselColumn(uri , topic, description, actions));
