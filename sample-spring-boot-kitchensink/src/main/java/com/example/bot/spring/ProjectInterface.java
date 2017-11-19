@@ -14,7 +14,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Queue;
+<<<<<<< HEAD
 import java.util.TimeZone;
+=======
+>>>>>>> ac83cffc8a6d9d1fe9470ba4dd68803ea9ebb6f3
 import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -90,7 +93,6 @@ import lombok.extern.slf4j.Slf4j;
 import java.time.Instant;
 import retrofit2.Response;
 
-
 @Slf4j
 public class ProjectInterface {
 	//TODO define image addresses
@@ -105,7 +107,6 @@ public class ProjectInterface {
 	private ProjectMasterController controller = new ProjectMasterController();
     private final KitchenSinkController ksc;
     protected final UserList userList; 
-	
     private final Timer discountTimer = new Timer();
     private TimerTask discountPromotion;
     
@@ -164,15 +165,6 @@ public class ProjectInterface {
                     log.info(e.toString());
                 }
             }
-            
-            
- //           Calendar current = Calendar.getInstance(TimeZone.getTimeZone("Asia/Hong_Kong"));
-//          today.set(Calendar.HOUR_OF_DAY, 14);
-//          today.set(Calendar.MINUTE, 0);
-//          today.set(Calendar.SECOND, 0);
-          //discountTimer.schedule(new DiscountPromotion(), today.getTime(), TimeUnit.MILLISECONDS.convert(7, TimeUnit.DAYS));
-            //discountTimer.schedule(new DiscountPromotion(), current.getTime(), TimeUnit.MILLISECONDS.convert(10, TimeUnit.MINUTES));
-            //discountTimer.schedule(new DiscountPromotion(), current.getTime(), TimeUnit.MILLISECONDS.convert(10, TimeUnit.SECONDS));
 		}
 	}
 	
@@ -184,7 +176,7 @@ public class ProjectInterface {
 		Calendar current = Calendar.getInstance(TimeZone.getTimeZone("Asia/Hong_Kong"));
 		//discountTimer.schedule(new DiscountPromotion(), current.getTime(), TimeUnit.MILLISECONDS.convert(7, TimeUnit.DAYS));
 //		discountTimer.schedule(new DiscountPromotion(), current.getTime(), TimeUnit.MILLISECONDS.convert(10, TimeUnit.SECONDS));
-		discountTimer.schedule(new DiscountPromotion(), current.getTime(), TimeUnit.MILLISECONDS.convert(10, TimeUnit.MINUTES));
+		discountTimer.schedule(new DiscountPromotion(), current.getTime(), TimeUnit.MILLISECONDS.convert(1, TimeUnit.HOURS));
 	}
 	
 	public void forceRunDiscountPromotion() {
@@ -219,7 +211,6 @@ public class ProjectInterface {
 			controller.search.process(text, state, userList.getSearchState(userId));
 			replyType = "mixed";
 			replyList = controller.search.replyList;
-			
 		} 
 		
 		else if (checkBookState(text, userId)) {

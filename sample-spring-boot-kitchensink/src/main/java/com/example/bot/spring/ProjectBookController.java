@@ -425,7 +425,6 @@ public class ProjectBookController {
 		} else if (bookState.substate.equals("done")) {
 			replyList.add(new TextMessage("Enter .back (with the full stop) to return to your search results, or cancel to return to the main menu."));
 		}
-		
 		//for debugging
 		//replyList.add(new TextMessage("SUBSTATE: " + bookState.substate));
 	}

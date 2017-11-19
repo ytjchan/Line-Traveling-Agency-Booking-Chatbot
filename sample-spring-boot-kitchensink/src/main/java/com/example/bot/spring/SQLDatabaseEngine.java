@@ -17,8 +17,6 @@ import java.time.format.DateTimeFormatter;
 
 @Slf4j
 public class SQLDatabaseEngine extends DatabaseEngine {
-        
-
     /**
      * Return all keywords available in FAQ table
      * @return String of all keywords concatenated and separated by ', ' 
