@@ -11,7 +11,8 @@ import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
 import retrofit2.Response;
-
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @Slf4j
 /** User class to store all users that have not timed out (ie 15mins of inactivity). */
@@ -28,6 +29,11 @@ public class User {
         
 	private final int TIMEOUT_TIME = 15*60*1000; // in milliseconds
 	public final static String TIMEOUT_TEXT_MESSAGE = "*You have been in inactivity for 15mins, please restart by typing anything new*";
+	
+	//the following variables are for handling the search state
+	private SearchState searchState = new SearchState(); 
+	//the following variables are for handling the booking state
+	private BookState bookState = new BookState();
 	
         /**
          * Constructor of an User.
@@ -127,4 +133,35 @@ public class User {
 		
 	}
 
+	//////////////searchstate remake
+	
+	/**
+	 * Getter function for searchState
+	 * @return user's searchstate data object
+	 */
+	public SearchState getSearchState() {
+		return searchState;
+	}
+	
+	/**
+	 * Getter function for bookState
+	 * @return user's bookstate data object
+	 */
+	public BookState getBookState() {
+		return bookState;
+	}
+	
+	/**
+	 * Resets user's bookstate data object
+	 */
+	public void resetBookState() {
+		bookState = new BookState();
+	}
+	
+	/**
+	 * Resets user's searchstate data object
+	 */
+	public void resetSearchState() {
+		searchState = new SearchState();
+	}
 }

@@ -85,6 +85,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 @Slf4j
 @LineMessageHandler
@@ -93,9 +94,9 @@ public class KitchenSinkController {
 
 
 	@Autowired
-	private LineMessagingClient lineMessagingClient;       
-        UserList userList = new UserList(); // default access right
-	public ProjectInterface funInterface = new ProjectInterface(this, userList);
+	private LineMessagingClient lineMessagingClient;
+        UserList userList = new UserList(); // default access right (no need to pass ksc anymore)
+	public ProjectInterface funInterface = new ProjectInterface(userList);
 
 	@EventMapping
 	public void handleTextMessageEvent(MessageEvent<TextMessageContent> event) throws Exception {
@@ -205,7 +206,7 @@ public class KitchenSinkController {
 			throw new RuntimeException(e);
 		}
 	}
-        
+	
 	// removed since ProjectPusher is ready, but thanks for your investigation, Cloud.
 	
         // now has package access right
@@ -271,7 +272,7 @@ public class KitchenSinkController {
     		default:
     			break;
         }
-        
+
         
         /*
         switch (text) {
