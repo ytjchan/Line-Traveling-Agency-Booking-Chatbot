@@ -83,6 +83,7 @@ import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.URI;
+import java.util.LinkedList;
 
 @Slf4j
 @LineMessageHandler
@@ -91,8 +92,9 @@ public class KitchenSinkController {
 
 
 	@Autowired
-	private LineMessagingClient lineMessagingClient;
-	public ProjectInterface funInterface = new ProjectInterface();
+	private LineMessagingClient lineMessagingClient;       
+        UserList userList = new UserList(this); // default access right
+	public ProjectInterface funInterface = new ProjectInterface(this, userList);
 
 	@EventMapping
 	public void handleTextMessageEvent(MessageEvent<TextMessageContent> event) throws Exception {
@@ -100,6 +102,7 @@ public class KitchenSinkController {
 		log.info("This is your entry point:");
 		log.info("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 		TextMessageContent message = event.getMessage();
+                userList.update(event.getSource().getUserId());
 		handleTextContent(event.getReplyToken(), event, message);
 	}
 
@@ -165,8 +168,13 @@ public class KitchenSinkController {
 
 	@EventMapping
 	public void handlePostbackEvent(PostbackEvent event) {
-		String replyToken = event.getReplyToken();
-		this.replyText(replyToken, "Got postback " + event.getPostbackContent().getData());
+                String replyToken = event.getReplyToken();
+                if (userList.isInList(event.getSource().getUserId())){
+                        this.replyText(replyToken, event.getPostbackContent().getData());
+                        userList.update(event.getSource().getUserId()); // on button press eg carousel
+                } else { // User has expired
+                        this.replyText(replyToken, User.TIMEOUT_TEXT_MESSAGE);
+                }
 	}
 
 	@EventMapping
@@ -192,8 +200,9 @@ public class KitchenSinkController {
 			throw new RuntimeException(e);
 		}
 	}
-
-	private void replyText(@NonNull String replyToken, @NonNull String message) {
+        
+        // now has package access right
+	void replyText(@NonNull String replyToken, @NonNull String message) {
 		if (replyToken.isEmpty()) {
 			throw new IllegalArgumentException("replyToken must not be empty");
 		}
@@ -213,9 +222,9 @@ public class KitchenSinkController {
 		String text = content.getText();
 
         log.info("Got text message from {}: {}", replyToken, text);
-        
-        funInterface.process(text);
-        //now the replyType of funInterface will change depending on the text
+		
+        funInterface.process(text, event.getSource().getUserId());
+        //now the replyType of funInterface will change depending on the text & userID
         
         //TODO manage the output reply based on the replyType
         
@@ -231,6 +240,8 @@ public class KitchenSinkController {
     		}
     		case "carousel":{
     			//base on funInterface.replyCarousel
+    			TemplateMessage templateMessage = new TemplateMessage("Welcome to 3111 Travel", funInterface.replyCarousel);
+                this.reply(replyToken, templateMessage);
     			break;
     		}
     		case "confirm":{
@@ -242,10 +253,14 @@ public class KitchenSinkController {
     			this.replyText(replyToken, funInterface.replyText);
     			break;
     		}
+    		case "mixed": {
+    			this.reply(replyToken, funInterface.replyList);
+				break;
+    		}
     		default:
     			break;
         }
-        
+
         
         /*
         switch (text) {
@@ -292,10 +307,6 @@ public class KitchenSinkController {
                 this.reply(replyToken, templateMessage);
                 break;
             }
-        	
-            
-            	
-            
             default:
             	String reply = null;
             	try {
