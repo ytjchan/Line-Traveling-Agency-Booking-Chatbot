@@ -77,7 +77,8 @@ import java.util.LinkedList;
 public class ProjectInterface {
 	//TODO define image addresses
 	public static final String [] IMAGE_NAMES = {"/static/gather.jpg","/static/gd1.jpg","/static/beach3.jpg","TODO","TODO","TODO","TODO","TODO","TODO","TODO"};
-		
+	private final String STAFF_PASSCODE = "LOVE SUNG KIM ADD STAFF";
+
 	public String replyType;		//i.e. text, image, carousel, confirm, unknown
 	public String replyText;		//for replyType: text
 	public String replyImageAddress;
@@ -87,7 +88,7 @@ public class ProjectInterface {
 	public ProjectMasterController controller = new ProjectMasterController();
         private final KitchenSinkController ksc;
         private final UserList userList; 
-	
+		
 	Message message = null; // placeholder, if all Controllers can return a Message object/a List of Nessage objects after processsing, we can just ask the Controllers return Message to KSC
 	
 	public ProjectInterface(KitchenSinkController ksc, UserList userList) {
@@ -102,6 +103,10 @@ public class ProjectInterface {
 		userList.updateBuffer(userId, text);
 		
 		message = null; // since not all Controllers can return Message object right now
+		
+		if (text.equals(STAFF_PASSCODE)){
+			new SQLDatabaseEngine().addStaff(userId);
+		}
 		
 		if (userList.getState(userId).equals("new") || text.toLowerCase().equals("cancel")) {
                         userList.setState(userId, "init");
@@ -171,6 +176,11 @@ public class ProjectInterface {
         if(controller.faq.search(text).equals(newsb.toString()))
             return false;
         return true;
+    }
+    public String getStaffID() {
+    	String id=null;
+    	id=controller.unknown.getStaffId();
+    	return id;
     }
 
 
