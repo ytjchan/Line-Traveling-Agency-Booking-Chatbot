@@ -76,6 +76,7 @@ public class MessageFactory {
 	 * Then for each button, the first argument is the Action type, the second is the button name,
 	 * and the third and fourth are the Action parameters.
 	 * The images used are in sequential order as the order of creation
+	 * At most there can be 10 columns in one carousel message, and 3 buttons each column.
 	 * @see https://developers.line.me/en/docs/messaging-api/message-types/#template-messages
 	 * @param columns The number of columns shown in this Carousel
 	 * @param buttons The number of buttons in each column.
@@ -86,7 +87,7 @@ public class MessageFactory {
 		try {
 			ArrayList<CarouselColumn> cc = new ArrayList<>(); // used to store all columns to be form the message
 			int c = 0; // used to access each element of contents
-			for (int i=0; i<columns; i++){
+			for (int i=0; i<columns && i<10; i++){
 				String uri = uris.get(i%uris.size()); // use mod to ensure there is always some uris
 				String topic = contents[c++];
 				String description = contents[c++];
@@ -106,6 +107,7 @@ public class MessageFactory {
 	/**
 	 * Helper method to create an Action object of suitable type.
 	 * Type can be "message", "postback", "uri"
+	 * Beware of typo since it is highly error prone
 	 * @param type Type of Action it is.
 	 * @param param1 The first parameter on the creation of said object.
 	 * @param param2 The second parameter on the creation of said object.
@@ -145,10 +147,25 @@ public class MessageFactory {
 		Message a;
 		try {
 			switch (type.toLowerCase()) {
-				case ("text"): a = createTextMessage((String)param[0]); break;
-				case ("carousel"): a = createCarouselMessage((Integer)param[0], (Integer)param[1], (String[])param[2]); break;
-				case ("image"): a = createImageMessage(); break;
-				default: log.info("Message type not found"); a = createImageMessage(); // return a Image in case the type is not found.
+				case ("text"): 
+					a = createTextMessage((String)param[0]); 
+					break;
+				case ("carousel"):
+					ArrayList<String> carouselParams = new ArrayList<>();
+					for (int i=2; i<param.length; i++)
+						carouselParams.add((String)param[i]);
+					a = createCarouselMessage(
+						(int)param[0], 
+						(int)param[1], 
+						carouselParams.toArray(new String[0])
+					); 
+					break;
+				case ("image"): 
+					a = createImageMessage(); 
+					break;
+				default: 
+					log.info("Message type not found"); 
+					a = createImageMessage(); // return a Image in case the type is not found.
 			}
 		} catch (Exception e) {
 			log.info(e.toString());
