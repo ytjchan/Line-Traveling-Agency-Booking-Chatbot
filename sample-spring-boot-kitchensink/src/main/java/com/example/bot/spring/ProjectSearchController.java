@@ -154,7 +154,6 @@ public class ProjectSearchController {
 			//move to enter keyword state
 			else if (text.toLowerCase().contains("add filter")) {
 				replyList.add(new TextMessage("Please enter a keyword:"));
-				state = "keywordInput";
 			} 
 			
 			//enter date & update
