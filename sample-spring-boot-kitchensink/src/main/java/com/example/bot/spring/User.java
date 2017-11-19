@@ -153,18 +153,32 @@ public class User {
 	
 	//////////////searchstate remake
 	
+	/**
+	 * Getter function for searchState
+	 * @return user's searchstate data object
+	 */
 	public SearchState getSearchState() {
 		return searchState;
 	}
 	
+	/**
+	 * Getter function for bookState
+	 * @return user's bookstate data object
+	 */
 	public BookState getBookState() {
 		return bookState;
 	}
 	
+	/**
+	 * Resets user's bookstate data object
+	 */
 	public void resetBookState() {
 		bookState = new BookState();
 	}
 	
+	/**
+	 * Resets user's searchstate data object
+	 */
 	public void resetSearchState() {
 		searchState = new SearchState();
 	}

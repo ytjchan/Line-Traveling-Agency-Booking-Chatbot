@@ -135,7 +135,11 @@ public class UserList {
     
 ////////////////////searchstate remake
     
-    
+    /**
+     * Getter function for input user's searchState dataobject
+     * @param userId
+     * @return
+     */
     public SearchState getSearchState(String userId) {
     	User user = findUser(userId);
     	if (user == null)
@@ -143,6 +147,11 @@ public class UserList {
 		return user.getSearchState();
     }
     
+    /**
+     * Getter function for input user's bookState data object
+     * @param userId
+     * @return
+     */
     public BookState getBookState(String userId) {
     	User user = findUser(userId);
     	if (user == null)
@@ -150,12 +159,20 @@ public class UserList {
 		return user.getBookState();
     }
     
+    /**
+     * Resets input user's bookstate data object
+     * @param userId
+     */
     public void resetBookState(String userId) {
     	User user = findUser(userId);
     	if (user != null)
     		user.resetBookState();
 	}
 	
+    /**
+     * Resets input user's searchstate data object
+     * @param userId
+     */
 	public void resetSearchState(String userId) {
 		User user = findUser(userId);
     	if (user != null)

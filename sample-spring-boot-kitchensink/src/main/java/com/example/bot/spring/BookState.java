@@ -30,8 +30,7 @@ public class BookState {
 	public boolean discounted = false;
 	
     /**
-     * Constructor of a BookState.
-	 * Sets startDate to date constructed
+     * Constructor of BookState.
      */
 	public BookState() {}
     

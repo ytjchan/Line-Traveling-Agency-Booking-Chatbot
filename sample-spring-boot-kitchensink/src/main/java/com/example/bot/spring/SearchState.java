@@ -22,6 +22,9 @@ public class SearchState {
      */
 	public SearchState() {}
     
+	/**
+	 * Resets dates to default (min start, max end date)
+	 */
     public void resetDates() {
     	startDate = "0000-01-01";
 		endDate = "9999-12-31";

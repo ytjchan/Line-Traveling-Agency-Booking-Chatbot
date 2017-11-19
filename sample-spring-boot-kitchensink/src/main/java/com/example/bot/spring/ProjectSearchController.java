@@ -84,6 +84,13 @@ public class ProjectSearchController {
 	
 	public ProjectSearchController() {}
 	
+	/**
+	 * Tour Search handler called by projectInterface.
+	 * Uses replyList to pass reply back to projectInterface.
+	 * @param text text to be processed
+	 * @param state current state of chatbot 
+	 * @param searchState object that stores all necessary information for processing tour search state
+	 */
 	public void process(String text, String state, SearchState searchState) {
 		replyList.clear();
 		
@@ -213,10 +220,12 @@ public class ProjectSearchController {
 		//replyList.add(new TextMessage("Start: " + searchState.startDate + "\nEnd: " + searchState.endDate + "\nRS size: " + searchState.rs.size()));
 	}
 	
-	//CREATES A CAROUSEL OBJECT
-	//1ST column is a menu
-	//2 onwards is up to 5 results from rs
-	//Last column is show more menu
+	/**
+	 * Helper function that creates a carousel based on current filters.
+	 * 1st and last column are menus
+	 * In between are results from rs
+	 * @param searchState object that stores all necessary information for processing tour search state
+	 */
 	public void createSearchCarousel(SearchState searchState) { //int rsIndex, ArrayList<ArrayList<String>> rs, LinkedList<String> keywords) {
 		List<CarouselColumn> columns = new LinkedList<CarouselColumn>();
 		

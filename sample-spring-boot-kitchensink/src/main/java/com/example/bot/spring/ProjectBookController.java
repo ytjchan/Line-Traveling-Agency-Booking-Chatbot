@@ -80,8 +80,19 @@ public class ProjectBookController {
 	private SQLDatabaseEngine db = new SQLDatabaseEngine();
 	public List<Message> replyList = new LinkedList<Message>();
 	
+	/**
+	 * Constructor for Booking Controller
+	 */
 	public ProjectBookController() {}
 	
+	/**
+	 * Booking handler called by projectInterface.
+	 * Uses replyList to pass reply back to projectInterface. 
+	 * @param text text to be processed
+	 * @param state current state of chatbot 
+	 * @param bookState object that stores all necessary information for processing booking state
+	 * @param userId id of current user
+	 */
 	public void process(String text, String state, BookState bookState, String userId) {
 		replyList.clear();
 		
@@ -429,7 +440,11 @@ public class ProjectBookController {
 		//replyList.add(new TextMessage("SUBSTATE: " + bookState.substate));
 	}
 	
-	
+	/**
+	 * Helper function that sets tour offering object in bookState 
+	 * @param bookState object that stores all necessary information for processing booking state
+	 * @throws Exception
+	 */
 	private void getOfferings(BookState bookState) throws Exception {
 		bookState.offerings = db.searchTourOfferingID(bookState.tourId);
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -443,15 +458,11 @@ public class ProjectBookController {
 		}
 	}
 	
-	
-	private ArrayList<String> getTourDates(BookState bookState) throws Exception {		
-		ArrayList<String> output = new ArrayList<String>();
-		for (ArrayList<String> record : bookState.offerings) {
-			output.add(record.get(2));
-		}
-		return output;
-	}
-	
+	/**
+	 * Helper function that sets a reply to show tour offerings
+	 * @param bookState object that stores all necessary information for processing booking state
+	 * @throws Exception
+	 */
 	private void showOfferings(BookState bookState) throws Exception {
 		if (bookState.offerings.size() == 0) {
 			replyList.add(new TextMessage("I'm afraid we don't have any available offerings for this tour!\nPlease enter .back (with the full stop) to return to your search results."));

@@ -14,10 +14,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Queue;
-<<<<<<< HEAD
 import java.util.TimeZone;
-=======
->>>>>>> ac83cffc8a6d9d1fe9470ba4dd68803ea9ebb6f3
 import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -110,7 +107,11 @@ public class ProjectInterface {
     private final Timer discountTimer = new Timer();
     private TimerTask discountPromotion;
     
-    
+    /**
+     * 
+     * @param ksc
+     * @param userList
+     */
 	public ProjectInterface(KitchenSinkController ksc, UserList userList) {
 		this.ksc = ksc;
         this.userList = userList;
@@ -129,8 +130,8 @@ public class ProjectInterface {
 	class DiscountPromotion extends TimerTask {
 		
 		@Override
-		/**
-		 * 
+		/**Task to run on timer event.
+		 * Sends a pushmessage to every user in the booking table, promoting discounts (if any).
 		 */
 		public void run() {
             ArrayList<ArrayList<String>> deals = new ArrayList<ArrayList<String>>();
@@ -142,36 +143,43 @@ public class ProjectInterface {
             	log.info(e.toString());
             	return;
             }
-            LocalDate localDate = LocalDate.now(ZoneId.of("Asia/Hong_Kong"));
-            String text = "3111 brings you limited-time discounts to the best tours in China!";
-            for (int i=0; i < 3 && i < deals.size(); i++) {
-            	text += "\n" + ((1-Double.parseDouble(deals.get(i).get(1)))*100) + "% off our " + deals.get(i).get(0);
-            }
-            text += "\nAnd many more! Check out our offers today!";
-            
-            TextMessage textMessage = new TextMessage(text);
-            
-            for (String userId : userList) {
-            	log.info("Attempting to send discount message to user "+userId);
-            	PushMessage pushMessage = new PushMessage(userId, textMessage);
-                Response<BotApiResponse> response;
-                try {
-                    response = LineMessagingServiceBuilder
-                        .create(System.getenv("LINE_BOT_CHANNEL_TOKEN"))
-                        .build()
-                        .pushMessage(pushMessage)
-                        .execute();
-                } catch (IOException e) {
-                    log.info(e.toString());
-                }
+            if (deals.size() > 0) {
+	            String text = "3111 brings you limited-time discounts to the best tours in China!";
+	            for (int i=0; i < 3 && i < deals.size(); i++) {
+	            	text += "\n" + ((1-Double.parseDouble(deals.get(i).get(1)))*100) + "% off our " + deals.get(i).get(0);
+	            }
+	            text += "\nAnd many more! Check out our offers today!";
+	            
+	            TextMessage textMessage = new TextMessage(text);
+	            
+	            for (String userId : userList) {
+	            	log.info("Attempting to send discount message to user "+userId);
+	            	PushMessage pushMessage = new PushMessage(userId, textMessage);
+	                Response<BotApiResponse> response;
+	                try {
+	                    response = LineMessagingServiceBuilder
+	                        .create(System.getenv("LINE_BOT_CHANNEL_TOKEN"))
+	                        .build()
+	                        .pushMessage(pushMessage)
+	                        .execute();
+	                } catch (IOException e) {
+	                    log.info(e.toString());
+	                }
+	            }
             }
 		}
 	}
 	
+	/**
+	 * Manually stops discount pushmessages.
+	 */
 	public void stopDiscountPromotion() {
 		discountPromotion.cancel();
 	}
 	
+	/**
+	 * Manually stops discount pushmessages.
+	 */
 	public void startDiscountPromotion() {
 		Calendar current = Calendar.getInstance(TimeZone.getTimeZone("Asia/Hong_Kong"));
 		//discountTimer.schedule(new DiscountPromotion(), current.getTime(), TimeUnit.MILLISECONDS.convert(7, TimeUnit.DAYS));
@@ -179,6 +187,9 @@ public class ProjectInterface {
 		discountTimer.schedule(new DiscountPromotion(), current.getTime(), TimeUnit.MILLISECONDS.convert(1, TimeUnit.HOURS));
 	}
 	
+	/**
+	 * Forces a discount pushmessage to be sent. 
+	 */
 	public void forceRunDiscountPromotion() {
 		discountPromotion.run();
 	}

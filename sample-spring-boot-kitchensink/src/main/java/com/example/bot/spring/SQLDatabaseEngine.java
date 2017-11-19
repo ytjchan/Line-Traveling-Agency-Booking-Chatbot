@@ -202,6 +202,8 @@ public class SQLDatabaseEngine extends DatabaseEngine {
      * Search tour table for matching tour ID
      * @param in - tourID
      * @return 2-dimensional ArrayList of search results
+     * @throws URISyntaxException
+     * @throws SQLException
      */
     protected ArrayList<ArrayList<String>> searchTourID(String in) throws URISyntaxException, SQLException {
     	Connection c = getConnection();
@@ -224,9 +226,9 @@ public class SQLDatabaseEngine extends DatabaseEngine {
     }
     
     /**
-     * 
-     * @param in
-     * @return
+     * Search touroffering table for matching tour ID
+     * @param in tourID
+     * @return 2-dimensional ArrayList of search results
      * @throws URISyntaxException
      * @throws SQLException
      */
@@ -309,7 +311,7 @@ public class SQLDatabaseEngine extends DatabaseEngine {
     }
     
     /**
-     * 
+     * Inputs a new booking into the booking table
      * @param userId
      * @param offerId
      * @param adults
@@ -340,9 +342,9 @@ public class SQLDatabaseEngine extends DatabaseEngine {
     
     
     /**
-     * 
-     * @param offerId
-     * @return
+     * Gets the number of people currently booking an input touroffering
+     * @param offerId 15-character offerId used in booking table ([tourid][offerid])
+     * @return Number of people booked in input touroffering
      * @throws URISyntaxException
      * @throws SQLException
      */
@@ -386,9 +388,9 @@ public class SQLDatabaseEngine extends DatabaseEngine {
     }
     
     /**
-     * 
-     * @param offerId
-     * @return
+     * Gets the discount rate of input tour offering, if any
+     * @param offerId 15-character offerId used in booking table ([tourid][offerid])
+     * @return 1 if no discount, some number < 1 otherwise.
      * @throws URISyntaxException
      * @throws SQLException
      */
@@ -414,7 +416,7 @@ public class SQLDatabaseEngine extends DatabaseEngine {
     
     /**
      * Checks if the input tour offering has a discount active.
-     * @param offerId 15-character offerId used 
+     * @param offerId 15-character offerId used in booking table ([tourid][offerid])
      * @return True if there is a discount, false otherwise.
      * @throws URISyntaxException
      * @throws SQLException
@@ -438,6 +440,12 @@ public class SQLDatabaseEngine extends DatabaseEngine {
     	return false;
     }
     
+    /**
+     * Gets valid discounts from discount table
+     * @return 2-d arraylist of discounts (offerid, discount)
+     * @throws URISyntaxException
+     * @throws SQLException
+     */
     protected ArrayList<ArrayList<String>> getDeals() throws URISyntaxException, SQLException {
     	DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate localDate = LocalDate.now().plusDays(3);
@@ -462,6 +470,12 @@ public class SQLDatabaseEngine extends DatabaseEngine {
 		return out;
     }
     
+    /**
+     * Gets the userID's of all bookers
+     * @return arraylist of userID's of bookers
+     * @throws URISyntaxException
+     * @throws SQLException
+     */
     protected ArrayList<String> getBookers() throws URISyntaxException, SQLException {
     	String template = "select lineid from booker";
     	Connection c = getConnection();
