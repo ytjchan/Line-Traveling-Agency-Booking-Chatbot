@@ -12,9 +12,34 @@ create table Tour (TourID varchar(5) constraint check_id_length check (length(To
 create table TourGuide (LineID varchar(40) primary key, Name varchar(50));
 create table TourOffering (TourID varchar(5) references Tour(TourID), OfferID varchar(8) constraint check_id_length check(length(OfferID)=8), TourDate date, TourGuideLineID varchar(40) references TourGuide(LineID) not null, Hotel varchar(50), Price smallint constraint check_price check (Price>0), MaxCapacity smallint constraint check_capacity check (MaxCapacity>0 and MaxCapacity>MinRequirement), MinRequirement smallint constraint check_requirement check (MinRequirement>0), Confirmed boolean, primary key(TourID, OfferID));
 create table Booker (LineID varchar(40) primary key, Name varchar(50), HKID varchar(7), PhoneNo integer, Age smallint constraint check_age check (Age>0));
-create table Booking (LineID varchar(40) references Booker(LineID) not null, OfferID varchar(13) not null, Adults smallint, Children smallint, Toddlers smallint, TourFee real, AmountPaid real, SpecialRequest varchar(500), Cancelled boolean default false, primary key (LineID,OfferID));
+
+/* changed for extra feature */
+/* create table Booking (LineID varchar(40) references Booker(LineID) not null, OfferID varchar(13) not null, Adults smallint, Children smallint, Toddlers smallint, TourFee real, AmountPaid real, SpecialRequest varchar(500), Cancelled boolean default false, primary key (LineID,OfferID));*/
+create table Booking (
+	LineID varchar(40) references Booker(LineID) not null,
+	OfferID varchar(13) not null, 
+	Adults smallint, 
+	Children smallint, 
+	Toddlers smallint, 
+	TourFee real, 
+	AmountPaid real, 
+	SpecialRequest varchar(500), 
+	Cancelled boolean default false, 
+	bookingid serial primary key
+);
+
 create table Question (QID integer primary key, LineID varchar(40) not null, FullQuestion varchar(200) not null, LastFiveQuestion varchar(1000), Resolved boolean default false);
 create table FAQ (Keyword varchar(200) primary key, Question varchar(200), Answer varchar(500) not null);
+
+/* new table for extra feature */
+create table Discount (
+	TourID  varchar(5),
+	OfferID varchar(8),
+	Discount real not null,
+	Count int not null,
+	Remaining int not null,
+	foreign key(TourID, OfferID) references touroffering(tourid,offerid)
+);
 
 /* Description for tables */
 comment on table Tour is 'All Tour name and description, reused by TourOffering';
