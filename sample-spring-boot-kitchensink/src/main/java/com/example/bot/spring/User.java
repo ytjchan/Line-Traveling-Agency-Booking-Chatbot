@@ -12,6 +12,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import retrofit2.Response;
 
+
 @Slf4j
 /** User class to store all users that have not timed out (ie 15mins of inactivity). */
 public class User {
@@ -22,8 +23,8 @@ public class User {
 	private TimerTask timeoutMessage;
 	private final Timer timer = new Timer();
 	private final UserList userList; // Users subscribe to a UserList
-	private final KitchenSinkController ksc; // needed in order to call reply
 	private LinkedList<String> buffer = new LinkedList<>();
+	private ProjectPusher pusher;
         
 	private final int TIMEOUT_TIME = 15*60*1000; // in milliseconds
 	public final static String TIMEOUT_TEXT_MESSAGE = "*You have been in inactivity for 15mins, please restart by typing anything new*";
@@ -33,11 +34,9 @@ public class User {
 	 * References to UserList and controller is required in order to remove User from UserList and schedule a timeout message.
          * @param userId userId referring to user's line account
          * @param userList A UserList object that the User registers to
-         * @param ksc KitchenSinkController to start a reply on schedule
          */
-	public User(String userId, UserList userList, KitchenSinkController ksc) {
+	public User(String userId, UserList userList) {
 		this.userId = userId;
-		this.ksc = ksc;
                 this.userList = userList;
                 timeoutMessage = new TimeoutMessage();
                 timer.schedule(timeoutMessage, TIMEOUT_TIME);
@@ -121,21 +120,9 @@ public class User {
 		 * Overriding TimerTask so that run() would be run on schedule.
 		 */
 		public void run() {
-                        log.info("Attempting to send timeout message to user "+userId);
-                        // The following can be potentially replaced by a class.
-			MessageFactory mf = new MessageFactory();
-                        PushMessage pushMessage = new PushMessage(userId, mf.createTextMessage(TIMEOUT_TEXT_MESSAGE));
-                        Response<BotApiResponse> response;
-                        try {
-                                response = LineMessagingServiceBuilder
-                                        .create(System.getenv("LINE_BOT_CHANNEL_TOKEN"))
-                                        .build()
-                                        .pushMessage(pushMessage)
-                                        .execute();
-                        } catch (IOException e) {
-                                log.info(e.toString());
-                        }
-                        remove();
+                        log.info("Attempting to send timeout message to user " + userId);          
+			ProjectPusher.pushTextShorthand(userId, TIMEOUT_TEXT_MESSAGE);
+			remove();
 		}
 		
 	}
