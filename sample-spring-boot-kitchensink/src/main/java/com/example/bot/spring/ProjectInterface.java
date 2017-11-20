@@ -93,7 +93,7 @@ public class ProjectInterface {
 	
 	public ProjectInterface(KitchenSinkController ksc, UserList userList) {
 		this.ksc = ksc;
-                this.userList = userList;
+        this.userList = userList;
 	}
 	
 	//this will change the reply type & reply 
