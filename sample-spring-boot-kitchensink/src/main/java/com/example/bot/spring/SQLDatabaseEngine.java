@@ -105,6 +105,8 @@ public class SQLDatabaseEngine {
      * @param startDate a date string in format yyyy-mm-dd
      * @param endDate a date string in format yyyy-mm-dd
      * @return String array of formatted search results (see above)
+     * @throws URISyntaxException
+     * @throws SQLException
      */
     protected ArrayList<ArrayList<String>> searchTourByDesc(LinkedList<String> keywords, String startDate, String endDate) throws URISyntaxException, SQLException {
         Connection c = getConnection();
@@ -147,9 +149,9 @@ public class SQLDatabaseEngine {
     // javadoc below is just for fancy code suggestion in IDE
     /**
      * Insert a new record into Question table, qid is prepared automatically here
-     * @param lineid
-     * @param fullquestion
-     * @param lastfivequestions
+     * @param lineid User ID
+     * @param fullquestion String of question
+     * @param lastfivequestions Last 5 messages (for context)
      * @return boolean indicator for whether insertion is successful
      */
     protected boolean insertQuestion(String lineid, String fullquestion, String lastfivequestions){              
@@ -381,7 +383,7 @@ public class SQLDatabaseEngine {
     /**
      * Gets the discount rate of input tour offering, if any
      * @param offerId 15-character offerId used in booking table ([tourid][offerid])
-     * @return 1 if no discount, some number < 1 otherwise.
+     * @return 1 if no discount, some number less than 1 otherwise.
      * @throws URISyntaxException
      * @throws SQLException
      */
@@ -547,7 +549,7 @@ public class SQLDatabaseEngine {
     /**
      * This method take userId as input, returns a tour record as String array to recommend to the user.
      * @param userId This is used to find a proper recommendation for the specific user
-     * @return ArrayList<String> This contains the information of the tour recommended to that user.
+     * @return ArrayList(String) This contains the information of the tour recommended to that user.
      * @throws URISyntaxException
      * @throws SQLException
      */
@@ -580,7 +582,7 @@ public class SQLDatabaseEngine {
     /**
      * This method takes userId as input and returns a 2D array as this userId's booking record in database.
      * @param userId This is the userId that is used to find bookings in database
-     * @return ArrayList<ArrayList<String>> Return an array of records, each record is a String array.
+     * @return ArrayList(ArrayList(String)) Return an array of records, each record is a String array.
      * @throws URISyntaxException
      * @throws SQLException
      */

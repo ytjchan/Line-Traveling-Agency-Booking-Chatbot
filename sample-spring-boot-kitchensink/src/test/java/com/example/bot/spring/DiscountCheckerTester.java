@@ -1,4 +1,12 @@
 package com.example.bot.spring;
+import static org.junit.Assert.*;
+
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
+import org.junit.Test;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -11,10 +19,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -42,31 +47,32 @@ import com.linecorp.bot.spring.boot.annotation.LineBotMessages;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
-
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { KitchenSinkTester.class, KitchenSinkController.class })
-public class KitchenSinkTester {
-	protected KitchenSinkController ksc = new KitchenSinkController();
-	
-	@Test
-	public void testPromo() {
-		ksc.handleTextContent(null, "STOP PROMOTION", "ksc test");
-		ksc.handleTextContent(null, "START PROMOTION", "ksc test");
-		ksc.handleTextContent(null, "FORCE PROMOTION", "ksc test");
-	}
-	
-	
-	@Test
-	public void testCategory() {
+@SpringBootTest(classes = { DiscountChecker.class })
+public class DiscountCheckerTester {
+	protected DiscountChecker dc = new DiscountChecker(); 
 
-		ksc.funInterface.replyText = "test";
-		ksc.replyCategory("text", null);
-		
-		ksc.funInterface.replyCarousel = null;
-		ksc.replyCategory("carousel", null);
-		
-		ksc.replyCategory("unknown", null);
-		ksc.replyCategory("default", null);
-		
+	@Test
+	public void testStop() {
+		dc.stopDiscountPromotion();
 	}
+
+	
+	@Test
+	public void testStart() {
+		dc.startDiscountPromotion();
+	}
+	
+	@Test
+	public void testForce() {
+		dc.forceRunDiscountPromotion();
+	}
+	
+	@Test
+	public void addFilterTest() {
+		DiscountChecker.DiscountPromotion dp = dc.new DiscountPromotion();
+		dp.run();
+	}
+	
 }
+

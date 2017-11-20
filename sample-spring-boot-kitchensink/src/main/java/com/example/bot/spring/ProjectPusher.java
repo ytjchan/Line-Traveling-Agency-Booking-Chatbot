@@ -44,8 +44,8 @@ public class ProjectPusher {
 	 * Push 1 to 5 text messages to the user specified by userId in constructor.
 	 * Each message can push up to 2000 characters.
 	 * Thanks to varargs, can pass up to 5 Strings in parameter to push multuple messages in a time.
-	 * @see https://developers.line.me/en/docs/messaging-api/reference/#text
-	 * @see https://docs.oracle.com/javase/1.5.0/docs/guide/language/varargs.html
+	 * https://developers.line.me/en/docs/messaging-api/reference/#text
+	 * https://docs.oracle.com/javase/1.5.0/docs/guide/language/varargs.html
 	 * @param texts 1 to 5 Strings, each up to 2000 characters.
 	 */
 	public void pushText(String... texts) {
@@ -78,8 +78,8 @@ public class ProjectPusher {
 	 * Can utilize {@link com.example.bot.spring.MessageFactory MessageFactory} to create desired type of Message object.
 	 * Thanks to varargs, can pass up to 5 messages or only 1 each time.
 	 * For example, can {@code .pushMessage(message1)} and also {@code .pushMessage(message1, message2, message3, message4, message5)}.
-	 * @see https://developers.line.me/en/docs/messaging-api/reference/#send-push-message
-	 * @see https://docs.oracle.com/javase/1.5.0/docs/guide/language/varargs.html
+	 * https://developers.line.me/en/docs/messaging-api/reference/#send-push-message
+	 * https://docs.oracle.com/javase/1.5.0/docs/guide/language/varargs.html
 	 * @param messages A number of Message object, for example TextMessage, ImageMessage, CarouselMessage, etc.
 	 */
 	public void pushMessage(Message... messages) {
@@ -109,8 +109,8 @@ public class ProjectPusher {
 	 * Shorthand method to reply 1 to 5 text message on the user specified by userId.
 	 * This avoids the need to create a ProjectPush before hand, but only allows one message pushed each time.
 	 * Thanks to varargs, can pass up to 5 Strings in parameter to push multuple messages in a time.
-	 * @see https://developers.line.me/en/docs/messaging-api/reference/#text
-	 * @see https://docs.oracle.com/javase/1.5.0/docs/guide/language/varargs.html
+	 * https://developers.line.me/en/docs/messaging-api/reference/#text
+	 * https://docs.oracle.com/javase/1.5.0/docs/guide/language/varargs.html
 	 * @param userId The userId that should recieve the text message.
 	 * @param texts 1 to 5 Strings, each up to 2000 characters.
 	 */

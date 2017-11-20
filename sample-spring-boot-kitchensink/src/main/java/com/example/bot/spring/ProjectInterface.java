@@ -111,7 +111,7 @@ public class ProjectInterface {
 	
     /**
      * Constructor
-     * @param userList
+     * @param userList List of user objects
      */
 	public ProjectInterface(UserList userList) {
         this.userList = userList;
@@ -174,7 +174,7 @@ public class ProjectInterface {
 	 * Checks if the state is 'search'
 	 * Some conditions are checked implicitly by other checks called prior
 	 * @param text - Input text received from user
-	 * @param state - Previous state
+	 * @param userId - ID of user
 	 * @return true if it is, false if it isn't
 	 */
 	public boolean checkSearchState(String text, String userId) {
@@ -207,7 +207,7 @@ public class ProjectInterface {
 	 * Checks if the state is 'book'
 	 * Some conditions are checked implicitly by other checks called prior
 	 * @param text - Input text received from user
-	 * @param state - Previous state
+	 * @param userId - ID of user
 	 * @return true if it is, false if it isn't
 	 */
 	public boolean checkBookState(String text, String userId) {
@@ -229,6 +229,7 @@ public class ProjectInterface {
 	/**
 	 * This method take user's text as input and returns a boolean value indicating if this text is a booking enquiry or not.
 	 * @param text The text used to decide user's sending a booking enquiry or not
+	 * @param userId ID of user
 	 * @return bool If true, user is sending a booking enquiry, otherwise is not a booking enquiry.
 	 */
 	public boolean checkEnqState(String text,String userId) {

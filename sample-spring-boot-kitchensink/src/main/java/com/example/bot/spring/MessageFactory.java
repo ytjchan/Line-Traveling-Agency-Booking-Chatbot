@@ -61,7 +61,7 @@ public class MessageFactory {
 	/**
 	 * Factory method for TextMessage.
 	 * Creates a TextMessage that looks like a normal text message sent by another account.
-	 * @see https://developers.line.me/en/docs/messaging-api/message-types/#text-messages
+	 * see https://developers.line.me/en/docs/messaging-api/message-types/#text-messages
 	 * @param text A String containing the text message.
 	 * @return A TextMessage object.
 	 */
@@ -77,11 +77,11 @@ public class MessageFactory {
 	 * and the third and fourth are the Action parameters.
 	 * The images used are in sequential order as the order of creation
 	 * At most there can be 10 columns in one carousel message, and 3 buttons each column.
-	 * @see https://developers.line.me/en/docs/messaging-api/message-types/#template-messages
+	 * https://developers.line.me/en/docs/messaging-api/message-types/#template-messages
 	 * @param columns The number of columns shown in this Carousel
 	 * @param buttons The number of buttons in each column.
 	 * @param contents The contents of each button
-	 * @return 
+	 * @return Templatemessage for carousels
 	 */
 	public TemplateMessage createCarouselMessage(int columns, int buttons, String[] contents) {
 		try {
@@ -129,7 +129,7 @@ public class MessageFactory {
 	 * Factory method for ImageMessage.
 	 * Creates an image message that can be viewed by the user.
 	 * This will use the first image path during construction of this factory.
-	 * @see https://developers.line.me/en/docs/messaging-api/message-types/#image
+	 * see https://developers.line.me/en/docs/messaging-api/message-types/#image
 	 * @return A ImageMessage containing the image or a placeholder in case no image was found.
 	 */
 	public ImageMessage createImageMessage() {

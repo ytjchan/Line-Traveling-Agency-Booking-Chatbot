@@ -89,7 +89,6 @@ public class ProjectBookController {
 	 * Booking handler called by projectInterface.
 	 * Uses replyList to pass reply back to projectInterface. 
 	 * @param text text to be processed
-	 * @param state current state of chatbot 
 	 * @param bookState object that stores all necessary information for processing booking state
 	 * @param userId id of current user
 	 */
