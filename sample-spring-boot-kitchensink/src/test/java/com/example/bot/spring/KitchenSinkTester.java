@@ -48,25 +48,30 @@ import lombok.extern.slf4j.Slf4j;
 public class KitchenSinkTester {
 	protected KitchenSinkController ksc = new KitchenSinkController();
 	
-	@Test
-	public void testPromo() {
-		ksc.handleTextContent(null, "STOP PROMOTION", "ksc test");
-		ksc.handleTextContent(null, "START PROMOTION", "ksc test");
-		ksc.handleTextContent(null, "FORCE PROMOTION", "ksc test");
-	}
+//	@Test
+//	public void testPromo() {
+//		ksc.handleTextContent(null, "STOP PROMOTION", "ksc test");
+//		ksc.handleTextContent(null, "START PROMOTION", "ksc test");
+//		ksc.handleTextContent(null, "FORCE PROMOTION", "ksc test");
+//	}
+//	
+//	
+//	@Test
+//	public void testCategory() {
+//
+//		ksc.funInterface.replyText = "test";
+//		ksc.replyCategory("text", null);
+//		
+//		ksc.funInterface.replyCarousel = null;
+//		ksc.replyCategory("carousel", null);
+//		
+//		ksc.replyCategory("unknown", null);
+//		ksc.replyCategory("default", null);
+//		
+//	}
 	
-	
 	@Test
-	public void testCategory() {
-
-		ksc.funInterface.replyText = "test";
-		ksc.replyCategory("text", null);
-		
-		ksc.funInterface.replyCarousel = null;
-		ksc.replyCategory("carousel", null);
-		
-		ksc.replyCategory("unknown", null);
-		ksc.replyCategory("default", null);
+	public void test() {
 		
 	}
 }
