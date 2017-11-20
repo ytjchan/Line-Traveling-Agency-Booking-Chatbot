@@ -20,6 +20,7 @@ import java.sql.*;
 import java.net.URISyntaxException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SQLDatabaseEngineTest.class, SQLDatabaseEngine.class })
@@ -131,6 +132,22 @@ public class SQLDatabaseEngineTest {
 		assertTrue(result.size()>0);
 	}
 	
+	/**
+	 * test searchTourByDesc() method under proper input userId who have booked tours.
+	 */
+	@Test
+	public void testSearchTourByDesc() {
+		ArrayList<ArrayList<String>> result = new ArrayList<>();
+		LinkedList<String> key = new LinkedList<String>();
+		key.add("spring");
+		key.add("hotel");
+		try {
+			result=db.searchTourByDesc(key,"2017-01-01","2019-01-01");
+		} catch (URISyntaxException e){
+		} catch (SQLException e) {}
+		assertNotNull(result);
+		assertTrue(result.size()>0);
+	}
 	
 }
 
