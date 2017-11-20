@@ -8,7 +8,7 @@ public class ProjectPusherConfig {
 	@Bean
 	public ProjectPusher pusher() {
 		//TODO: put in userID
-		ProjectPusher pusher = new ProjectPusher(userId, "JUnit test message");
+		ProjectPusher pusher = new ProjectPusher("U4b3770248bd07a25bd8f37c346483ac8");
 		return pusher;
 	}
 }

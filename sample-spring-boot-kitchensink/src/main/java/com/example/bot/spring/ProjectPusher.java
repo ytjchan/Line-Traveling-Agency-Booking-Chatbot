@@ -2,32 +2,6 @@ package com.example.bot.spring;
 
 import com.linecorp.bot.client.LineMessagingServiceBuilder;
 import com.linecorp.bot.model.PushMessage;
-<<<<<<< HEAD
-import com.linecorp.bot.model.message.TextMessage;
-import com.linecorp.bot.model.response.BotApiResponse;
-import java.io.IOException;
-import lombok.extern.slf4j.Slf4j;
-import retrofit2.Response;
-
-@Slf4j
-public class ProjectPusher {
-	private String userId;
-	private TextMessage textMessage;
-    private PushMessage pushMessage;
-	
-	public ProjectPusher(String userId, String textMessage) {
-		this.userId = userId;
-		
-		log.info("Attempting to send timeout message to user " + userId);
-		this.textMessage = new TextMessage(textMessage);
-		this.pushMessage = new PushMessage(userId, this.textMessage);
-		
-		pushText();
-	}
-	
-	private void pushText() {
-		Response<BotApiResponse> response;
-=======
 import com.linecorp.bot.model.message.Message;
 import com.linecorp.bot.model.response.BotApiResponse;
 import java.io.IOException;
@@ -84,7 +58,6 @@ public class ProjectPusher {
 		if (messageList.isEmpty())
 			return;
 		PushMessage pushMessage = new PushMessage(userId, messageList);
->>>>>>> bf05bcae93abb5b7f4825b48aef7c11f7ba2b9eb
 		try {
 			response = LineMessagingServiceBuilder
 					.create(System.getenv("LINE_BOT_CHANNEL_TOKEN"))
@@ -92,12 +65,6 @@ public class ProjectPusher {
 					.pushMessage(pushMessage)
 					.execute();
 		} catch (IOException e) {
-<<<<<<< HEAD
-            log.info(e.toString());
-		}
-	}
-	
-=======
 			log.info(e.toString());
 		}
 	}
@@ -146,5 +113,5 @@ public class ProjectPusher {
 		ProjectPusher pp = new ProjectPusher(userId);
 		pp.pushText(texts);
 	}
->>>>>>> bf05bcae93abb5b7f4825b48aef7c11f7ba2b9eb
 }
+
