@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="JUnitTestTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2017-11-20T15:37:13" hostname="Nyanpasu" time="0.0">
+  <properties/>
+  <testcase name="testTrue" classname="JUnitTestTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

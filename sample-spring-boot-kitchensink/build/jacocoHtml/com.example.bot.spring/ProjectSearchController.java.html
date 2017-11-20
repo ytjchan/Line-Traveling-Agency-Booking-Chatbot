@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ProjectSearchController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">sample-spring-boot-kitchensink</a> &gt; <a href="index.source.html" class="el_package">com.example.bot.spring</a> &gt; <span class="el_source">ProjectSearchController.java</span></div><h1>ProjectSearchController.java</h1><pre class="source lang-java linenums">package com.example.bot.spring;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Queue;
+import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import java.util.function.Consumer;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.BiConsumer;
+import com.linecorp.bot.model.profile.UserProfileResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import com.google.common.io.ByteStreams;
+
+import com.linecorp.bot.client.LineMessagingClient;
+import com.linecorp.bot.client.MessageContentResponse;
+import com.linecorp.bot.model.ReplyMessage;
+import com.linecorp.bot.model.action.MessageAction;
+import com.linecorp.bot.model.action.PostbackAction;
+import com.linecorp.bot.model.action.URIAction;
+import com.linecorp.bot.model.event.BeaconEvent;
+import com.linecorp.bot.model.event.Event;
+import com.linecorp.bot.model.event.FollowEvent;
+import com.linecorp.bot.model.event.JoinEvent;
+import com.linecorp.bot.model.event.MessageEvent;
+import com.linecorp.bot.model.event.PostbackEvent;
+import com.linecorp.bot.model.event.UnfollowEvent;
+import com.linecorp.bot.model.event.message.AudioMessageContent;
+import com.linecorp.bot.model.event.message.ImageMessageContent;
+import com.linecorp.bot.model.event.message.LocationMessageContent;
+import com.linecorp.bot.model.event.message.StickerMessageContent;
+import com.linecorp.bot.model.event.message.TextMessageContent;
+import com.linecorp.bot.model.event.source.GroupSource;
+import com.linecorp.bot.model.event.source.RoomSource;
+import com.linecorp.bot.model.event.source.Source;
+import com.linecorp.bot.model.message.AudioMessage;
+import com.linecorp.bot.model.message.ImageMessage;
+import com.linecorp.bot.model.message.ImagemapMessage;
+import com.linecorp.bot.model.message.LocationMessage;
+import com.linecorp.bot.model.message.Message;
+import com.linecorp.bot.model.message.StickerMessage;
+import com.linecorp.bot.model.message.TemplateMessage;
+import com.linecorp.bot.model.message.TextMessage;
+import com.linecorp.bot.model.message.imagemap.ImagemapArea;
+import com.linecorp.bot.model.message.imagemap.ImagemapBaseSize;
+import com.linecorp.bot.model.message.imagemap.MessageImagemapAction;
+import com.linecorp.bot.model.message.imagemap.URIImagemapAction;
+import com.linecorp.bot.model.message.template.ButtonsTemplate;
+import com.linecorp.bot.model.message.template.CarouselColumn;
+import com.linecorp.bot.model.message.template.CarouselTemplate;
+import com.linecorp.bot.model.message.template.ConfirmTemplate;
+import com.linecorp.bot.model.response.BotApiResponse;
+import com.linecorp.bot.spring.boot.annotation.EventMapping;
+import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
+
+import lombok.NonNull;
+import lombok.Value;
+import lombok.extern.slf4j.Slf4j;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.sql.*;
+import java.util.LinkedList;
+import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+public class ProjectSearchController {
+<span class="fc" id="L80">	protected SQLDatabaseEngine db = new SQLDatabaseEngine();</span>
+	
+	public String replyType;
+<span class="fc" id="L83">	public List&lt;Message&gt; replyList = new LinkedList&lt;Message&gt;();</span>
+	
+<span class="fc" id="L85">	public ProjectSearchController() {}</span>
+	
+	/**
+	 * Tour Search handler called by projectInterface.
+	 * Uses replyList to pass reply back to projectInterface.
+	 * @param text text to be processed
+	 * @param state current state of chatbot 
+	 * @param searchState object that stores all necessary information for processing tour search state
+	 */
+	public void process(String text, String state, SearchState searchState) {
+<span class="fc" id="L95">		replyList.clear();</span>
+		
+		try {
+			//enter keyword &amp; update
+<span class="fc bfc" id="L99" title="All 2 branches covered.">			if (searchState.substate.equals(&quot;keywordInput&quot;)) {</span>
+				//replyList.add(new TextMessage(&quot;KEYWORDINPUT&quot;));
+<span class="fc" id="L101">				searchState.keywords.add(text);</span>
+<span class="fc" id="L102">				searchState.rs = db.searchTourByDesc(searchState.keywords, searchState.startDate, searchState.endDate);</span>
+<span class="fc bfc" id="L103" title="All 2 branches covered.">				if (searchState.rs.size() &gt; 0) {</span>
+<span class="fc" id="L104">					searchState.rsIndex = 0;</span>
+<span class="fc" id="L105">					createSearchCarousel(searchState);</span>
+				} else {
+<span class="fc" id="L107">					replyList.add(new TextMessage(&quot;Sorry, it appears we do not have any available tours that match your criteria. Try changing your date range or reset your filters using the Reset filters button or by typing:\n Reset filters&quot;));</span>
+				}
+			}
+			
+			//show tour details
+<span class="fc bfc" id="L112" title="All 2 branches covered.">			else if (text.toLowerCase().contains(&quot;show details of &quot;)) {</span>
+				//replyList.add(new TextMessage(&quot;SHOW DETAILS OF&quot;));
+<span class="fc" id="L114">				ArrayList&lt;ArrayList&lt;String&gt;&gt; temp = db.searchTourID(text.toLowerCase().replace(&quot;show details of &quot;, &quot;&quot;));</span>
+				
+<span class="fc bfc" id="L116" title="All 2 branches covered.">				if (temp.size()&gt;0) {</span>
+<span class="fc" id="L117">					String temptext = temp.get(0).get(1) + &quot;\n&quot;;</span>
+<span class="fc" id="L118">					temptext += &quot;Duration: &quot; + temp.get(0).get(3) + &quot; days\n&quot;;</span>
+<span class="fc" id="L119">					temptext += &quot;-&quot; + temp.get(0).get(2).replace(&quot; * &quot;, &quot;\n-&quot;);</span>
+					
+<span class="fc" id="L121">					replyList.add(new TextMessage(temptext));</span>
+<span class="fc" id="L122">				} else {</span>
+<span class="fc" id="L123">					replyList.add(new TextMessage(&quot;I'm afraid we don't have a tour that matches your input ID&quot;));</span>
+				}
+<span class="fc" id="L125">			}</span>
+			
+			//show dates of tour
+<span class="fc bfc" id="L128" title="All 2 branches covered.">			else if (text.toLowerCase().contains(&quot;show dates of &quot;)) {</span>
+				//replyList.add(new TextMessage(&quot;SHOW DATES OF&quot;));
+<span class="fc" id="L130">				ArrayList&lt;ArrayList&lt;String&gt;&gt; temp = db.searchTourID(text.toLowerCase().replace(&quot;show dates of &quot;, &quot;&quot;));</span>
+				
+<span class="fc bfc" id="L132" title="All 2 branches covered.">				if (temp.size()&gt;0) {</span>
+<span class="fc" id="L133">					String temptext = temp.get(0).get(1);</span>
+<span class="fc" id="L134">					temp = db.searchTourOfferingID(text.toLowerCase().replace(&quot;show dates of &quot;, &quot;&quot;));</span>
+<span class="fc" id="L135">					temptext += &quot; (&quot; + temp.get(0).get(0) + &quot;)&quot;;</span>
+					
+<span class="fc" id="L137">					DateTimeFormatter dtf = DateTimeFormatter.ofPattern(&quot;yyyy-MM-dd&quot;);</span>
+<span class="fc" id="L138">					LocalDate localDate = LocalDate.now().plusDays(3);</span>
+<span class="fc" id="L139">					String start = dtf.format(localDate);</span>
+					
+<span class="pc bpc" id="L141" title="1 of 2 branches missed.">					if (temp.size() &gt; 0) {</span>
+<span class="fc" id="L142">						boolean hasrecords = false;</span>
+<span class="fc bfc" id="L143" title="All 2 branches covered.">						for (ArrayList&lt;String&gt; str : temp) {</span>
+<span class="fc bfc" id="L144" title="All 2 branches covered.">							if (str.get(2).compareTo(start) &gt; 0) {</span>
+<span class="fc" id="L145">								temptext += &quot;\n-&quot; + str.get(2);</span>
+<span class="fc" id="L146">								hasrecords = true;</span>
+							}
+<span class="fc" id="L148">						}</span>
+<span class="fc bfc" id="L149" title="All 2 branches covered.">						if (!hasrecords) {</span>
+<span class="fc" id="L150">							temptext += &quot; has no available tours!&quot;;</span>
+						}
+						
+<span class="fc" id="L153">					} else {</span>
+<span class="nc" id="L154">						temptext += &quot; has no available tours!&quot;;</span>
+					}
+					
+<span class="fc" id="L157">					replyList.add(new TextMessage(temptext));</span>
+<span class="fc" id="L158">				} else {</span>
+<span class="fc" id="L159">					replyList.add(new TextMessage(&quot;I'm afraid we don't have a tour that matches your input ID&quot;));</span>
+				}
+				
+<span class="fc" id="L162">			}</span>
+			
+			//move to enter keyword state
+<span class="fc bfc" id="L165" title="All 2 branches covered.">			else if (text.toLowerCase().contains(&quot;add filter&quot;)) {</span>
+<span class="fc" id="L166">				replyList.add(new TextMessage(&quot;Please enter a keyword:&quot;));</span>
+			} 
+			
+			//enter date &amp; update
+<span class="fc bfc" id="L170" title="All 2 branches covered.">			else if (text.toLowerCase().matches(&quot;(.*)(\\d{4})-(\\d{1,2})-(\\d{1,2}) to (\\d{4})-(\\d{1,2})-(\\d{1,2})(.*)&quot;)) {</span>
+				//replyList.add(new TextMessage(&quot;DATE DETECTED&quot;));
+<span class="fc" id="L172">				searchState.startDate = text.substring(0,10);</span>
+<span class="fc" id="L173">				searchState.endDate = text.substring(14,24);</span>
+<span class="fc" id="L174">				searchState.rs = db.searchTourByDesc(searchState.keywords, searchState.startDate, searchState.endDate);</span>
+<span class="fc bfc" id="L175" title="All 2 branches covered.">				if (searchState.rs.size() &gt; 0) {</span>
+<span class="fc" id="L176">					searchState.rsIndex = 0;</span>
+<span class="fc" id="L177">					createSearchCarousel(searchState);</span>
+				} else {
+<span class="fc" id="L179">					replyList.add(new TextMessage(&quot;Sorry, it appears we do not have any available tours that match your criteria. Try changing your date range or reset your filters using the Reset filters button or by typing:\n Reset filters&quot;));</span>
+				}
+			}
+			
+			//show next 5
+<span class="fc bfc" id="L184" title="All 2 branches covered.">			else if (text.toLowerCase().contains(&quot;next&quot;)) {</span>
+				//replyList.add(new TextMessage(&quot;NEXT&quot;));
+<span class="fc bfc" id="L186" title="All 2 branches covered.">				if (searchState.rsIndex == searchState.rs.size()) {</span>
+<span class="fc" id="L187">					replyList.add(new TextMessage(&quot;There are no more records!&quot;));</span>
+				} else {
+<span class="fc" id="L189">					createSearchCarousel(searchState);</span>
+				}
+			}
+			
+<span class="pc bpc" id="L193" title="1 of 4 branches missed.">			else if (text.toLowerCase().equals(&quot;.back&quot;) &amp;&amp; state.equals(&quot;book&quot;)) {</span>
+				//replyList.add(new TextMessage(&quot;.BACK&quot;));
+<span class="fc" id="L195">				searchState.rsIndex = 0;</span>
+<span class="fc" id="L196">				createSearchCarousel(searchState);</span>
+			}
+			
+			//show prev 5
+<span class="pc bpc" id="L200" title="2 of 6 branches missed.">			else if (text.toLowerCase().contains(&quot;previous&quot;) || text.toLowerCase().contains(&quot;back&quot;) || text.toLowerCase().contains(&quot;last&quot;)) {</span>
+				//replyList.add(new TextMessage(&quot;PREVIOUS&quot;));
+<span class="fc bfc" id="L202" title="All 2 branches covered.">				if (searchState.rsIndex &lt;= 5) {</span>
+<span class="fc" id="L203">					replyList.add(new TextMessage(&quot;You are at the start and there are no previous results.&quot;));</span>
+				} else {
+<span class="fc" id="L205">					searchState.rsIndex = ((searchState.rsIndex-1)/5-1)*5;	//get current 5 (or less), move to previous 5, find index</span>
+<span class="fc" id="L206">					createSearchCarousel(searchState);</span>
+				}
+			}
+			
+			//new search
+<span class="pc bpc" id="L211" title="2 of 6 branches missed.">			else if ((searchState.keywords.isEmpty() &amp;&amp; text.toLowerCase().contains(&quot;search&quot;)) || text.toLowerCase().contains(&quot;reset filters&quot;)) {</span>
+				//replyList.add(new TextMessage(&quot;INIT&quot;));
+<span class="fc" id="L213">				searchState.keywords.clear();</span>
+<span class="fc" id="L214">				searchState.resetDates();</span>
+<span class="fc" id="L215">				searchState.rs = db.searchTourByDesc(searchState.keywords, searchState.startDate, searchState.endDate);</span>
+<span class="fc" id="L216">				searchState.rsIndex = 0;</span>
+<span class="fc" id="L217">				createSearchCarousel(searchState);</span>
+			}
+			
+			
+			//unknown
+<span class="fc bfc" id="L222" title="All 2 branches covered.">			if (replyList.size() == 0) {</span>
+<span class="fc" id="L223">				replyList.add(new TextMessage(&quot;Sorry, I didn't understand that.&quot;));</span>
+			}
+<span class="nc" id="L225">		} catch (Exception e) {</span>
+<span class="nc" id="L226">			replyList.add(new TextMessage(&quot;Something failed!&quot;));</span>
+<span class="fc" id="L227">		}</span>
+		//for debugging
+		//replyList.add(new TextMessage(&quot;Start: &quot; + searchState.startDate + &quot;\nEnd: &quot; + searchState.endDate + &quot;\nRS size: &quot; + searchState.rs.size()));
+<span class="fc" id="L230">	}</span>
+	
+	/**
+	 * Helper function that creates a carousel based on current filters.
+	 * 1st and last column are menus
+	 * In between are results from rs
+	 * @param searchState object that stores all necessary information for processing tour search state
+	 */
+	public void createSearchCarousel(SearchState searchState) { //int rsIndex, ArrayList&lt;ArrayList&lt;String&gt;&gt; rs, LinkedList&lt;String&gt; keywords) {
+<span class="fc" id="L239">		List&lt;CarouselColumn&gt; columns = new LinkedList&lt;CarouselColumn&gt;();</span>
+		
+		//dummy
+<span class="fc" id="L242">		columns.add(</span>
+			new CarouselColumn(
+				&quot;https://images-na.ssl-images-amazon.com/images/I/61G%2BdmtkeeL._SX355_.jpg&quot;,
+				&quot;DUMMY&quot;,
+				&quot;DUMMY&quot;, 
+<span class="fc" id="L247">				Arrays.asList(</span>
+	                new PostbackAction(&quot;DUMMY&quot;, &quot;DUMMY&quot;),
+	                new PostbackAction(&quot;DUMMY&quot;, &quot;DUMMY&quot;),
+	                new PostbackAction(&quot;DUMMY&quot;, &quot;DUMMY&quot;)
+	            )
+			)
+		);
+		
+		//content
+<span class="fc bfc" id="L256" title="All 4 branches covered.">		for (int i=searchState.rsIndex, max=searchState.rsIndex+5; i&lt;max &amp;&amp; i&lt;searchState.rs.size(); i++) {</span>
+<span class="fc" id="L257">			columns.add(</span>
+				new CarouselColumn(
+					&quot;https://www.scienceabc.com/wp-content/uploads/2017/02/Thailand-beach-sand.jpg&quot;,
+<span class="pc bpc" id="L260" title="1 of 2 branches missed.">					searchState.rs.get(i).get(1).length() &gt; 40 ? </span>
+<span class="pc" id="L261">						searchState.rs.get(i).get(1).substring(0, 35) + &quot;...&quot; : </span>
+<span class="fc" id="L262">						searchState.rs.get(i).get(1),</span>
+<span class="pc bpc" id="L263" title="1 of 2 branches missed.">					searchState.rs.get(i).get(2).replace(&quot; * &quot;,&quot;, &quot;).length() &gt; 55 ?</span>
+<span class="pc" id="L264">						searchState.rs.get(i).get(2).replace(&quot; * &quot;,&quot;, &quot;).substring(0,54) + &quot;...&quot;: </span>
+<span class="pc" id="L265">						searchState.rs.get(i).get(2).replace(&quot; * &quot;,&quot;, &quot;),</span>
+<span class="fc" id="L266">					Arrays.asList(</span>
+<span class="fc" id="L267">						new MessageAction(&quot;Details&quot;, &quot;Show details of &quot; + searchState.rs.get(i).get(0)),</span>
+<span class="fc" id="L268">	                    new MessageAction(&quot;Show dates&quot;, &quot;Show dates of &quot; + searchState.rs.get(i).get(0)),</span>
+<span class="fc" id="L269">	                    new MessageAction(&quot;Book&quot;, &quot;Book &quot; + searchState.rs.get(i).get(0))</span>
+                    )
+				)
+			);
+<span class="fc" id="L273">			searchState.rsIndex ++;</span>
+		}
+		
+		//1st column (info)
+<span class="fc" id="L277">		String info = &quot;To search for tours within a period, enter the start and end dates in the following format:\nYYYY-MM-DD to YYYY-MM-DD\n\nCurrently showing:\n&quot;</span>
+<span class="fc" id="L278">				+ (((searchState.rsIndex-1)/5)*5+1) + &quot;-&quot;  + searchState.rsIndex + &quot; of &quot; + searchState.rs.size() + &quot; results\n\nKeywords: &quot;;</span>
+<span class="fc bfc" id="L279" title="All 2 branches covered.">		for (String str : searchState.keywords) {</span>
+<span class="fc" id="L280">			info += str + &quot;, &quot;;</span>
+<span class="fc" id="L281">		}</span>
+<span class="fc" id="L282">		info += &quot;\n\n&quot;;</span>
+<span class="fc" id="L283">		info += &quot;Start Date: &quot; + searchState.startDate + &quot;\nEnd Date: &quot; + searchState.endDate;</span>
+<span class="fc" id="L284">		columns.set(0,</span>
+			new CarouselColumn(
+				&quot;https://images-na.ssl-images-amazon.com/images/I/61G%2BdmtkeeL._SX355_.jpg&quot;,
+				&quot;Tour Search&quot;,	//TODO: add &quot;current keywords&quot; and dates into text
+				&quot;Swipe left to see search results or press the buttons below.&quot;, 
+<span class="fc" id="L289">				Arrays.asList(</span>
+	                new PostbackAction(&quot;Guide&quot;, info),
+	                new MessageAction(&quot;Add a filter&quot;, &quot;Add filter&quot;),
+	                new MessageAction(&quot;Reset filters&quot;, &quot;Reset filters&quot;)
+	            )
+			)
+		);
+		
+		//last column (next, prev)
+<span class="fc" id="L298">		columns.add(</span>
+            new CarouselColumn(
+            	&quot;https://thefrailestthing.files.wordpress.com/2010/07/ellipsis.png&quot;,
+        		&quot;Check out more&quot;,
+        		&quot;To see more results, press the buttons below.&quot;, 
+<span class="fc" id="L303">                Arrays.asList(</span>
+<span class="fc bfc" id="L304" title="All 4 branches covered.">            		searchState.rsIndex == searchState.rs.size() ?</span>
+                		new PostbackAction(&quot;(end of results)&quot;,&quot;There are no more results!&quot;):
+                		new MessageAction(&quot;Show next 5&quot;, &quot;Next 5&quot;),
+            		searchState.rsIndex &lt;= 5 ?
+                		new PostbackAction(&quot;(start of results)&quot;,&quot;There are no results before these!&quot;):
+                		new MessageAction(&quot;Show previous 5&quot;, &quot;Previous 5&quot;),
+                    new MessageAction(&quot;Back to welcome&quot;, &quot;Cancel&quot;)
+                )
+            )
+        );
+<span class="fc" id="L314">	    replyList.add(new TemplateMessage(&quot;Tour Search&quot;, new CarouselTemplate(columns)));</span>
+<span class="fc" id="L315">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

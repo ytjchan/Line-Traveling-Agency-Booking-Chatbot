@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ProjectBookController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">sample-spring-boot-kitchensink</a> &gt; <a href="index.source.html" class="el_package">com.example.bot.spring</a> &gt; <span class="el_source">ProjectBookController.java</span></div><h1>ProjectBookController.java</h1><pre class="source lang-java linenums">package com.example.bot.spring;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Queue;
+import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import java.util.function.Consumer;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.BiConsumer;
+import com.linecorp.bot.model.profile.UserProfileResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import com.google.common.io.ByteStreams;
+
+import com.linecorp.bot.client.LineMessagingClient;
+import com.linecorp.bot.client.MessageContentResponse;
+import com.linecorp.bot.model.ReplyMessage;
+import com.linecorp.bot.model.action.MessageAction;
+import com.linecorp.bot.model.action.PostbackAction;
+import com.linecorp.bot.model.action.URIAction;
+import com.linecorp.bot.model.event.BeaconEvent;
+import com.linecorp.bot.model.event.Event;
+import com.linecorp.bot.model.event.FollowEvent;
+import com.linecorp.bot.model.event.JoinEvent;
+import com.linecorp.bot.model.event.MessageEvent;
+import com.linecorp.bot.model.event.PostbackEvent;
+import com.linecorp.bot.model.event.UnfollowEvent;
+import com.linecorp.bot.model.event.message.AudioMessageContent;
+import com.linecorp.bot.model.event.message.ImageMessageContent;
+import com.linecorp.bot.model.event.message.LocationMessageContent;
+import com.linecorp.bot.model.event.message.StickerMessageContent;
+import com.linecorp.bot.model.event.message.TextMessageContent;
+import com.linecorp.bot.model.event.source.GroupSource;
+import com.linecorp.bot.model.event.source.RoomSource;
+import com.linecorp.bot.model.event.source.Source;
+import com.linecorp.bot.model.message.AudioMessage;
+import com.linecorp.bot.model.message.ImageMessage;
+import com.linecorp.bot.model.message.ImagemapMessage;
+import com.linecorp.bot.model.message.LocationMessage;
+import com.linecorp.bot.model.message.Message;
+import com.linecorp.bot.model.message.StickerMessage;
+import com.linecorp.bot.model.message.TemplateMessage;
+import com.linecorp.bot.model.message.TextMessage;
+import com.linecorp.bot.model.message.imagemap.ImagemapArea;
+import com.linecorp.bot.model.message.imagemap.ImagemapBaseSize;
+import com.linecorp.bot.model.message.imagemap.MessageImagemapAction;
+import com.linecorp.bot.model.message.imagemap.URIImagemapAction;
+import com.linecorp.bot.model.message.template.ButtonsTemplate;
+import com.linecorp.bot.model.message.template.CarouselColumn;
+import com.linecorp.bot.model.message.template.CarouselTemplate;
+import com.linecorp.bot.model.message.template.ConfirmTemplate;
+import com.linecorp.bot.model.response.BotApiResponse;
+import com.linecorp.bot.spring.boot.annotation.EventMapping;
+import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
+
+import lombok.NonNull;
+import lombok.Value;
+import lombok.extern.slf4j.Slf4j;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.sql.*;
+import java.util.LinkedList;
+import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+public class ProjectBookController {
+<span class="fc" id="L80">	private SQLDatabaseEngine db = new SQLDatabaseEngine();</span>
+<span class="fc" id="L81">	public List&lt;Message&gt; replyList = new LinkedList&lt;Message&gt;();</span>
+	
+	/**
+	 * Constructor for Booking Controller
+	 */
+<span class="fc" id="L86">	public ProjectBookController() {}</span>
+	
+	/**
+	 * Booking handler called by projectInterface.
+	 * Uses replyList to pass reply back to projectInterface. 
+	 * @param text text to be processed
+	 * @param state current state of chatbot 
+	 * @param bookState object that stores all necessary information for processing booking state
+	 * @param userId id of current user
+	 */
+	public void process(String text, BookState bookState, String userId) {
+<span class="fc" id="L97">		replyList.clear();</span>
+		
+		//assuming book command is something like:  *book [id]
+		try {
+<span class="fc bfc" id="L101" title="All 2 branches covered.">			if (bookState.substate.equals(&quot;init&quot;)) {</span>
+<span class="fc" id="L102">					bookState.tourId = text.substring(text.toLowerCase().indexOf(&quot;book&quot;)+5);</span>
+<span class="fc" id="L103">					ArrayList&lt;ArrayList&lt;String&gt;&gt; temp = new ArrayList&lt;ArrayList&lt;String&gt;&gt;();</span>
+<span class="fc" id="L104">					getOfferings(bookState);</span>
+<span class="fc" id="L105">					temp = db.searchTourID(bookState.tourId);</span>
+<span class="fc bfc" id="L106" title="All 2 branches covered.">					if (temp.size() &gt; 0) {</span>
+<span class="fc" id="L107">						bookState.tourName = temp.get(0).get(1);</span>
+<span class="fc" id="L108">						replyList.add(new TextMessage(&quot;Now booking:\n&quot; + bookState.tourName));</span>
+<span class="fc" id="L109">						temp = db.searchBookerForLineID(userId);</span>
+<span class="fc bfc" id="L110" title="All 2 branches covered.">						if (temp.isEmpty()) {</span>
+							//prompt for personal details
+<span class="fc" id="L112">							replyList.add(new TextMessage(&quot;Since this is your first time booking a tour with us, we require some personal information.&quot;));</span>
+<span class="fc" id="L113">							replyList.add(new TextMessage(&quot;If you would like to go back to tour results, enter .back (including the full stop) anytime.&quot;));</span>
+<span class="fc" id="L114">							replyList.add(new TextMessage(&quot;Please enter your name: &quot;));</span>
+<span class="fc" id="L115">							bookState.substate = &quot;name&quot;;	//EXPECT NAME RESPONSE</span>
+						} else {
+							//SELECT AN OFFERING
+<span class="fc" id="L118">							bookState.substate = &quot;selectOffering&quot;;</span>
+<span class="fc" id="L119">							showOfferings(bookState);</span>
+							
+						}
+					} else {
+<span class="fc" id="L123">						replyList.add(new TextMessage(&quot;I'm afraid we don't have the tour you're looking for. Please enter .back (with the full stop) to return to your search results.&quot;));</span>
+<span class="fc" id="L124">						bookState.substate = &quot;error&quot;;</span>
+					}
+<span class="fc" id="L126">			} </span>
+			
+			
+			///////NEW USER SECTION
+<span class="fc bfc" id="L130" title="All 2 branches covered.">			else if (bookState.substate.equals(&quot;name&quot;)) {</span>
+<span class="fc" id="L131">				bookState.name = text;</span>
+<span class="fc" id="L132">				replyList.add(new TextMessage(&quot;Please enter your HKID card number (without the brackets or the extra number): &quot;));</span>
+<span class="fc" id="L133">				bookState.substate = &quot;hkid&quot;;</span>
+<span class="fc bfc" id="L134" title="All 2 branches covered.">			} else if (bookState.substate.equals(&quot;hkid&quot;)) {</span>
+<span class="fc bfc" id="L135" title="All 2 branches covered.">				if (text.length() != 7) {</span>
+<span class="fc" id="L136">					replyList.add(new TextMessage(&quot;You've entered an invalid HKID card number!&quot;));</span>
+<span class="fc" id="L137">					replyList.add(new TextMessage(&quot;Please enter your HKID card number (without the brackets or the extra number): &quot;));</span>
+				} else {
+<span class="fc" id="L139">					bookState.hkid = text;</span>
+<span class="fc" id="L140">					replyList.add(new TextMessage(&quot;Please enter your age: &quot;));</span>
+<span class="fc" id="L141">					bookState.substate = &quot;age&quot;;</span>
+				}
+<span class="fc bfc" id="L143" title="All 2 branches covered.">			} else if (bookState.substate.equals(&quot;age&quot;)) {</span>
+<span class="fc" id="L144">				boolean validInput = true;</span>
+				try {
+<span class="fc" id="L146">					bookState.age = Integer.parseInt(text);</span>
+<span class="pc bpc" id="L147" title="1 of 4 branches missed.">					if (bookState.age &gt; 200 || bookState.age &lt; 0)</span>
+<span class="fc" id="L148">						validInput = false;</span>
+<span class="fc" id="L149">				} catch (Exception e) {</span>
+<span class="fc" id="L150">					validInput = false;</span>
+<span class="fc" id="L151">				}</span>
+				
+<span class="fc bfc" id="L153" title="All 2 branches covered.">				if (validInput) {</span>
+<span class="fc" id="L154">					replyList.add(new TextMessage(&quot;Please enter your phone number: &quot;));</span>
+<span class="fc" id="L155">					bookState.substate = &quot;phoneno&quot;;</span>
+				} else {
+<span class="fc" id="L157">					replyList.add(new TextMessage(&quot;You've entered an invalid age!&quot;));</span>
+<span class="fc" id="L158">					replyList.add(new TextMessage(&quot;Please enter your age (integer years): &quot;));</span>
+				}
+<span class="fc bfc" id="L160" title="All 2 branches covered.">			} else if (bookState.substate.equals(&quot;phoneno&quot;)) {</span>
+<span class="fc" id="L161">				boolean validInput = true;</span>
+				try {
+<span class="fc" id="L163">					bookState.phoneno = Integer.parseInt(text);</span>
+<span class="fc bfc" id="L164" title="All 4 branches covered.">					if (bookState.phoneno &gt; 99999999 || bookState.phoneno &lt; 10000000)</span>
+<span class="fc" id="L165">						validInput = false;</span>
+<span class="fc" id="L166">				} catch (Exception e) {</span>
+<span class="fc" id="L167">					validInput = false;</span>
+<span class="fc" id="L168">				}</span>
+				
+<span class="fc bfc" id="L170" title="All 2 branches covered.">				if (validInput) {</span>
+<span class="fc" id="L171">					String details = &quot;I will now repeat back your inputted details:&quot;;</span>
+<span class="fc" id="L172">					details += &quot;\nLineId: &quot; + userId;</span>
+<span class="fc" id="L173">					details += &quot;\nName: &quot; + bookState.name;</span>
+<span class="fc" id="L174">					details += &quot;\nHKID: &quot; + bookState.hkid;</span>
+<span class="fc" id="L175">					details += &quot;\nAge: &quot; + bookState.age;</span>
+<span class="fc" id="L176">					details += &quot;\nPhone No: &quot; + bookState.phoneno;</span>
+<span class="fc" id="L177">					replyList.add(new TextMessage(details));</span>
+<span class="fc" id="L178">					replyList.add(</span>
+						new TemplateMessage(&quot;Confirm user information&quot;, 
+							new ConfirmTemplate(
+			                    &quot;Confirm?&quot;,
+			                    new MessageAction(&quot;Yes&quot;, &quot;Yes&quot;),
+			                    new MessageAction(&quot;No&quot;, &quot;No&quot;)
+							)
+						)
+					);
+<span class="fc" id="L187">					bookState.substate = &quot;newUserConfirm&quot;;</span>
+<span class="fc" id="L188">				} else {</span>
+<span class="fc" id="L189">					replyList.add(new TextMessage(&quot;You've entered an invalid phone number!&quot;));</span>
+<span class="fc" id="L190">					replyList.add(new TextMessage(&quot;Please enter your phone number (8 digits, without country code): &quot;));</span>
+				}
+				
+<span class="fc bfc" id="L193" title="All 2 branches covered.">			} else if (bookState.substate.equals(&quot;newUserConfirm&quot;)) {</span>
+<span class="fc bfc" id="L194" title="All 2 branches covered.">				if (text.toLowerCase().contains(&quot;yes&quot;)) {</span>
+					//add to records
+<span class="fc" id="L196">						db.inputUserData(userId, bookState.name, bookState.hkid, bookState.age, bookState.phoneno);</span>
+<span class="fc" id="L197">						replyList.add(new TextMessage(&quot;Your details have been successfully stored in our records. Now we will proceed to your original booking.&quot;));</span>
+					//SELECT AN OFFERING
+<span class="fc" id="L199">						bookState.substate = &quot;selectOffering&quot;;</span>
+<span class="fc" id="L200">						showOfferings(bookState);						</span>
+	
+<span class="fc bfc" id="L202" title="All 2 branches covered.">				} else if (text.toLowerCase().contains(&quot;no&quot;)) {</span>
+					//repeat process
+<span class="fc" id="L204">					replyList.add(new TextMessage(&quot;Then let's try again.&quot;));</span>
+<span class="fc" id="L205">					replyList.add(new TextMessage(&quot;If you would like to cancel this booking and back to tour results, enter .back (including the full stop)&quot;));</span>
+<span class="fc" id="L206">					replyList.add(new TextMessage(&quot;Please enter your name: &quot;));</span>
+<span class="fc" id="L207">					bookState.substate = &quot;name&quot;;</span>
+				} else {
+<span class="fc" id="L209">					replyList.add(new TextMessage(&quot;Are the details correct? (please enter yes or no)&quot;));</span>
+				}
+			} 
+			////END NEW USER SECTION
+			
+			
+			////BOOKING SECTION
+<span class="fc bfc" id="L216" title="All 2 branches covered.">			else if (bookState.substate.equals(&quot;selectOffering&quot;)) {</span>
+<span class="fc" id="L217">				boolean validInput = true;</span>
+				try {
+<span class="fc" id="L219">					bookState.offeringIndex = Integer.parseInt(text);</span>
+<span class="fc bfc" id="L220" title="All 4 branches covered.">					if (bookState.offeringIndex &lt; 0 || bookState.offeringIndex &gt;= bookState.offerings.size())</span>
+<span class="fc" id="L221">						validInput = false;</span>
+<span class="fc" id="L222">				} catch (NumberFormatException e) {</span>
+<span class="fc" id="L223">					validInput = false;</span>
+<span class="fc" id="L224">				}</span>
+<span class="fc bfc" id="L225" title="All 2 branches covered.">				if (validInput) {</span>
+<span class="fc" id="L226">					bookState.offerId = bookState.offerings.get(bookState.offeringIndex).get(1);</span>
+<span class="fc" id="L227">					replyList.add(new TextMessage(&quot;Please enter the number of adults (12 years or older) in your group: &quot;));</span>
+<span class="fc" id="L228">					bookState.substate = &quot;adults&quot;;</span>
+				} else {
+<span class="fc" id="L230">					replyList.add(new TextMessage(&quot;You've entered an invalid number!&quot;));</span>
+<span class="fc" id="L231">					replyList.add(new TextMessage(&quot;Please select a date by entering the [number] next to it: &quot;));</span>
+				}
+				
+				
+<span class="fc bfc" id="L235" title="All 2 branches covered.">			} else if (bookState.substate.equals(&quot;adults&quot;)) {</span>
+				
+<span class="fc" id="L237">				boolean validInput = true;</span>
+				try {
+<span class="fc" id="L239">					bookState.adults = Integer.parseInt(text);</span>
+<span class="fc bfc" id="L240" title="All 2 branches covered.">					if (bookState.adults &lt; 1)</span>
+<span class="fc" id="L241">						validInput = false;</span>
+<span class="fc" id="L242">				} catch (NumberFormatException e) {</span>
+<span class="fc" id="L243">					validInput = false;</span>
+<span class="fc" id="L244">				}</span>
+				
+<span class="fc bfc" id="L246" title="All 2 branches covered.">				if (validInput) {</span>
+<span class="fc" id="L247">					replyList.add(new TextMessage(&quot;Please enter the number of children (4 to 11 years) in your group: &quot;));</span>
+<span class="fc" id="L248">					bookState.substate = &quot;children&quot;;</span>
+				} else {
+<span class="fc bfc" id="L250" title="All 2 branches covered.">					if (bookState.adults == 0) {</span>
+<span class="fc" id="L251">						replyList.add(new TextMessage(&quot;Be more responsible! You should have at least 1 adult in your group!&quot;));</span>
+					} else {
+<span class="fc" id="L253">						replyList.add(new TextMessage(&quot;You've entered an invalid number!&quot;));</span>
+					}
+<span class="fc" id="L255">					replyList.add(new TextMessage(&quot;Please enter the number of adults (12 years or older) in your group: &quot;));</span>
+				}
+				
+				
+<span class="fc bfc" id="L259" title="All 2 branches covered.">			} else if (bookState.substate.equals(&quot;children&quot;)) {</span>
+<span class="fc" id="L260">				boolean validInput = true;</span>
+				try {
+<span class="fc" id="L262">					bookState.children = Integer.parseInt(text);</span>
+<span class="fc bfc" id="L263" title="All 2 branches covered.">					if (bookState.children &lt; 0)</span>
+<span class="fc" id="L264">						validInput = false;</span>
+<span class="fc" id="L265">				} catch (NumberFormatException e) {</span>
+<span class="fc" id="L266">					validInput = false;</span>
+<span class="fc" id="L267">				}</span>
+				
+<span class="fc bfc" id="L269" title="All 2 branches covered.">				if (validInput) {</span>
+<span class="fc" id="L270">					replyList.add(new TextMessage(&quot;Please enter the number of toddlers (age 3 or younger) in your group: &quot;));</span>
+<span class="fc" id="L271">					bookState.substate = &quot;toddlers&quot;;</span>
+				} else {
+<span class="fc" id="L273">					replyList.add(new TextMessage(&quot;You've entered an invalid number!&quot;));</span>
+<span class="fc" id="L274">					replyList.add(new TextMessage(&quot;Please enter the number of children (age 4 to 11 years) in your group: &quot;));</span>
+				}
+				
+				
+<span class="fc bfc" id="L278" title="All 2 branches covered.">			} else if (bookState.substate.equals(&quot;toddlers&quot;)) {</span>
+<span class="fc" id="L279">				boolean validInput = true;</span>
+				try {
+<span class="fc" id="L281">					bookState.toddlers = Integer.parseInt(text);</span>
+<span class="fc bfc" id="L282" title="All 2 branches covered.">					if (bookState.toddlers &lt; 0)</span>
+<span class="fc" id="L283">						validInput = false;</span>
+<span class="fc" id="L284">				} catch (NumberFormatException e) {</span>
+<span class="fc" id="L285">					validInput = false;</span>
+<span class="fc" id="L286">				}</span>
+				
+<span class="fc bfc" id="L288" title="All 2 branches covered.">				if (validInput) {</span>
+<span class="fc" id="L289">					replyList.add(new TextMessage(&quot;Do you have any special requests? If not, enter none.&quot;));</span>
+<span class="fc" id="L290">					bookState.substate = &quot;requests&quot;;</span>
+				} else {
+<span class="fc" id="L292">					replyList.add(new TextMessage(&quot;You've entered an invalid number!&quot;));</span>
+<span class="fc" id="L293">					replyList.add(new TextMessage(&quot;Please enter the number of toddlers (age 3 or younger) in your group: &quot;));</span>
+				}
+				
+<span class="fc bfc" id="L296" title="All 2 branches covered.">			} else if (bookState.substate.equals(&quot;requests&quot;)) {</span>
+<span class="fc" id="L297">				bookState.requests = text;</span>
+<span class="fc" id="L298">				int groupCount = bookState.adults+bookState.children+bookState.toddlers;</span>
+<span class="fc" id="L299">				int remainingSpaces = 0;</span>
+				
+<span class="fc" id="L301">					remainingSpaces = (Integer.parseInt(bookState.offerings.get(bookState.offeringIndex).get(6)) - db.getCurrentBookingCount(bookState.offerId));</span>
+<span class="fc bfc" id="L302" title="All 2 branches covered.">				if (groupCount &gt; remainingSpaces) {</span>
+<span class="fc" id="L303">					replyList.add(new TextMessage(&quot;I'm afraid we don't have enough open spaces on that tour for your group.&quot;));</span>
+<span class="fc" id="L304">					replyList.add(new TextMessage(&quot;Please enter .back (with the full stop) to return to your search results.&quot;));</span>
+<span class="fc" id="L305">					bookState.substate = &quot;error&quot;;</span>
+				} else {
+<span class="fc" id="L307">					double cost = Double.parseDouble(bookState.offerings.get(bookState.offeringIndex).get(5));</span>
+<span class="fc" id="L308">					double childCost = cost*0.8;</span>
+					
+<span class="fc" id="L310">					double adultTotalCost = bookState.adults * cost;</span>
+<span class="fc" id="L311">					double childTotalCost = (int)(bookState.children * childCost);</span>
+					
+<span class="fc" id="L313">					bookState.totalCost = adultTotalCost + childTotalCost;</span>
+					//round to 1 d.p.
+<span class="fc" id="L315">					bookState.totalCost = (double)((int)(bookState.totalCost * 10))/10;</span>
+					
+<span class="fc" id="L317">					String temp = &quot;You are booking:\n&quot;;</span>
+<span class="fc" id="L318">					temp += bookState.tourName + &quot;\n&quot;;</span>
+<span class="fc" id="L319">					temp += bookState.offerings.get(bookState.offeringIndex).get(2) + &quot; offering\n&quot;;</span>
+<span class="fc" id="L320">					temp += &quot;\n&quot;;</span>
+<span class="fc" id="L321">					temp += &quot;Special requests: &quot; + bookState.requests + &quot;\n&quot;;</span>
+<span class="fc" id="L322">					temp += &quot;\n&quot;;</span>
+<span class="fc" id="L323">					temp += &quot;Pricing:\n&quot;;</span>
+<span class="fc" id="L324">					temp += bookState.adults + &quot; adult(s) : $&quot; + adultTotalCost + &quot;\n&quot;;</span>
+<span class="fc" id="L325">					temp += bookState.children + &quot; child(ren) : $&quot; + childTotalCost + &quot;\n&quot;;</span>
+<span class="fc" id="L326">					temp += bookState.toddlers + &quot; toddler(s) : free!\n&quot;;</span>
+					
+					//DISCOUNT
+<span class="fc" id="L329">					double discount = 1;</span>
+<span class="fc bfc" id="L330" title="All 2 branches covered.">						if (db.checkDiscount(bookState.offerId)) {</span>
+<span class="fc" id="L331">							discount = db.getDiscount(bookState.offerId);</span>
+<span class="fc" id="L332">							temp += &quot;Discount : &quot; + (int)((1-discount)*100) + &quot;% off!\n&quot;;</span>
+<span class="fc" id="L333">							double savings = (1-discount) * bookState.totalCost;</span>
+<span class="fc" id="L334">							savings = (double)((int)(savings*10))/10;</span>
+<span class="fc" id="L335">							temp += &quot;Savings : -$&quot; + savings + &quot;\n&quot;;</span>
+<span class="fc" id="L336">							bookState.discounted = true;</span>
+<span class="fc" id="L337">							bookState.totalCost *= discount;</span>
+<span class="fc" id="L338">							bookState.totalCost = (double)((int)(bookState.totalCost * 10))/10;</span>
+						}
+					
+<span class="fc" id="L341">					temp += &quot;Total cost: $&quot; + bookState.totalCost + &quot;\n&quot;;</span>
+<span class="fc" id="L342">					temp += &quot;\n&quot;;</span>
+<span class="fc" id="L343">					temp += &quot;If everything is correct, would you like to confirm your booking?&quot;;</span>
+					
+<span class="fc" id="L345">					replyList.add(new TextMessage(temp));</span>
+					
+<span class="fc" id="L347">					replyList.add(</span>
+						new TemplateMessage(&quot;Confirm user information&quot;, 
+							new ConfirmTemplate(
+			                    &quot;Confirm?&quot;,
+			                    new MessageAction(&quot;Yes&quot;, &quot;Yes&quot;),
+			                    new MessageAction(&quot;No&quot;, &quot;No&quot;)
+							)
+						)
+					);
+<span class="fc" id="L356">					bookState.substate = &quot;bookingConfirm&quot;;</span>
+				}
+<span class="fc bfc" id="L358" title="All 2 branches covered.">			} else if (bookState.substate.equals(&quot;bookingConfirm&quot;)) {</span>
+<span class="fc bfc" id="L359" title="All 2 branches covered.">				if (text.toLowerCase().contains(&quot;yes&quot;)) {</span>
+					//add to records
+<span class="fc" id="L361">						db.inputBooking(userId, bookState.offerId, bookState.adults, bookState.children, bookState.toddlers, bookState.totalCost, bookState.requests);</span>
+<span class="fc bfc" id="L362" title="All 2 branches covered.">						if (bookState.discounted) {</span>
+<span class="fc" id="L363">							db.decrementDiscount(bookState.offerId);</span>
+						}
+<span class="fc" id="L365">					replyList.add(new TextMessage(&quot;Your booking has been successfully stored in our records.&quot;));</span>
+<span class="fc" id="L366">					replyList.add(new TextMessage(&quot;Enter .back (with the full stop) to return to your search results, or cancel to return to the main menu.&quot;));</span>
+<span class="fc" id="L367">					bookState.substate = &quot;done&quot;;</span>
+<span class="fc bfc" id="L368" title="All 2 branches covered.">				} else if (text.toLowerCase().contains(&quot;no&quot;)) {</span>
+					//repeat process
+<span class="fc" id="L370">					replyList.add(new TextMessage(&quot;Then let's try again.&quot;));</span>
+<span class="fc" id="L371">						showOfferings(bookState);</span>
+<span class="fc" id="L372">						bookState.substate = &quot;selectOffering&quot;;</span>
+<span class="fc" id="L373">					bookState.substate = &quot;selectOffering&quot;;</span>
+				} else {
+<span class="fc" id="L375">					replyList.add(new TextMessage(&quot;Are the details correct? (please enter yes or no)&quot;));</span>
+				}
+				
+<span class="fc bfc" id="L378" title="All 2 branches covered.">			} else if (bookState.substate.equals(&quot;error&quot;)) {</span>
+<span class="fc" id="L379">				replyList.add(new TextMessage(&quot;Please enter .back (with the full stop) to return to your search results.&quot;));</span>
+<span class="pc bpc" id="L380" title="1 of 2 branches missed.">			} else if (bookState.substate.equals(&quot;done&quot;)) {</span>
+<span class="fc" id="L381">				replyList.add(new TextMessage(&quot;Enter .back (with the full stop) to return to your search results, or cancel to return to the main menu.&quot;));</span>
+			}
+<span class="fc" id="L383">		} catch (Exception e) {</span>
+<span class="fc" id="L384">			replyList.add(new TextMessage(&quot;Something went wrong with our servers! Please enter .back (with the full stop) to return to your search results.&quot;));</span>
+<span class="fc" id="L385">			bookState.substate = &quot;error&quot;;</span>
+<span class="fc" id="L386">		}</span>
+		//for debugging
+		//replyList.add(new TextMessage(&quot;SUBSTATE: &quot; + bookState.substate));
+<span class="fc" id="L389">	}</span>
+	
+	/**
+	 * Helper function that sets tour offering object in bookState 
+	 * @param bookState object that stores all necessary information for processing booking state
+	 * @throws Exception
+	 */
+	private void getOfferings(BookState bookState) throws Exception {
+<span class="fc" id="L397">		bookState.offerings = db.searchTourOfferingID(bookState.tourId);</span>
+<span class="fc" id="L398">		DateTimeFormatter dtf = DateTimeFormatter.ofPattern(&quot;yyyy-MM-dd&quot;);</span>
+<span class="fc" id="L399">		LocalDate localDate = LocalDate.now().plusDays(3);</span>
+<span class="fc" id="L400">		String start = dtf.format(localDate);</span>
+<span class="fc bfc" id="L401" title="All 2 branches covered.">		for (int i = 0; i &lt; bookState.offerings.size(); i++) {</span>
+<span class="fc bfc" id="L402" title="All 2 branches covered.">			if (bookState.offerings.get(i).get(2).compareTo(start) &lt; 0) {</span>
+<span class="fc" id="L403">				bookState.offerings.remove(i);</span>
+<span class="fc" id="L404">				i--;</span>
+			}
+		}
+<span class="fc" id="L407">	}</span>
+	
+	/**
+	 * Helper function that sets a reply to show tour offerings
+	 * @param bookState object that stores all necessary information for processing booking state
+	 * @throws Exception
+	 */
+	private void showOfferings(BookState bookState) throws Exception {
+<span class="fc bfc" id="L415" title="All 2 branches covered.">		if (bookState.offerings.size() == 0) {</span>
+<span class="fc" id="L416">			replyList.add(new TextMessage(&quot;I'm afraid we don't have any available offerings for this tour!\nPlease enter .back (with the full stop) to return to your search results.&quot;));</span>
+<span class="fc" id="L417">			bookState.substate = &quot;error&quot;;</span>
+		} else {
+<span class="fc" id="L419">			String text = &quot;We have available tour offerings on the following dates:\n&quot;;</span>
+<span class="fc" id="L420">			boolean discounted = false;</span>
+<span class="fc bfc" id="L421" title="All 2 branches covered.">			for (int i=0; i&lt;bookState.offerings.size(); i++) {</span>
+<span class="fc" id="L422">				text += &quot;\n[&quot; + i + &quot;] &quot; + bookState.offerings.get(i).get(2);</span>
+<span class="fc" id="L423">				text += &quot; (&quot; + (Integer.parseInt(bookState.offerings.get(i).get(6)) - db.getCurrentBookingCount(bookState.offerings.get(i).get(1))) + &quot; spaces left)&quot;;</span>
+<span class="fc bfc" id="L424" title="All 2 branches covered.">				if (db.checkDiscount(bookState.offerings.get(i).get(1))) {</span>
+<span class="fc" id="L425">					text += &quot;*&quot;;</span>
+<span class="fc" id="L426">					discounted = true;</span>
+				}
+			}
+<span class="fc bfc" id="L429" title="All 2 branches covered.">			if (discounted) </span>
+<span class="fc" id="L430">				text += &quot;\nDates with a star * next to them are discounted for a limited time!&quot;;</span>
+			
+<span class="fc" id="L432">			text += &quot;\n\nPlease select a date by entering the [number] next to it.\nEnter .back (with the full stop) to return to search results&quot;;</span>
+<span class="fc" id="L433">			replyList.add(new TextMessage(text));</span>
+		}
+<span class="fc" id="L435">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

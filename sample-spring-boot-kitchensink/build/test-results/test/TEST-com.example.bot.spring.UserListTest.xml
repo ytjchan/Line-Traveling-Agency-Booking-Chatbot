@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.example.bot.spring.UserListTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2017-11-20T15:37:13" hostname="Nyanpasu" time="0.035">
+  <properties/>
+  <testcase name="testRemoveWithString" classname="com.example.bot.spring.UserListTest" time="0.005"/>
+  <testcase name="searchBookGetters" classname="com.example.bot.spring.UserListTest" time="0.002"/>
+  <testcase name="testGetState" classname="com.example.bot.spring.UserListTest" time="0.004"/>
+  <testcase name="testUpdateBuffer" classname="com.example.bot.spring.UserListTest" time="0.003"/>
+  <testcase name="testIsInList" classname="com.example.bot.spring.UserListTest" time="0.003"/>
+  <testcase name="testRemoveWithUser" classname="com.example.bot.spring.UserListTest" time="0.003"/>
+  <testcase name="testGetBuffer" classname="com.example.bot.spring.UserListTest" time="0.003"/>
+  <testcase name="testUpdate" classname="com.example.bot.spring.UserListTest" time="0.003"/>
+  <testcase name="testSetState" classname="com.example.bot.spring.UserListTest" time="0.003"/>
+  <system-out><![CDATA[2017-11-20 23:37:13.559  INFO 28228 --- [    Test worker] o.s.t.c.s.DefaultTestContextBootstrapper : Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener, org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener, org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2017-11-20 23:37:13.560  INFO 28228 --- [    Test worker] o.s.t.c.s.DefaultTestContextBootstrapper : Could not instantiate TestExecutionListener [org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [org/springframework/transaction/interceptor/TransactionAttribute]
+2017-11-20 23:37:13.560  INFO 28228 --- [    Test worker] o.s.t.c.s.DefaultTestContextBootstrapper : Could not instantiate TestExecutionListener [org.springframework.test.context.transaction.TransactionalTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [org/springframework/transaction/interceptor/TransactionAttributeSource]
+2017-11-20 23:37:13.560  INFO 28228 --- [    Test worker] o.s.t.c.s.DefaultTestContextBootstrapper : Using TestExecutionListeners: [org.springframework.test.context.web.ServletTestExecutionListener@5e019dd6, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener@6c16c883, org.springframework.test.context.support.DependencyInjectionTestExecutionListener@2059ab72, org.springframework.test.context.support.DirtiesContextTestExecutionListener@6f557d24, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener@3d68b235, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener@676027cb, org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener@a0f026e, org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener@4e77f256, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener@367618b7, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener@50ce2fcd]
+2017-11-20 23:37:13.563  INFO 28228 --- [    Test worker] o.s.c.support.GenericApplicationContext  : Refreshing org.springframework.context.support.GenericApplicationContext@5334f898: startup date [Mon Nov 20 23:37:13 CST 2017]; root of context hierarchy
+2017-11-20 23:37:13.703  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP created.
+2017-11-20 23:37:13.703  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111 created.
+2017-11-20 23:37:13.703  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111FUN created.
+2017-11-20 23:37:13.703  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111VERYFUN created.
+2017-11-20 23:37:13.704  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111VERYSUPERFUN created.
+2017-11-20 23:37:13.704  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP NOT found.
+2017-11-20 23:37:13.704  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP
+2017-11-20 23:37:13.705  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP created.
+2017-11-20 23:37:13.705  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111 NOT found.
+2017-11-20 23:37:13.705  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP3111
+2017-11-20 23:37:13.705  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111 created.
+2017-11-20 23:37:13.705  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111FUN NOT found.
+2017-11-20 23:37:13.705  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP3111FUN
+2017-11-20 23:37:13.705  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111FUN created.
+2017-11-20 23:37:13.705  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111VERYFUN NOT found.
+2017-11-20 23:37:13.705  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP3111VERYFUN
+2017-11-20 23:37:13.705  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111VERYFUN created.
+2017-11-20 23:37:13.705  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111VERYSUPERFUN NOT found.
+2017-11-20 23:37:13.705  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP3111VERYSUPERFUN
+2017-11-20 23:37:13.705  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111VERYSUPERFUN created.
+remove with string
+2017-11-20 23:37:13.705  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP found.
+2017-11-20 23:37:13.705  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Removing user COMP
+2017-11-20 23:37:13.705  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111 found.
+2017-11-20 23:37:13.705  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Removing user COMP3111
+2017-11-20 23:37:13.705  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111FUN found.
+2017-11-20 23:37:13.705  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Removing user COMP3111FUN
+2017-11-20 23:37:13.705  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111NOTFUN NOT found.
+2017-11-20 23:37:13.705  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Failed to remove user with userId: COMP3111NOTFUN
+2017-11-20 23:37:13.707  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP created.
+2017-11-20 23:37:13.708  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111 created.
+2017-11-20 23:37:13.708  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111FUN created.
+2017-11-20 23:37:13.708  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111VERYFUN created.
+2017-11-20 23:37:13.708  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111VERYSUPERFUN created.
+2017-11-20 23:37:13.708  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP NOT found.
+2017-11-20 23:37:13.708  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP
+2017-11-20 23:37:13.708  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP created.
+2017-11-20 23:37:13.708  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111 NOT found.
+2017-11-20 23:37:13.708  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP3111
+2017-11-20 23:37:13.708  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111 created.
+2017-11-20 23:37:13.708  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111FUN NOT found.
+2017-11-20 23:37:13.708  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP3111FUN
+2017-11-20 23:37:13.708  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111FUN created.
+2017-11-20 23:37:13.708  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111VERYFUN NOT found.
+2017-11-20 23:37:13.708  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP3111VERYFUN
+2017-11-20 23:37:13.708  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111VERYFUN created.
+2017-11-20 23:37:13.708  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111VERYSUPERFUN NOT found.
+2017-11-20 23:37:13.708  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP3111VERYSUPERFUN
+2017-11-20 23:37:13.708  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111VERYSUPERFUN created.
+2017-11-20 23:37:13.709  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111 found.
+2017-11-20 23:37:13.709  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111 found.
+2017-11-20 23:37:13.709  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111 found.
+2017-11-20 23:37:13.709  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111 found.
+2017-11-20 23:37:13.709  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId  NOT found.
+2017-11-20 23:37:13.709  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId  NOT found.
+2017-11-20 23:37:13.709  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId  NOT found.
+2017-11-20 23:37:13.709  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId  NOT found.
+2017-11-20 23:37:13.711  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP created.
+2017-11-20 23:37:13.711  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111 created.
+2017-11-20 23:37:13.711  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111FUN created.
+2017-11-20 23:37:13.711  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111VERYFUN created.
+2017-11-20 23:37:13.712  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111VERYSUPERFUN created.
+2017-11-20 23:37:13.713  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP NOT found.
+2017-11-20 23:37:13.713  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP
+2017-11-20 23:37:13.713  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP created.
+2017-11-20 23:37:13.713  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111 NOT found.
+2017-11-20 23:37:13.713  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP3111
+2017-11-20 23:37:13.713  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111 created.
+2017-11-20 23:37:13.713  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111FUN NOT found.
+2017-11-20 23:37:13.713  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP3111FUN
+2017-11-20 23:37:13.713  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111FUN created.
+2017-11-20 23:37:13.713  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111VERYFUN NOT found.
+2017-11-20 23:37:13.713  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP3111VERYFUN
+2017-11-20 23:37:13.713  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111VERYFUN created.
+2017-11-20 23:37:13.713  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111VERYSUPERFUN NOT found.
+2017-11-20 23:37:13.713  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP3111VERYSUPERFUN
+2017-11-20 23:37:13.713  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111VERYSUPERFUN created.
+get state
+2017-11-20 23:37:13.713  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP found.
+2017-11-20 23:37:13.713  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP found.
+2017-11-20 23:37:13.713  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111NOTFUN NOT found.
+2017-11-20 23:37:13.716  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP created.
+2017-11-20 23:37:13.716  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111 created.
+2017-11-20 23:37:13.716  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111FUN created.
+2017-11-20 23:37:13.716  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111VERYFUN created.
+2017-11-20 23:37:13.716  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111VERYSUPERFUN created.
+2017-11-20 23:37:13.716  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP NOT found.
+2017-11-20 23:37:13.716  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP
+2017-11-20 23:37:13.716  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP created.
+2017-11-20 23:37:13.716  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111 NOT found.
+2017-11-20 23:37:13.716  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP3111
+2017-11-20 23:37:13.716  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111 created.
+2017-11-20 23:37:13.716  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111FUN NOT found.
+2017-11-20 23:37:13.716  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP3111FUN
+2017-11-20 23:37:13.716  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111FUN created.
+2017-11-20 23:37:13.716  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111VERYFUN NOT found.
+2017-11-20 23:37:13.716  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP3111VERYFUN
+2017-11-20 23:37:13.716  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111VERYFUN created.
+2017-11-20 23:37:13.716  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111VERYSUPERFUN NOT found.
+2017-11-20 23:37:13.716  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP3111VERYSUPERFUN
+2017-11-20 23:37:13.717  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111VERYSUPERFUN created.
+update buffer
+2017-11-20 23:37:13.717  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP found.
+2017-11-20 23:37:13.717  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111NOTFUN NOT found.
+2017-11-20 23:37:13.717  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Failed to update buffer! User COMP3111NOTFUN not in UserList yet!
+2017-11-20 23:37:13.719  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP created.
+2017-11-20 23:37:13.719  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111 created.
+2017-11-20 23:37:13.719  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111FUN created.
+2017-11-20 23:37:13.719  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111VERYFUN created.
+2017-11-20 23:37:13.719  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111VERYSUPERFUN created.
+2017-11-20 23:37:13.719  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP NOT found.
+2017-11-20 23:37:13.719  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP
+2017-11-20 23:37:13.720  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP created.
+2017-11-20 23:37:13.720  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111 NOT found.
+2017-11-20 23:37:13.720  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP3111
+2017-11-20 23:37:13.720  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111 created.
+2017-11-20 23:37:13.720  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111FUN NOT found.
+2017-11-20 23:37:13.720  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP3111FUN
+2017-11-20 23:37:13.720  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111FUN created.
+2017-11-20 23:37:13.720  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111VERYFUN NOT found.
+2017-11-20 23:37:13.720  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP3111VERYFUN
+2017-11-20 23:37:13.720  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111VERYFUN created.
+2017-11-20 23:37:13.720  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111VERYSUPERFUN NOT found.
+2017-11-20 23:37:13.720  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP3111VERYSUPERFUN
+2017-11-20 23:37:13.720  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111VERYSUPERFUN created.
+find user & is in list
+2017-11-20 23:37:13.720  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP found.
+2017-11-20 23:37:13.720  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111NOTFUN NOT found.
+2017-11-20 23:37:13.723  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP created.
+2017-11-20 23:37:13.723  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111 created.
+2017-11-20 23:37:13.723  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111FUN created.
+2017-11-20 23:37:13.723  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111VERYFUN created.
+2017-11-20 23:37:13.723  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111VERYSUPERFUN created.
+2017-11-20 23:37:13.723  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP NOT found.
+2017-11-20 23:37:13.723  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP
+2017-11-20 23:37:13.723  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP created.
+2017-11-20 23:37:13.723  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111 NOT found.
+2017-11-20 23:37:13.723  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP3111
+2017-11-20 23:37:13.724  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111 created.
+2017-11-20 23:37:13.724  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111FUN NOT found.
+2017-11-20 23:37:13.724  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP3111FUN
+2017-11-20 23:37:13.724  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111FUN created.
+2017-11-20 23:37:13.724  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111VERYFUN NOT found.
+2017-11-20 23:37:13.724  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP3111VERYFUN
+2017-11-20 23:37:13.724  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111VERYFUN created.
+2017-11-20 23:37:13.724  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111VERYSUPERFUN NOT found.
+2017-11-20 23:37:13.724  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP3111VERYSUPERFUN
+2017-11-20 23:37:13.724  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111VERYSUPERFUN created.
+remove with user
+2017-11-20 23:37:13.724  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Removing user COMP3111VERYSUPERFUN
+2017-11-20 23:37:13.724  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Removing user COMP3111VERYFUN
+2017-11-20 23:37:13.727  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP created.
+2017-11-20 23:37:13.727  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111 created.
+2017-11-20 23:37:13.727  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111FUN created.
+2017-11-20 23:37:13.727  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111VERYFUN created.
+2017-11-20 23:37:13.727  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111VERYSUPERFUN created.
+2017-11-20 23:37:13.727  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP NOT found.
+2017-11-20 23:37:13.727  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP
+2017-11-20 23:37:13.727  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP created.
+2017-11-20 23:37:13.727  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111 NOT found.
+2017-11-20 23:37:13.727  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP3111
+2017-11-20 23:37:13.727  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111 created.
+2017-11-20 23:37:13.727  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111FUN NOT found.
+2017-11-20 23:37:13.727  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP3111FUN
+2017-11-20 23:37:13.728  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111FUN created.
+2017-11-20 23:37:13.728  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111VERYFUN NOT found.
+2017-11-20 23:37:13.728  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP3111VERYFUN
+2017-11-20 23:37:13.728  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111VERYFUN created.
+2017-11-20 23:37:13.728  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111VERYSUPERFUN NOT found.
+2017-11-20 23:37:13.728  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP3111VERYSUPERFUN
+2017-11-20 23:37:13.728  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111VERYSUPERFUN created.
+get buffer
+2017-11-20 23:37:13.728  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP found.
+2017-11-20 23:37:13.728  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP found.
+2017-11-20 23:37:13.728  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111 found.
+2017-11-20 23:37:13.728  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111 found.
+2017-11-20 23:37:13.728  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111 found.
+2017-11-20 23:37:13.728  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111 found.
+2017-11-20 23:37:13.728  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111 found.
+2017-11-20 23:37:13.728  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111NOTFUN NOT found.
+2017-11-20 23:37:13.731  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP created.
+2017-11-20 23:37:13.731  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111 created.
+2017-11-20 23:37:13.731  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111FUN created.
+2017-11-20 23:37:13.731  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111VERYFUN created.
+2017-11-20 23:37:13.731  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111VERYSUPERFUN created.
+2017-11-20 23:37:13.731  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP NOT found.
+2017-11-20 23:37:13.731  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP
+2017-11-20 23:37:13.731  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP created.
+2017-11-20 23:37:13.731  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111 NOT found.
+2017-11-20 23:37:13.731  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP3111
+2017-11-20 23:37:13.731  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111 created.
+2017-11-20 23:37:13.731  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111FUN NOT found.
+2017-11-20 23:37:13.731  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP3111FUN
+2017-11-20 23:37:13.731  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111FUN created.
+2017-11-20 23:37:13.731  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111VERYFUN NOT found.
+2017-11-20 23:37:13.731  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP3111VERYFUN
+2017-11-20 23:37:13.732  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111VERYFUN created.
+2017-11-20 23:37:13.732  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111VERYSUPERFUN NOT found.
+2017-11-20 23:37:13.732  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP3111VERYSUPERFUN
+2017-11-20 23:37:13.732  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111VERYSUPERFUN created.
+update
+2017-11-20 23:37:13.732  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP found.
+2017-11-20 23:37:13.732  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : Timeout renewed for user COMP
+2017-11-20 23:37:13.732  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111 found.
+2017-11-20 23:37:13.732  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : Timeout renewed for user COMP3111
+2017-11-20 23:37:13.732  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111FUN found.
+2017-11-20 23:37:13.732  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : Timeout renewed for user COMP3111FUN
+2017-11-20 23:37:13.732  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111VERYFUN found.
+2017-11-20 23:37:13.732  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : Timeout renewed for user COMP3111VERYFUN
+2017-11-20 23:37:13.732  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111VERYSUPERFUN found.
+2017-11-20 23:37:13.732  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : Timeout renewed for user COMP3111VERYSUPERFUN
+2017-11-20 23:37:13.734  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP created.
+2017-11-20 23:37:13.734  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111 created.
+2017-11-20 23:37:13.734  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111FUN created.
+2017-11-20 23:37:13.734  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111VERYFUN created.
+2017-11-20 23:37:13.735  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111VERYSUPERFUN created.
+2017-11-20 23:37:13.735  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP NOT found.
+2017-11-20 23:37:13.735  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP
+2017-11-20 23:37:13.735  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP created.
+2017-11-20 23:37:13.735  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111 NOT found.
+2017-11-20 23:37:13.735  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP3111
+2017-11-20 23:37:13.735  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111 created.
+2017-11-20 23:37:13.735  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111FUN NOT found.
+2017-11-20 23:37:13.735  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP3111FUN
+2017-11-20 23:37:13.735  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111FUN created.
+2017-11-20 23:37:13.735  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111VERYFUN NOT found.
+2017-11-20 23:37:13.735  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP3111VERYFUN
+2017-11-20 23:37:13.735  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111VERYFUN created.
+2017-11-20 23:37:13.735  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111VERYSUPERFUN NOT found.
+2017-11-20 23:37:13.735  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Adding a new user of userId COMP3111VERYSUPERFUN
+2017-11-20 23:37:13.735  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111VERYSUPERFUN created.
+set state
+2017-11-20 23:37:13.735  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP found.
+2017-11-20 23:37:13.735  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : User of userId COMP3111NOTFUN NOT found.
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

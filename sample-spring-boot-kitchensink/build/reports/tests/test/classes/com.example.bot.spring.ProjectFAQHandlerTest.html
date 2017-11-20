@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - Class com.example.bot.spring.ProjectFAQHandlerTest</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<h1>Class com.example.bot.spring.ProjectFAQHandlerTest</h1>
+<div class="breadcrumbs">
+<a href="../index.html">all</a> &gt; 
+<a href="../packages/com.example.bot.spring.html">com.example.bot.spring</a> &gt; ProjectFAQHandlerTest</div>
+<div id="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox" id="tests">
+<div class="counter">2</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="failures">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="ignored">
+<div class="counter">0</div>
+<p>ignored</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="duration">
+<div class="counter">3.005s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success" id="successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="tabs">
+<ul class="tabLinks">
+<li>
+<a href="#tab0">Tests</a>
+</li>
+<li>
+<a href="#tab1">Standard output</a>
+</li>
+</ul>
+<div id="tab0" class="tab">
+<h2>Tests</h2>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Duration</th>
+<th>Result</th>
+</tr>
+</thead>
+<tr>
+<td class="success">testSearch1</td>
+<td>1.485s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testSearch2</td>
+<td>1.520s</td>
+<td class="success">passed</td>
+</tr>
+</table>
+</div>
+<div id="tab1" class="tab">
+<h2>Standard output</h2>
+<span class="code">
+<pre>2017-11-20 23:36:28.975  INFO 28228 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Neither @ContextConfiguration nor @ContextHierarchy found for test class [com.example.bot.spring.ProjectFAQHandlerTest], using SpringBootContextLoader
+2017-11-20 23:36:28.976  INFO 28228 --- [    Test worker] o.s.t.c.support.AbstractContextLoader    : Could not detect default resource locations for test class [com.example.bot.spring.ProjectFAQHandlerTest]: no resource found for suffixes {-context.xml, Context.groovy}.
+2017-11-20 23:36:28.981  INFO 28228 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener, org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener, org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2017-11-20 23:36:28.983  INFO 28228 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Could not instantiate TestExecutionListener [org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [org/springframework/transaction/interceptor/TransactionAttribute]
+2017-11-20 23:36:28.984  INFO 28228 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Could not instantiate TestExecutionListener [org.springframework.test.context.transaction.TransactionalTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [org/springframework/transaction/interceptor/TransactionAttributeSource]
+2017-11-20 23:36:28.984  INFO 28228 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Using TestExecutionListeners: [org.springframework.test.context.web.ServletTestExecutionListener@7351b573, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener@3716eb0d, org.springframework.boot.test.autoconfigure.SpringBootDependencyInjectionTestExecutionListener@6312b085, org.springframework.test.context.support.DirtiesContextTestExecutionListener@ea93355, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener@70ade5de, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener@70633645, org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener@6033654, org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener@41778e5a, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener@5e6b00bf, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener@37d3c429]
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::        (v1.4.2.RELEASE)
+
+2017-11-20 23:36:29.024  INFO 28228 --- [    Test worker] c.e.bot.spring.ProjectFAQHandlerTest     : Starting ProjectFAQHandlerTest on Nyanpasu with PID 28228 (started by Alistair in C:\Users\Alistair\Desktop\COMP3111\project repos\chatbot-working-repo\sample-spring-boot-kitchensink)
+2017-11-20 23:36:29.024  INFO 28228 --- [    Test worker] c.e.bot.spring.ProjectFAQHandlerTest     : No active profile set, falling back to default profiles: default
+2017-11-20 23:36:29.028  INFO 28228 --- [    Test worker] o.s.w.c.s.GenericWebApplicationContext   : Refreshing org.springframework.web.context.support.GenericWebApplicationContext@4e89c974: startup date [Mon Nov 20 23:36:29 CST 2017]; root of context hierarchy
+2017-11-20 23:36:29.049  INFO 28228 --- [    Test worker] c.e.bot.spring.ProjectFAQHandlerTest     : Started ProjectFAQHandlerTest in 0.059 seconds (JVM running for 72.43)
+2017-11-20 23:36:29.051  INFO 28228 --- [    Test worker] c.example.bot.spring.SQLDatabaseEngine   : Username: wusfbejyowexph Password: 79e590b917bad348679f4ca02f5c93d02efbb282c69b814c4e4848ec9f96a8b1
+2017-11-20 23:36:29.051  INFO 28228 --- [    Test worker] c.example.bot.spring.SQLDatabaseEngine   : dbUrl: jdbc:postgresql://ec2-50-17-220-223.compute-1.amazonaws.com:5432/dasu0mq4bcdjr8?ssl=true&amp;sslfactory=org.postgresql.ssl.NonValidatingFactory
+2017-11-20 23:36:30.537  INFO 28228 --- [    Test worker] c.example.bot.spring.SQLDatabaseEngine   : Username: wusfbejyowexph Password: 79e590b917bad348679f4ca02f5c93d02efbb282c69b814c4e4848ec9f96a8b1
+2017-11-20 23:36:30.537  INFO 28228 --- [    Test worker] c.example.bot.spring.SQLDatabaseEngine   : dbUrl: jdbc:postgresql://ec2-50-17-220-223.compute-1.amazonaws.com:5432/dasu0mq4bcdjr8?ssl=true&amp;sslfactory=org.postgresql.ssl.NonValidatingFactory
+</pre>
+</span>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="http://www.gradle.org">Gradle 3.5</a> at 20-Nov-2017 23:37:14</p>
+</div>
+</div>
+</body>
+</html>

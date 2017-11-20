@@ -1,0 +1,606 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SQLDatabaseEngine.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">sample-spring-boot-kitchensink</a> &gt; <a href="index.source.html" class="el_package">com.example.bot.spring</a> &gt; <span class="el_source">SQLDatabaseEngine.java</span></div><h1>SQLDatabaseEngine.java</h1><pre class="source lang-java linenums">package com.example.bot.spring;
+
+import lombok.extern.slf4j.Slf4j;
+import javax.annotation.PostConstruct;
+import javax.sql.DataSource;
+import java.sql.*;
+import java.net.URISyntaxException;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
+import java.time.format.DateTimeFormatter;
+
+<span class="fc" id="L18">@Slf4j</span>
+<span class="fc" id="L19">public class SQLDatabaseEngine {</span>
+    /**
+     * Return all keywords available in FAQ table
+     * @return String of all keywords concatenated and separated by ', ' 
+     */
+    protected String searchAllKeywords(){
+<span class="pc" id="L25">        try (</span>
+<span class="fc" id="L26">                Connection c = getConnection();</span>
+<span class="fc" id="L27">                PreparedStatement stmt = c.prepareStatement(&quot;select keyword from faq;&quot;);</span>
+                ) // Java try-with-resources
+        {
+<span class="fc" id="L30">                StringBuilder sb = new StringBuilder();</span>
+<span class="fc" id="L31">                ResultSet keywordRs = stmt.executeQuery(); // ResultSet is automatically closed when stmt is closed</span>
+<span class="fc bfc" id="L32" title="All 2 branches covered.">                while (keywordRs.next()){</span>
+<span class="fc" id="L33">                        sb.append(keywordRs.getString(1));</span>
+<span class="fc" id="L34">                        sb.append(&quot;, &quot;);</span>
+                }
+<span class="fc" id="L36">                return sb.toString();</span>
+<span class="pc bpc" id="L37" title="12 of 16 branches missed.">        } catch (Exception e){</span>
+<span class="nc" id="L38">                log.info(&quot;searchAllKeywords Error&quot;);</span>
+        }
+<span class="nc" id="L40">        return null;</span>
+    }
+    
+    //helper function to check whether duplicate keyword exist
+    private boolean checkduplicate(int currentString,String s,String[] textlist) {
+<span class="fc" id="L45">    	boolean skip=false;</span>
+<span class="fc bfc" id="L46" title="All 2 branches covered.">    	for(int i=0;i&lt;currentString-1;i++) {</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">			if(s.toLowerCase().equals(textlist[i].toLowerCase())) {</span>
+<span class="fc" id="L48">				skip=true;</span>
+<span class="fc" id="L49">				break;</span>
+			}
+		}
+<span class="fc" id="L52">    	return skip;</span>
+    }
+    
+    /**
+     * Return keywords available in FAQ table that match one or more keywords in the input 
+     * @param input_text A keyword that may exist in FAQ table
+     * @return String of all matched answers concatenated and separated by '; ' 
+     */
+    protected String searchKeywordFromFAQ(String input_text) {
+    	
+<span class="fc" id="L62">    	StringBuilder sb = new StringBuilder();</span>
+<span class="fc" id="L63">		String[] textlist=input_text.split(&quot;\\s+&quot;);//use&quot;\\s+&quot;instead of &quot; &quot; to split</span>
+<span class="fc" id="L64">		int currentString=0;</span>
+<span class="fc" id="L65">            boolean skip=false;</span>
+		//String result=null;
+<span class="fc" id="L67">		String sqlsentence=&quot;SELECT Answer FROM FAQ WHERE Keyword=?;&quot;; // use ? with setString() or setInt() etc. to prevent SQL injection</span>
+		//String testsql=&quot;SELECT * FROM FAQ&quot;;
+            //this loop is used to check whether deplicate keywords appear,if so, ignore them
+<span class="fc bfc" id="L70" title="All 2 branches covered.">            for (String s : textlist) { // more readable</span>
+<span class="fc" id="L71">                    skip=false;</span>
+<span class="fc" id="L72">                    currentString++;</span>
+                    /*for(int i=0;i&lt;currentString-1;i++) {
+                            if(s.toLowerCase().equals(textlist[i].toLowerCase())) {
+                                    skip=true;
+                                    //for test
+                                    //return &quot;deplicate&quot;;
+                            }
+                    }*/
+<span class="fc bfc" id="L80" title="All 2 branches covered.">                    if(checkduplicate(currentString,s,textlist))</span>
+<span class="fc" id="L81">                            continue;</span>
+<span class="pc" id="L82">                    try (</span>
+<span class="fc" id="L83">                            Connection c = getConnection();</span>
+<span class="fc" id="L84">                            PreparedStatement stmt = c.prepareStatement(sqlsentence);</span>
+                            ) // Java try-with-resources closes Connection and PreparedStatement automatically (old getStatement() is not feasible since we cannot close the Connection object)
+                    {
+<span class="fc" id="L87">                            stmt.setString(1, s.toLowerCase()); // setString() ensures safety of DB</span>
+<span class="fc bfc" id="L88" title="All 2 branches covered.">                            if(sb.length()!=0)</span>
+<span class="fc" id="L89">                                    sb.append(&quot;\n\n&quot;);</span>
+                            //ResultSet keywordRs = getStatement(testsql).executeQuery();
+<span class="fc" id="L91">                            ResultSet keywordRs = stmt.executeQuery();</span>
+<span class="fc bfc" id="L92" title="All 2 branches covered.">                            if (keywordRs.next()) // while loop would concatenate all ans results if keywords repeat in the db, this my ruin the output String</span>
+<span class="fc" id="L93">                                    sb.append(keywordRs.getString(1));</span>
+<span class="pc bpc" id="L94" title="12 of 16 branches missed.">                    } catch (Exception e) {</span>
+<span class="nc" id="L95">                            log.info(&quot;searchKeywordFromFAQ error&quot;);</span>
+<span class="fc" id="L96">                    }</span>
+            }
+<span class="fc" id="L98">		return sb.toString();</span>
+    }
+    
+    /**
+     * Search for tours with given description, start and end dates
+     * etc. with A as a String array
+     * @param keywords A linked list of keyword strings
+     * @param startDate a date string in format yyyy-mm-dd
+     * @param endDate a date string in format yyyy-mm-dd
+     * @return String array of formatted search results (see above)
+     */
+    protected ArrayList&lt;ArrayList&lt;String&gt;&gt; searchTourByDesc(LinkedList&lt;String&gt; keywords, String startDate, String endDate) throws URISyntaxException, SQLException {
+<span class="fc" id="L110">        Connection c = getConnection();</span>
+<span class="fc" id="L111">        String template = </span>
+		&quot;select tourid, tourname, tourdesc, tourlength from (&quot;
+				+ &quot;select t.tourid, tof.tourdate as startdate, tof.tourdate+t.tourlength as enddate, t.tourname, t.tourdesc, t.tourlength &quot;
+					+ &quot;from tour as t join touroffering as tof on t.tourid = tof.tourid) as subT &quot;
+			+ &quot;where ? &lt;= startdate and ? &gt;= enddate&quot;;
+<span class="fc bfc" id="L116" title="All 2 branches covered.">        for (int i=0; i&lt;keywords.size(); i++) {</span>
+<span class="fc" id="L117">        	template += &quot; and (lower(tourdesc) like lower(?) or lower(tourname) like lower(?))&quot;;</span>
+        }
+<span class="fc" id="L119">        template += &quot; group by tourid, tourname, tourdesc, tourlength order by min(startdate) asc&quot;;</span>
+        //1st ? is startdate
+        //2nd ? is enddate
+        //3rd ? onwards is keywords in pairs
+<span class="fc" id="L123">        PreparedStatement stmt = c.prepareStatement(template);</span>
+        
+<span class="fc" id="L125">        stmt.setDate(1, java.sql.Date.valueOf(startDate));</span>
+<span class="fc" id="L126">        stmt.setDate(2, java.sql.Date.valueOf(endDate));</span>
+<span class="fc bfc" id="L127" title="All 2 branches covered.">        for (int i=0, j=0; i&lt;keywords.size(); i++, j+=2) {</span>
+<span class="fc" id="L128">        	stmt.setString(j+3, &quot;%&quot; + keywords.get(i) + &quot;%&quot;);</span>
+<span class="fc" id="L129">        	stmt.setString(j+1+3, &quot;%&quot; + keywords.get(i) + &quot;%&quot;);</span>
+        }
+<span class="fc" id="L131">        ResultSet tourRs = stmt.executeQuery(); // ResultSet is closed automatically when stmt is closed</span>
+<span class="fc" id="L132">        ArrayList&lt;ArrayList&lt;String&gt;&gt; arr = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L133" title="All 2 branches covered.">        while (tourRs.next()){</span>
+<span class="fc" id="L134">        	ArrayList&lt;String&gt; temp = new ArrayList&lt;String&gt;();</span>
+<span class="fc" id="L135">            temp.add(tourRs.getString(1));	//id</span>
+<span class="fc" id="L136">            temp.add(tourRs.getString(2));	//name</span>
+<span class="fc" id="L137">            temp.add(tourRs.getString(3));	//desc</span>
+<span class="fc" id="L138">            temp.add(tourRs.getString(4));	//length (days)</span>
+<span class="fc" id="L139">            arr.add(temp);</span>
+<span class="fc" id="L140">        }</span>
+<span class="fc" id="L141">        stmt.close();</span>
+<span class="fc" id="L142">        c.close();</span>
+<span class="fc" id="L143">        return arr;</span>
+    }
+    
+    // protected = access within same package and subclasses (=derived class)
+    // javadoc below is just for fancy code suggestion in IDE
+    /**
+     * Insert a new record into Question table, qid is prepared automatically here
+     * @param lineid
+     * @param fullquestion
+     * @param lastfivequestions
+     * @return boolean indicator for whether insertion is successful
+     */
+    protected boolean insertQuestion(String lineid, String fullquestion, String lastfivequestions){              
+<span class="nc" id="L156">            try (</span>
+<span class="nc" id="L157">                    Connection c = getConnection();</span>
+<span class="nc" id="L158">                    PreparedStatement stmt = c.prepareStatement(&quot;insert into question values (?,?,?,?);&quot;);</span>
+<span class="nc" id="L159">                    PreparedStatement stmt2 = c.prepareStatement((&quot;select max(qid) from question;&quot;));</span>
+                    ) // Java try-with-resources will close the connection for us
+            {
+<span class="nc" id="L162">                    ResultSet qidRs = stmt2.executeQuery(); // ResultSet will close automatically after the PrepareStatement is closed</span>
+<span class="nc bnc" id="L163" title="All 2 branches missed.">                    int currentQid = qidRs.next() ? qidRs.getInt(1) : 0; // need to see if there is any record now</span>
+<span class="nc" id="L164">                    stmt.setInt(1, currentQid+1);</span>
+<span class="nc" id="L165">                    stmt.setString(2, lineid);</span>
+<span class="nc" id="L166">                    stmt.setString(3, fullquestion);</span>
+<span class="nc" id="L167">                    stmt.setString(4, lastfivequestions);</span>
+<span class="nc" id="L168">                    stmt.executeUpdate();</span>
+<span class="nc" id="L169">                    log.info(&quot;Inserted record into Question table with qid= &quot; + (currentQid+1));</span>
+<span class="nc" id="L170">                    return true;</span>
+<span class="nc bnc" id="L171" title="All 24 branches missed.">            } catch (URISyntaxException e){</span>
+<span class="nc" id="L172">                    log.info(&quot;URI Syntax problem with URI: &quot; + System.getenv(&quot;DATABASE_URL&quot;));</span>
+<span class="nc" id="L173">            } catch (SQLException e) {</span>
+<span class="nc" id="L174">                    log.info(&quot;Insertion into Question table failed!&quot;);</span>
+<span class="nc" id="L175">            }</span>
+<span class="nc" id="L176">            return false;</span>
+    }        
+     
+	private Connection getConnection() throws URISyntaxException, SQLException {
+		Connection connection;
+<span class="fc" id="L181">		URI dbUri = new URI(System.getenv(&quot;DATABASE_URL&quot;));</span>
+
+<span class="fc" id="L183">		String username = dbUri.getUserInfo().split(&quot;:&quot;)[0];</span>
+<span class="fc" id="L184">		String password = dbUri.getUserInfo().split(&quot;:&quot;)[1];</span>
+<span class="fc" id="L185">		String dbUrl = &quot;jdbc:postgresql://&quot; + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath() +  &quot;?ssl=true&amp;sslfactory=org.postgresql.ssl.NonValidatingFactory&quot;;</span>
+
+<span class="fc" id="L187">		log.info(&quot;Username: {} Password: {}&quot;, username, password);</span>
+<span class="fc" id="L188">		log.info (&quot;dbUrl: {}&quot;, dbUrl);</span>
+		
+<span class="fc" id="L190">		connection = DriverManager.getConnection(dbUrl, username, password);</span>
+
+<span class="fc" id="L192">		return connection;</span>
+	}
+    
+    /**
+     * Search tour table for matching tour ID
+     * @param in - tourID
+     * @return 2-dimensional ArrayList of search results
+     * @throws URISyntaxException
+     * @throws SQLException
+     */
+    protected ArrayList&lt;ArrayList&lt;String&gt;&gt; searchTourID(String in) throws URISyntaxException, SQLException {
+<span class="fc" id="L203">    	Connection c = getConnection();</span>
+<span class="fc" id="L204">    	String template = &quot;select * from tour where lower(tourid) = lower(?)&quot;;</span>
+<span class="fc" id="L205">    	PreparedStatement stmt = c.prepareStatement(template);</span>
+<span class="fc" id="L206">    	stmt.setString(1, in);</span>
+<span class="fc" id="L207">    	ResultSet tourRs = stmt.executeQuery();</span>
+<span class="fc" id="L208">    	ArrayList&lt;ArrayList&lt;String&gt;&gt; arr= new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L209" title="All 2 branches covered.">    	while (tourRs.next()) {</span>
+<span class="fc" id="L210">    		ArrayList&lt;String&gt; temp = new ArrayList&lt;String&gt;();</span>
+<span class="fc" id="L211">    		temp.add(tourRs.getString(1));	//tourid</span>
+<span class="fc" id="L212">            temp.add(tourRs.getString(2));	//name</span>
+<span class="fc" id="L213">            temp.add(tourRs.getString(3));	//desc</span>
+<span class="fc" id="L214">            temp.add(tourRs.getString(4));	//length (days)</span>
+<span class="fc" id="L215">            arr.add(temp);</span>
+<span class="fc" id="L216">    	}</span>
+<span class="fc" id="L217">    	stmt.close();</span>
+<span class="fc" id="L218">        c.close();</span>
+<span class="fc" id="L219">    	return arr;</span>
+    }
+    
+    /**
+     * Search touroffering table for matching tour ID
+     * @param in tourID
+     * @return 2-dimensional ArrayList of search results
+     * @throws URISyntaxException
+     * @throws SQLException
+     */
+    protected ArrayList&lt;ArrayList&lt;String&gt;&gt; searchTourOfferingID(String in) throws URISyntaxException, SQLException {
+<span class="fc" id="L230">    	Connection c = getConnection();</span>
+<span class="fc" id="L231">    	String template = &quot;select tourid, concat(tourid,offerid), tourdate, tourguidelineid, hotel, price, maxcapacity, minrequirement, confirmed from touroffering where lower(tourid) = lower(?)&quot;;</span>
+<span class="fc" id="L232">    	PreparedStatement stmt = c.prepareStatement(template);</span>
+<span class="fc" id="L233">    	stmt.setString(1, in);</span>
+<span class="fc" id="L234">    	ResultSet tourRs = stmt.executeQuery();</span>
+<span class="fc" id="L235">    	ArrayList&lt;ArrayList&lt;String&gt;&gt; arr= new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L236" title="All 2 branches covered.">    	while (tourRs.next()) {</span>
+<span class="fc" id="L237">    		ArrayList&lt;String&gt; temp = new ArrayList&lt;String&gt;();</span>
+<span class="fc" id="L238">    		temp.add(tourRs.getString(1));	//tourid</span>
+<span class="fc" id="L239">            temp.add(tourRs.getString(2));	//offerid</span>
+<span class="fc" id="L240">            temp.add(tourRs.getString(3));	//tourdate</span>
+<span class="fc" id="L241">            temp.add(tourRs.getString(4));	//tourguidelineid</span>
+<span class="fc" id="L242">            temp.add(tourRs.getString(5));	//hotel</span>
+<span class="fc" id="L243">            temp.add(tourRs.getString(6));	//price</span>
+<span class="fc" id="L244">            temp.add(tourRs.getString(7));	//maxcapacity</span>
+<span class="fc" id="L245">            temp.add(tourRs.getString(8));	//minreq</span>
+<span class="fc" id="L246">            temp.add(tourRs.getString(9));	//confirmed</span>
+<span class="fc" id="L247">            arr.add(temp);</span>
+<span class="fc" id="L248">    	}</span>
+<span class="fc" id="L249">    	stmt.close();</span>
+<span class="fc" id="L250">        c.close();</span>
+<span class="fc" id="L251">    	return arr;</span>
+    }
+    
+    
+    
+    /**
+     * Search booker table for matching line ID
+     * @param id
+     * @return 2-dimensional arraylist of strings (there should only be 1 or 0 records)
+     * @throws URISyntaxException
+     * @throws SQLException
+     */
+    protected ArrayList&lt;ArrayList&lt;String&gt;&gt; searchBookerForLineID(String id) throws URISyntaxException, SQLException {
+<span class="fc" id="L264">    	Connection c = getConnection();</span>
+<span class="fc" id="L265">    	String template = &quot;select * from booker where lower(lineid) = lower(?)&quot;;</span>
+<span class="fc" id="L266">    	PreparedStatement stmt = c.prepareStatement(template);</span>
+<span class="fc" id="L267">    	stmt.setString(1, id);</span>
+<span class="fc" id="L268">    	ResultSet tourRs = stmt.executeQuery();</span>
+<span class="fc" id="L269">    	ArrayList&lt;ArrayList&lt;String&gt;&gt; arr= new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L270" title="All 2 branches covered.">    	while (tourRs.next()) {</span>
+<span class="fc" id="L271">    		ArrayList&lt;String&gt; temp = new ArrayList&lt;String&gt;();</span>
+<span class="fc" id="L272">    		temp.add(tourRs.getString(1));	//lineid</span>
+<span class="fc" id="L273">            temp.add(tourRs.getString(2));	//name</span>
+<span class="fc" id="L274">            temp.add(tourRs.getString(3));	//hkid</span>
+<span class="fc" id="L275">            temp.add(tourRs.getString(4));	//phoneno</span>
+<span class="fc" id="L276">            temp.add(tourRs.getString(5));	//age</span>
+<span class="fc" id="L277">            arr.add(temp);</span>
+<span class="fc" id="L278">    	}</span>
+<span class="fc" id="L279">    	stmt.close();</span>
+<span class="fc" id="L280">        c.close();</span>
+<span class="fc" id="L281">    	return arr;</span>
+    }
+    
+    /**
+     * Inputs a new user into the booker table
+     * @param userId
+     * @param name
+     * @param hkid
+     * @param age
+     * @param phoneno
+     * @throws URISyntaxException
+     * @throws SQLException
+     */
+    protected void inputUserData(String userId, String name, String hkid, int age, int phoneno) throws URISyntaxException, SQLException {
+<span class="fc" id="L295">    	Connection c = getConnection();</span>
+<span class="fc" id="L296">    	String template = &quot;insert into booker values (?,?,?,?,?)&quot;;</span>
+<span class="fc" id="L297">    	PreparedStatement stmt = c.prepareStatement(template);</span>
+<span class="fc" id="L298">    	stmt.setString(1, userId);</span>
+<span class="fc" id="L299">    	stmt.setString(2, name);</span>
+<span class="fc" id="L300">    	stmt.setString(3, hkid);</span>
+<span class="fc" id="L301">    	stmt.setInt(4, phoneno);</span>
+<span class="fc" id="L302">    	stmt.setInt(5, age);</span>
+<span class="fc" id="L303">    	stmt.executeUpdate();</span>
+<span class="fc" id="L304">    	stmt.close();</span>
+<span class="fc" id="L305">        c.close();</span>
+<span class="fc" id="L306">    }</span>
+    
+    /**
+     * Inputs a new booking into the booking table
+     * @param userId
+     * @param offerId
+     * @param adults
+     * @param children
+     * @param toddlers
+     * @param tourfee
+     * @param requests
+     * @throws URISyntaxException
+     * @throws SQLException
+     */
+    protected void inputBooking(String userId, String offerId, int adults, int children, int toddlers, double tourfee, String requests) throws URISyntaxException, SQLException {
+<span class="fc" id="L321">    	String template = &quot;insert into booking values (?,?,?,?,?,?,?,?,?)&quot;;</span>
+<span class="fc" id="L322">    	Connection c = getConnection();</span>
+<span class="fc" id="L323">    	PreparedStatement stmt = c.prepareStatement(template);</span>
+<span class="fc" id="L324">    	stmt.setString(1, userId);</span>
+<span class="fc" id="L325">    	stmt.setString(2, offerId);</span>
+<span class="fc" id="L326">    	stmt.setInt(3, adults);</span>
+<span class="fc" id="L327">    	stmt.setInt(4, children);</span>
+<span class="fc" id="L328">    	stmt.setInt(5, toddlers);</span>
+<span class="fc" id="L329">    	stmt.setDouble(6, tourfee);</span>
+<span class="fc" id="L330">    	stmt.setDouble(7, 0);</span>
+<span class="fc" id="L331">    	stmt.setString(8, requests);</span>
+<span class="fc" id="L332">    	stmt.setBoolean(9, false);</span>
+<span class="fc" id="L333">    	stmt.executeUpdate();</span>
+<span class="fc" id="L334">    	stmt.close();</span>
+<span class="fc" id="L335">        c.close();</span>
+<span class="fc" id="L336">    }</span>
+    
+    
+    /**
+     * Gets the number of people currently booking an input touroffering
+     * @param offerId 15-character offerId used in booking table ([tourid][offerid])
+     * @return Number of people booked in input touroffering
+     * @throws URISyntaxException
+     * @throws SQLException
+     */
+    protected int getCurrentBookingCount(String offerId) throws URISyntaxException, SQLException {
+<span class="fc" id="L347">    	Connection c = getConnection();</span>
+<span class="fc" id="L348">    	String template = &quot;select sum(adults) + sum(children) + sum(toddlers) from booking where offerid = ? and cancelled = false&quot;;</span>
+    	//String template = &quot;select sum(adults) + sum(children) + sum(toddlers) from booking where cancelled = false&quot;;
+<span class="fc" id="L350">    	PreparedStatement stmt = c.prepareStatement(template);</span>
+<span class="fc" id="L351">    	stmt.setString(1, offerId);</span>
+<span class="fc" id="L352">    	ResultSet tourRs = stmt.executeQuery();</span>
+<span class="fc" id="L353">		tourRs.next();</span>
+<span class="fc" id="L354">		int temp = tourRs.getInt(1);</span>
+<span class="fc" id="L355">		stmt.close();</span>
+<span class="fc" id="L356">        c.close();</span>
+<span class="fc" id="L357">		return temp;</span>
+    }
+    
+    /**
+     * Decrements the remaining discounts of the input tour
+     * To be used after a tour has been booked with a discount active
+     * @param offerId The combined offerid used in the booking table, as well as the bookState class
+     * @throws URISyntaxException
+     * @throws SQLException
+     */
+    protected void decrementDiscount(String offerId) throws URISyntaxException, SQLException {
+<span class="fc" id="L368">    	String tourId = offerId.substring(0,5);</span>
+<span class="fc" id="L369">    	String offerId_8 = offerId.substring(5);</span>
+    	
+<span class="fc" id="L371">    	Connection c = getConnection();</span>
+<span class="fc" id="L372">    	String template = &quot;update discount set remaining = remaining - 1 where tourid = ? and offerid = ?&quot;;</span>
+<span class="fc" id="L373">    	PreparedStatement stmt = c.prepareStatement(template);</span>
+<span class="fc" id="L374">    	stmt.setString(1, tourId);</span>
+<span class="fc" id="L375">    	stmt.setString(2, offerId_8);</span>
+<span class="fc" id="L376">    	stmt.executeUpdate();</span>
+<span class="fc" id="L377">    	stmt.close();</span>
+<span class="fc" id="L378">        c.close();</span>
+<span class="fc" id="L379">    }</span>
+    
+    /**
+     * Gets the discount rate of input tour offering, if any
+     * @param offerId 15-character offerId used in booking table ([tourid][offerid])
+     * @return 1 if no discount, some number &lt; 1 otherwise.
+     * @throws URISyntaxException
+     * @throws SQLException
+     */
+    protected double getDiscount(String offerId) throws URISyntaxException, SQLException {
+<span class="fc" id="L389">    	String tourId = offerId.substring(0,5);</span>
+<span class="fc" id="L390">    	String offerId_8 = offerId.substring(5);</span>
+<span class="fc" id="L391">    	Connection c = getConnection();</span>
+<span class="fc" id="L392">    	String template = &quot;select discount from discount where tourid = ? and offerid = ? and remaining &gt; 0&quot;;</span>
+<span class="fc" id="L393">    	PreparedStatement stmt = c.prepareStatement(template);</span>
+<span class="fc" id="L394">    	stmt.setString(1, tourId);</span>
+<span class="fc" id="L395">    	stmt.setString(2, offerId_8);</span>
+<span class="fc" id="L396">    	ResultSet tourRs = stmt.executeQuery();</span>
+<span class="fc bfc" id="L397" title="All 2 branches covered.">    	if (tourRs.next()) {</span>
+<span class="fc" id="L398">    		double temp = tourRs.getDouble(1);</span>
+<span class="fc" id="L399">    		stmt.close();</span>
+<span class="fc" id="L400">            c.close();</span>
+<span class="fc" id="L401">    		return temp;</span>
+    	}
+<span class="fc" id="L403">    	stmt.close();</span>
+<span class="fc" id="L404">        c.close();</span>
+<span class="fc" id="L405">    	return 1;</span>
+    }
+    
+    /**
+     * Checks if the input tour offering has a discount active.
+     * @param offerId 15-character offerId used in booking table ([tourid][offerid])
+     * @return True if there is a discount, false otherwise.
+     * @throws URISyntaxException
+     * @throws SQLException
+     */
+    protected boolean checkDiscount(String offerId) throws URISyntaxException, SQLException {
+<span class="fc" id="L416">    	String tourId = offerId.substring(0,5);</span>
+<span class="fc" id="L417">    	String offerId_8 = offerId.substring(5);</span>
+<span class="fc" id="L418">    	Connection c = getConnection();</span>
+<span class="fc" id="L419">    	String template = &quot;select discount from discount where tourid = ? and offerid = ? and remaining &gt; 0&quot;;</span>
+<span class="fc" id="L420">    	PreparedStatement stmt = c.prepareStatement(template);</span>
+<span class="fc" id="L421">    	stmt.setString(1, tourId);</span>
+<span class="fc" id="L422">    	stmt.setString(2, offerId_8);</span>
+<span class="fc" id="L423">    	ResultSet tourRs = stmt.executeQuery();</span>
+<span class="fc bfc" id="L424" title="All 2 branches covered.">    	if (tourRs.next()) {</span>
+<span class="fc" id="L425">    		stmt.close();</span>
+<span class="fc" id="L426">            c.close();</span>
+<span class="fc" id="L427">    		return true;</span>
+    	}
+<span class="fc" id="L429">    	stmt.close();</span>
+<span class="fc" id="L430">        c.close();</span>
+<span class="fc" id="L431">    	return false;</span>
+    }
+    
+    /**
+     * Gets valid discounts from discount table
+     * @return 2-d arraylist of discounts (offerid, discount)
+     * @throws URISyntaxException
+     * @throws SQLException
+     */
+    protected ArrayList&lt;ArrayList&lt;String&gt;&gt; getDeals() throws URISyntaxException, SQLException {
+<span class="fc" id="L441">    	DateTimeFormatter dtf = DateTimeFormatter.ofPattern(&quot;yyyy-MM-dd&quot;);</span>
+<span class="fc" id="L442">		LocalDate localDate = LocalDate.now().plusDays(3);</span>
+<span class="fc" id="L443">    	String template = &quot;select tourname, min(discount) from tour as t join discount as d on t.tourid = d.tourid where t.tourid in (&quot;;</span>
+<span class="fc" id="L444">    		template += &quot;select distinct d.tourid from &quot;;</span>
+<span class="fc" id="L445">    		template += &quot;discount as d join touroffering as t on &quot;;</span>
+<span class="fc" id="L446">   			template += &quot;d.offerid = t.offerid and d.tourid = t.tourid &quot;;</span>
+<span class="fc" id="L447">			template += &quot;where remaining &gt; 0 and tourdate &gt;= ?) group by tourname, offerid order by offerid asc&quot;;</span>
+<span class="fc" id="L448">		Connection c = getConnection();</span>
+<span class="fc" id="L449">		PreparedStatement stmt = c.prepareStatement(template);</span>
+<span class="fc" id="L450">		stmt.setDate(1, java.sql.Date.valueOf(localDate));</span>
+<span class="fc" id="L451">		ResultSet rs = stmt.executeQuery();</span>
+<span class="fc" id="L452">		ArrayList&lt;ArrayList&lt;String&gt;&gt; out = new ArrayList&lt;ArrayList&lt;String&gt;&gt;();</span>
+<span class="fc bfc" id="L453" title="All 2 branches covered.">		while (rs.next()) {</span>
+<span class="fc" id="L454">			ArrayList&lt;String&gt; temp = new ArrayList&lt;String&gt;();</span>
+<span class="fc" id="L455">			temp.add(rs.getString(1));</span>
+<span class="fc" id="L456">			temp.add(rs.getString(2));</span>
+<span class="fc" id="L457">			out.add(temp);</span>
+<span class="fc" id="L458">		}</span>
+<span class="fc" id="L459">		stmt.close();</span>
+<span class="fc" id="L460">		c.close();</span>
+<span class="fc" id="L461">		return out;</span>
+    }
+    
+    /**
+     * Gets the userID's of all bookers
+     * @return arraylist of userID's of bookers
+     * @throws URISyntaxException
+     * @throws SQLException
+     */
+    protected ArrayList&lt;String&gt; getBookers() throws URISyntaxException, SQLException {
+<span class="fc" id="L471">    	String template = &quot;select lineid from booker&quot;;</span>
+<span class="fc" id="L472">    	Connection c = getConnection();</span>
+<span class="fc" id="L473">		PreparedStatement stmt = c.prepareStatement(template);</span>
+<span class="fc" id="L474">		ResultSet rs = stmt.executeQuery();</span>
+<span class="fc" id="L475">		ArrayList&lt;String&gt; out = new ArrayList&lt;String&gt;();</span>
+<span class="fc bfc" id="L476" title="All 2 branches covered.">		while (rs.next()) {</span>
+<span class="fc" id="L477">			out.add(rs.getString(1));</span>
+		}
+<span class="fc" id="L479">		stmt.close();</span>
+<span class="fc" id="L480">		c.close();</span>
+<span class="fc" id="L481">		return out;</span>
+    }
+    
+    /**
+	 * get all staff's id and return them
+	 * @return String containing all userIds of staffs, delimited by semicolon (;)
+	 */
+    protected String getStaffId() {
+    	
+<span class="fc" id="L490">      	StringBuilder sb = new StringBuilder();</span>
+    	
+    	
+<span class="fc" id="L493">    		String sqlsentence=&quot;SELECT * FROM Staff;&quot;; </span>
+
+
+<span class="pc" id="L496">                        try (</span>
+<span class="fc" id="L497">                                Connection c = getConnection();</span>
+<span class="fc" id="L498">                                PreparedStatement stmt = c.prepareStatement(sqlsentence);</span>
+                                ) // Java try-with-resources closes Connection and PreparedStatement automatically (old getStatement() is not feasible since we cannot close the Connection object)
+                        {
+                                
+
+                                //ResultSet keywordRs = getStatement(testsql).executeQuery();
+<span class="fc" id="L504">                                ResultSet keywordRs = stmt.executeQuery();</span>
+                                
+                                
+<span class="fc bfc" id="L507" title="All 2 branches covered.">                                while (keywordRs.next()){</span>
+<span class="fc" id="L508">                                    sb.append(keywordRs.getString(1));</span>
+<span class="fc" id="L509">                                    sb.append(&quot;;&quot;);</span>
+                            }
+                                
+                                
+<span class="pc bpc" id="L513" title="12 of 16 branches missed.">                        } catch (URISyntaxException e) {</span>
+<span class="nc" id="L514">                                log.info(&quot;URI Syntax problem with URI: &quot; + System.getenv(&quot;DATABASE_URL&quot;));</span>
+<span class="nc" id="L515">                        } catch (SQLException e) {</span>
+<span class="nc" id="L516">                                log.info(&quot;Searching for answer from FAQ table failed! Continuing on next word.&quot;);</span>
+<span class="pc" id="L517">                        }</span>
+                
+<span class="fc" id="L519">    		return sb.toString();</span>
+    	
+    	
+    	
+    }
+
+	/**
+	 * Add a user as Staff.
+	 * The staff would receive every unanswered question and the customer's userId.
+	 * So that the staff can answer it later.
+	 * Staffs can also access the database to view all questions apart from registering as a Staff.
+	 * @param userId The userId of the user that would be added as staff. 
+	 */
+	protected void addStaff(String userId) {
+<span class="nc" id="L533">                try (</span>
+<span class="nc" id="L534">                        Connection c = getConnection();</span>
+<span class="nc" id="L535">                        PreparedStatement stmt = c.prepareStatement(&quot;insert into staff values(?);&quot;);</span>
+                        ) // Java try-with-resources
+                {
+<span class="nc" id="L538">			stmt.setString(1, userId);</span>
+<span class="nc" id="L539">			stmt.execute();</span>
+<span class="nc bnc" id="L540" title="All 16 branches missed.">                } catch (URISyntaxException e){</span>
+<span class="nc" id="L541">                        log.info(&quot;URI Syntax problem with URI: &quot; + System.getenv(&quot;DATABASE_URL&quot;));</span>
+<span class="nc" id="L542">                } catch (SQLException e){</span>
+<span class="nc" id="L543">                        log.info(&quot;Adding &quot;+userId+&quot; as admin failed!&quot;);</span>
+<span class="nc" id="L544">                }</span>
+<span class="nc" id="L545">	}</span>
+
+    /**
+     * This method take userId as input, returns a tour record as String array to recommend to the user.
+     * @param userId This is used to find a proper recommendation for the specific user
+     * @return ArrayList&lt;String&gt; This contains the information of the tour recommended to that user.
+     * @throws URISyntaxException
+     * @throws SQLException
+     */
+    protected ArrayList&lt;String&gt; getRecommendation(String userId) throws URISyntaxException, SQLException {
+<span class="fc" id="L555">    	ArrayList&lt;String&gt; result = new ArrayList&lt;String&gt;();</span>
+<span class="pc" id="L556">    		try (</span>
+<span class="fc" id="L557">                Connection c = getConnection();</span>
+<span class="fc" id="L558">                PreparedStatement stmt = c.prepareStatement(</span>
+                		&quot;select * from TourOffering where tourId not in (&quot;
+                			+&quot;select substr(offerid,1,5) from booking where lineId = ? )&quot;
+                			+&quot;and tourdate &gt; ?&quot;
+                			+&quot;order by price desc&quot;
+                	);
+    		)
+    		{
+<span class="fc" id="L566">    			LocalDate localDate = LocalDate.now();</span>
+<span class="fc" id="L567">    			stmt.setString(1, userId);</span>
+<span class="fc" id="L568">    			stmt.setDate(2, java.sql.Date.valueOf(localDate));</span>
+<span class="fc" id="L569">    			ResultSet rs = stmt.executeQuery();</span>
+    			
+<span class="pc bpc" id="L571" title="1 of 2 branches missed.">    			if (rs.next())</span>
+<span class="fc bfc" id="L572" title="All 2 branches covered.">    				for (int i=1; i&lt;7; i++)</span>
+<span class="fc" id="L573">    					result.add(rs.getString(i));</span>
+    			else
+<span class="nc" id="L575">    				result = null;</span>
+<span class="pc bpc" id="L576" title="12 of 16 branches missed.">    		}</span>
+<span class="fc" id="L577">    		return result;</span>
+    }
+    
+    /**
+     * This method takes userId as input and returns a 2D array as this userId's booking record in database.
+     * @param userId This is the userId that is used to find bookings in database
+     * @return ArrayList&lt;ArrayList&lt;String&gt;&gt; Return an array of records, each record is a String array.
+     * @throws URISyntaxException
+     * @throws SQLException
+     */
+    protected ArrayList&lt;ArrayList&lt;String&gt;&gt; searchBookingById(String userId) throws URISyntaxException, SQLException {
+<span class="fc" id="L588">    		ArrayList&lt;ArrayList&lt;String&gt;&gt; rs = new ArrayList&lt;&gt;();</span>
+<span class="pc" id="L589">    		try (</span>
+<span class="fc" id="L590">                Connection c = getConnection();</span>
+<span class="fc" id="L591">                PreparedStatement stmt = c.prepareStatement(&quot;select * from Booking where LineId = ?&quot;);</span>
+                )
+    		{
+<span class="fc" id="L594">    			stmt.setString(1, userId);</span>
+<span class="fc" id="L595">    			ResultSet bookRs = stmt.executeQuery();</span>
+<span class="fc bfc" id="L596" title="All 2 branches covered.">    			while (bookRs.next()) {</span>
+<span class="fc" id="L597">    				ArrayList&lt;String&gt; temp = new ArrayList&lt;String&gt;();</span>
+<span class="fc bfc" id="L598" title="All 2 branches covered.">    				for (int i=2;i&lt;10;i++)</span>
+<span class="fc" id="L599">    					temp.add(bookRs.getString(i));</span>
+<span class="fc" id="L600">    				rs.add(temp);</span>
+<span class="fc" id="L601">    			}	</span>
+<span class="pc bpc" id="L602" title="12 of 16 branches missed.">    		}</span>
+<span class="fc" id="L603">    		return rs;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

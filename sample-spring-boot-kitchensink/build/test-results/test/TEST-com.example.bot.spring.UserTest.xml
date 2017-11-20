@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.example.bot.spring.UserTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2017-11-20T15:37:13" hostname="Nyanpasu" time="0.155">
+  <properties/>
+  <testcase name="testGetState" classname="com.example.bot.spring.UserTest" time="0.003"/>
+  <testcase name="testUpdateBuffer" classname="com.example.bot.spring.UserTest" time="0.002"/>
+  <testcase name="testGetBuffer" classname="com.example.bot.spring.UserTest" time="0.002"/>
+  <testcase name="testTimeoutMessage" classname="com.example.bot.spring.UserTest" time="0.134"/>
+  <testcase name="testGetUserId" classname="com.example.bot.spring.UserTest" time="0.002"/>
+  <testcase name="testRemove" classname="com.example.bot.spring.UserTest" time="0.004"/>
+  <testcase name="testUpdate" classname="com.example.bot.spring.UserTest" time="0.003"/>
+  <testcase name="testSetState" classname="com.example.bot.spring.UserTest" time="0.003"/>
+  <system-out><![CDATA[2017-11-20 23:37:13.742  INFO 28228 --- [    Test worker] o.s.t.c.s.DefaultTestContextBootstrapper : Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener, org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener, org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2017-11-20 23:37:13.743  INFO 28228 --- [    Test worker] o.s.t.c.s.DefaultTestContextBootstrapper : Could not instantiate TestExecutionListener [org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [org/springframework/transaction/interceptor/TransactionAttribute]
+2017-11-20 23:37:13.743  INFO 28228 --- [    Test worker] o.s.t.c.s.DefaultTestContextBootstrapper : Could not instantiate TestExecutionListener [org.springframework.test.context.transaction.TransactionalTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [org/springframework/transaction/interceptor/TransactionAttributeSource]
+2017-11-20 23:37:13.743  INFO 28228 --- [    Test worker] o.s.t.c.s.DefaultTestContextBootstrapper : Using TestExecutionListeners: [org.springframework.test.context.web.ServletTestExecutionListener@1cbe3f55, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener@5cda4cc4, org.springframework.test.context.support.DependencyInjectionTestExecutionListener@121158f8, org.springframework.test.context.support.DirtiesContextTestExecutionListener@63a5ed30, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener@e8c3286, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener@3ee3ff, org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener@1870ad98, org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener@54f01fcb, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener@3b871fd1, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener@4c513245]
+2017-11-20 23:37:13.746  INFO 28228 --- [    Test worker] o.s.c.support.GenericApplicationContext  : Refreshing org.springframework.context.support.GenericApplicationContext@51504a3a: startup date [Mon Nov 20 23:37:13 CST 2017]; root of context hierarchy
+2017-11-20 23:37:13.769  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111FUN created.
+2017-11-20 23:37:13.779  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111FUN created.
+getState
+2017-11-20 23:37:13.782  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111FUN created.
+updateBuffer
+2017-11-20 23:37:13.785  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111FUN created.
+getBuffer
+2017-11-20 23:37:13.787  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111FUN created.
+2017-11-20 23:37:13.788  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : Attempting to send timeout message to user COMP3111FUN
+2017-11-20 23:37:13.788  INFO 28228 --- [    Test worker] com.example.bot.spring.ProjectPusher     : Attempting to push to COMP3111FUN
+2017-11-20 23:37:13.788  INFO 28228 --- [    Test worker] com.example.bot.spring.ProjectPusher     : Attempting to push1 texts to COMP3111FUN
+2017-11-20 23:37:13.790  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : --> POST https://api.line.me/v2/bot/message/push http/1.1
+2017-11-20 23:37:13.790  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Content-Type: application/json; charset=UTF-8
+2017-11-20 23:37:13.790  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Content-Length: 138
+2017-11-20 23:37:13.790  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Authorization: Bearer JUST NOTHING
+2017-11-20 23:37:13.790  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : User-Agent: line-botsdk-java/1.9.0-SNAPSHOT
+2017-11-20 23:37:13.791  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : 
+2017-11-20 23:37:13.791  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : {"to":"COMP3111FUN","messages":[{"type":"text","text":"*You have been in inactivity for 15mins, please restart by typing anything new*"}]}
+2017-11-20 23:37:13.791  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : --> END POST (138-byte body)
+2017-11-20 23:37:13.917  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : <-- 401 Unauthorized https://api.line.me/v2/bot/message/push (126ms)
+2017-11-20 23:37:13.917  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Server: nginx
+2017-11-20 23:37:13.917  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Content-Type: application/json;charset=UTF-8
+2017-11-20 23:37:13.917  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : X-Line-Request-Id: c5ee88db-03a4-490d-b7e0-494358b542db
+2017-11-20 23:37:13.917  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : X-Content-Type-Options: nosniff
+2017-11-20 23:37:13.917  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : X-XSS-Protection: 1; mode=block
+2017-11-20 23:37:13.917  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : X-Frame-Options: DENY
+2017-11-20 23:37:13.917  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : WWW-Authenticate: Bearer error="invalid_token", error_description="invalid token"
+2017-11-20 23:37:13.917  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Content-Length: 147
+2017-11-20 23:37:13.917  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Expires: Mon, 20 Nov 2017 15:37:15 GMT
+2017-11-20 23:37:13.917  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Cache-Control: max-age=0, no-cache, no-store
+2017-11-20 23:37:13.917  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Pragma: no-cache
+2017-11-20 23:37:13.917  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Date: Mon, 20 Nov 2017 15:37:15 GMT
+2017-11-20 23:37:13.918  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Connection: close
+2017-11-20 23:37:13.918  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : 
+2017-11-20 23:37:13.918  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : {"message":"Authentication failed due to the following reason: invalid token. Confirm that the access token in the authorization header is valid."}
+2017-11-20 23:37:13.918  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : <-- END HTTP (147-byte body)
+2017-11-20 23:37:13.918  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Removing user COMP3111FUN
+2017-11-20 23:37:13.922  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111FUN created.
+getUserId
+2017-11-20 23:37:13.924  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111FUN created.
+remove
+2017-11-20 23:37:13.924  INFO 28228 --- [    Test worker] com.example.bot.spring.UserList          : Removing user COMP3111FUN
+2017-11-20 23:37:13.928  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111FUN created.
+update
+2017-11-20 23:37:13.929  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : Timeout renewed for user COMP3111FUN
+2017-11-20 23:37:13.931  INFO 28228 --- [    Test worker] com.example.bot.spring.User              : New user of userId COMP3111FUN created.
+setState
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

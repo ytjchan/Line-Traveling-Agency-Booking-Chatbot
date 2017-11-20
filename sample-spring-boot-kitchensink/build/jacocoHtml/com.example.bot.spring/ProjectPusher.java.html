@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ProjectPusher.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">sample-spring-boot-kitchensink</a> &gt; <a href="index.source.html" class="el_package">com.example.bot.spring</a> &gt; <span class="el_source">ProjectPusher.java</span></div><h1>ProjectPusher.java</h1><pre class="source lang-java linenums">package com.example.bot.spring;
+
+import com.linecorp.bot.client.LineMessagingServiceBuilder;
+import com.linecorp.bot.model.PushMessage;
+import com.linecorp.bot.model.message.Message;
+import com.linecorp.bot.model.response.BotApiResponse;
+import java.io.IOException;
+import java.util.ArrayList;
+import lombok.extern.slf4j.Slf4j;
+import retrofit2.Response;
+
+/**
+ * A class designed to push messages actively to users.
+ * Each time up to 5 messages of any type can be pushed.
+ * For example, 
+ * &lt;pre&gt; {@code 
+ * ProjectPusher pp = new ProjectPusher(userId);
+ * pp.pushText(&quot;A1&quot;,&quot;A2&quot;,&quot;A3&quot;,&quot;A4&quot;,&quot;A5&quot;,&quot;A6&quot;);
+ * MessageFactory mf = new MessageFactory();
+ * pp.pushMessage(mf.createImageMessage(), mf.createImageMessage());
+ * ProjectPusher.pushTextShorthand(event.getSource().getUserId(), &quot;B1&quot;,&quot;B2&quot;,&quot;B3&quot;,&quot;B4&quot;,&quot;B5&quot;,&quot;B6&quot;);
+ * } &lt;/pre&gt;
+ * would push 5 (A1 to A5) text messages, 2 images, and another 5 (B1 to B5) messages to the user immediately.
+ * Notice that A6 and B6 are ignored in case more than 5 messages are created.
+ */
+<span class="fc" id="L26">@Slf4j</span>
+public class ProjectPusher {
+	/**
+	 * userId of the User that will receive the push message(s).
+	 */
+	private final String userId;
+	
+	/**
+	 * Constructor of ProjectPusher.
+	 * It requires a userId as parameter to specify which user to push to.
+	 * Unlike reply() of {@link com.example.bot.spring.KitchenSinkController KitchenSinkController}, this can push at anytime regardless of replyToken. 
+	 * @param userId The userId of the user that we want to push the message to.
+	 */
+<span class="fc" id="L39">	public ProjectPusher(String userId) {</span>
+<span class="fc" id="L40">		this.userId = userId;		</span>
+<span class="fc" id="L41">	}</span>
+	
+	/**
+	 * Push 1 to 5 text messages to the user specified by userId in constructor.
+	 * Each message can push up to 2000 characters.
+	 * Thanks to varargs, can pass up to 5 Strings in parameter to push multuple messages in a time.
+	 * @see https://developers.line.me/en/docs/messaging-api/reference/#text
+	 * @see https://docs.oracle.com/javase/1.5.0/docs/guide/language/varargs.html
+	 * @param texts 1 to 5 Strings, each up to 2000 characters.
+	 */
+	public void pushText(String... texts) {
+<span class="fc" id="L52">		log.info(&quot;Attempting to push&quot;+texts.length+&quot; texts to &quot; + userId);</span>
+		Response&lt;BotApiResponse&gt; response;
+<span class="fc" id="L54">		ArrayList&lt;Message&gt; messageList = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L55">		MessageFactory mf = new MessageFactory();</span>
+<span class="pc bpc" id="L56" title="1 of 4 branches missed.">		for (int i=0; i&lt;5 &amp;&amp; i&lt;texts.length; i++)</span>
+<span class="fc" id="L57">			messageList.add(mf.createTextMessage(texts[i]));</span>
+		//no need to check
+		/**
+		*if (messageList.isEmpty())
+		*	return;
+		*/
+<span class="fc" id="L63">		PushMessage pushMessage = new PushMessage(userId, messageList);</span>
+		try {
+<span class="fc" id="L65">			response = LineMessagingServiceBuilder</span>
+<span class="fc" id="L66">					.create(System.getenv(&quot;LINE_BOT_CHANNEL_TOKEN&quot;))</span>
+<span class="fc" id="L67">					.build()</span>
+<span class="fc" id="L68">					.pushMessage(pushMessage)</span>
+<span class="fc" id="L69">					.execute();</span>
+<span class="nc" id="L70">		} catch (IOException e) {</span>
+<span class="nc" id="L71">			log.info(e.toString());</span>
+<span class="fc" id="L72">		}</span>
+<span class="fc" id="L73">	}</span>
+	
+	/**
+	 * Push 1 to 5 Messages (of any subclasses of Message) to the user specified by userId in constructor.
+	 * This pushes generic kind of Message by exploiting polymorphism.
+	 * Can utilize {@link com.example.bot.spring.MessageFactory MessageFactory} to create desired type of Message object.
+	 * Thanks to varargs, can pass up to 5 messages or only 1 each time.
+	 * For example, can {@code .pushMessage(message1)} and also {@code .pushMessage(message1, message2, message3, message4, message5)}.
+	 * @see https://developers.line.me/en/docs/messaging-api/reference/#send-push-message
+	 * @see https://docs.oracle.com/javase/1.5.0/docs/guide/language/varargs.html
+	 * @param messages A number of Message object, for example TextMessage, ImageMessage, CarouselMessage, etc.
+	 */
+	public void pushMessage(Message... messages) {
+<span class="fc" id="L86">		log.info(&quot;Attempting to push &quot;+messages.length+&quot; messages to &quot; + userId);</span>
+		Response&lt;BotApiResponse&gt; response;
+<span class="fc" id="L88">		ArrayList&lt;Message&gt; messageList = new ArrayList&lt;&gt;();</span>
+<span class="pc bpc" id="L89" title="1 of 4 branches missed.">		for (int i=0; i&lt;5 &amp;&amp; i&lt;messages.length; i++)</span>
+<span class="fc" id="L90">			messageList.add(messages[i]);</span>
+		//no need to check
+		/**
+		*if (messageList.isEmpty())
+		*	return;
+		*/
+<span class="fc" id="L96">		PushMessage pushMessage = new PushMessage(userId, messageList);</span>
+		try {
+<span class="fc" id="L98">			response = LineMessagingServiceBuilder</span>
+<span class="fc" id="L99">					.create(System.getenv(&quot;LINE_BOT_CHANNEL_TOKEN&quot;))</span>
+<span class="fc" id="L100">					.build()</span>
+<span class="fc" id="L101">					.pushMessage(pushMessage)</span>
+<span class="fc" id="L102">					.execute();</span>
+<span class="nc" id="L103">		} catch (IOException e) {</span>
+<span class="nc" id="L104">			log.info(e.toString());</span>
+<span class="fc" id="L105">		}</span>
+<span class="fc" id="L106">	}</span>
+	
+	/**
+	 * Shorthand method to reply 1 to 5 text message on the user specified by userId.
+	 * This avoids the need to create a ProjectPush before hand, but only allows one message pushed each time.
+	 * Thanks to varargs, can pass up to 5 Strings in parameter to push multuple messages in a time.
+	 * @see https://developers.line.me/en/docs/messaging-api/reference/#text
+	 * @see https://docs.oracle.com/javase/1.5.0/docs/guide/language/varargs.html
+	 * @param userId The userId that should recieve the text message.
+	 * @param texts 1 to 5 Strings, each up to 2000 characters.
+	 */
+	public static void pushTextShorthand(String userId, String... texts) {
+<span class="fc" id="L118">		log.info(&quot;Attempting to push to &quot; + userId);</span>
+<span class="fc" id="L119">		ProjectPusher pp = new ProjectPusher(userId);</span>
+<span class="fc" id="L120">		pp.pushText(texts);</span>
+<span class="fc" id="L121">	}</span>
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

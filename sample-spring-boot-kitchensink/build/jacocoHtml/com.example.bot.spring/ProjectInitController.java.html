@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ProjectInitController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">sample-spring-boot-kitchensink</a> &gt; <a href="index.source.html" class="el_package">com.example.bot.spring</a> &gt; <span class="el_source">ProjectInitController.java</span></div><h1>ProjectInitController.java</h1><pre class="source lang-java linenums">package com.example.bot.spring;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.net.URISyntaxException;
+
+import com.linecorp.bot.model.message.Message;
+
+
+public class ProjectInitController {
+<span class="fc" id="L11">	private final String [] imgs = new String[]{&quot;/static/gd1.jpg&quot;, &quot;/static/beach3.jpg&quot;, &quot;/static/magnify1.jpg&quot;};</span>
+
+<span class="fc" id="L13">	public ProjectInitController(){}</span>
+	
+	public Message createMessage() {
+<span class="fc" id="L16">		SQLDatabaseEngine db = new SQLDatabaseEngine();</span>
+<span class="fc" id="L17">		MessageFactory mf = new MessageFactory(imgs);</span>
+<span class="fc" id="L18">		String[] carouselContents = new String[]{</span>
+			&quot;3111 Travel&quot;, &quot;Welcome to 3111 Travel, the leading China travel agency.&quot;, // column 1 title and descriptions
+			&quot;message&quot;, &quot;Recommendations&quot;, &quot;Recommend me a trip&quot;, // button 1 
+			&quot;message&quot;, &quot;Search for trips&quot;, &quot;Search for trips&quot;, // button 2
+			
+			&quot;About the chatbot&quot;, &quot;Press the buttons, or type cancel at any time to go back&quot;, // column 2 title and descriptions
+<span class="fc" id="L24">			&quot;postback&quot;, &quot;FAQ keywords&quot;, &quot;Keywords available are: &quot;+db.searchAllKeywords(), // button 1</span>
+			&quot;uri&quot;, &quot;Our website&quot;, &quot;https://github.com/khwang0/2017F-COMP3111&quot;, // button 2
+			
+			&quot;About booking&quot;,&quot;Press the button, or type enquiry to view booking record&quot;, // column 3 title and descriptions
+			&quot;message&quot;,&quot;Booking enquiry&quot;,&quot;enquiry&quot;, // button 1
+			&quot;postback&quot;,&quot;About me&quot;,&quot;Hello! This is COMP3111 Group12's chatbot!&quot; // button 2
+		};
+<span class="fc" id="L31">		Message m = mf.createCarouselMessage(3, 2, carouselContents);</span>
+<span class="fc" id="L32">		return m;</span>
+
+	}
+	/**
+	 * This method returns a message of recommended tour according to the input userId.
+	 * @param userId This is used to identify the user and get a recommendation accordingly
+	 * @return String This contains the information of the recommeded tour.
+	 */
+	public String recommendTrip (String userId) {
+<span class="fc" id="L41">		SQLDatabaseEngine db = new SQLDatabaseEngine();</span>
+<span class="fc" id="L42">		ArrayList&lt;String&gt; rs = new ArrayList&lt;String&gt;();</span>
+<span class="fc" id="L43">		String result=&quot;&quot;;</span>
+		
+		try {
+<span class="fc" id="L46">			rs = db.getRecommendation(userId);</span>
+<span class="nc" id="L47">		} catch (URISyntaxException e){</span>
+<span class="pc" id="L48">		} catch (SQLException e) {}</span>
+		
+<span class="pc bpc" id="L50" title="1 of 2 branches missed.">		if (rs.size()==0)</span>
+<span class="nc" id="L51">			return &quot;Sorry, we don't have recommendation for you.&quot;;</span>
+		else {
+<span class="fc" id="L53">			result+=&quot;tourId: &quot; + rs.get(0) +&quot;\n&quot;;</span>
+<span class="fc" id="L54">			result+=&quot;tourDate: &quot; + rs.get(2) + &quot;\n&quot;;</span>
+<span class="fc" id="L55">			result+=&quot;hotel: &quot; + rs.get(4) + &quot;\n&quot;;</span>
+<span class="fc" id="L56">			result+=&quot;price: &quot; + rs.get(5); </span>
+		}
+<span class="fc" id="L58">		return result;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

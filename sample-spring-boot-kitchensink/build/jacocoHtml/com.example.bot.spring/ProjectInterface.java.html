@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ProjectInterface.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">sample-spring-boot-kitchensink</a> &gt; <a href="index.source.html" class="el_package">com.example.bot.spring</a> &gt; <span class="el_source">ProjectInterface.java</span></div><h1>ProjectInterface.java</h1><pre class="source lang-java linenums">package com.example.bot.spring;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Queue;
+import java.util.TimeZone;
+import java.util.TimerTask;
+import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.BiConsumer;
+import com.linecorp.bot.model.profile.UserProfileResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import com.google.common.io.ByteStreams;
+
+import com.linecorp.bot.client.LineMessagingClient;
+import com.linecorp.bot.client.MessageContentResponse;
+import com.linecorp.bot.model.ReplyMessage;
+import com.linecorp.bot.model.action.MessageAction;
+import com.linecorp.bot.model.action.PostbackAction;
+import com.linecorp.bot.model.action.URIAction;
+import com.linecorp.bot.model.event.BeaconEvent;
+import com.linecorp.bot.model.event.Event;
+import com.linecorp.bot.model.event.FollowEvent;
+import com.linecorp.bot.model.event.JoinEvent;
+import com.linecorp.bot.model.event.MessageEvent;
+import com.linecorp.bot.model.event.PostbackEvent;
+import com.linecorp.bot.model.event.UnfollowEvent;
+import com.linecorp.bot.model.event.message.ImageMessageContent;
+import com.linecorp.bot.model.event.message.LocationMessageContent;
+import com.linecorp.bot.model.event.message.StickerMessageContent;
+import com.linecorp.bot.model.event.message.TextMessageContent;
+import com.linecorp.bot.model.event.source.GroupSource;
+import com.linecorp.bot.model.event.source.RoomSource;
+import com.linecorp.bot.model.event.source.Source;
+import com.linecorp.bot.model.message.AudioMessage;
+import com.linecorp.bot.model.message.ImageMessage;
+import com.linecorp.bot.model.message.ImagemapMessage;
+import com.linecorp.bot.model.message.LocationMessage;
+import com.linecorp.bot.model.message.Message;
+import com.linecorp.bot.model.message.StickerMessage;
+import com.linecorp.bot.model.message.TemplateMessage;
+import com.linecorp.bot.model.message.TextMessage;
+import com.linecorp.bot.model.message.imagemap.ImagemapArea;
+import com.linecorp.bot.model.message.imagemap.ImagemapBaseSize;
+import com.linecorp.bot.model.message.imagemap.MessageImagemapAction;
+import com.linecorp.bot.model.message.imagemap.URIImagemapAction;
+import com.linecorp.bot.model.message.template.ButtonsTemplate;
+import com.linecorp.bot.model.message.template.CarouselColumn;
+import com.linecorp.bot.model.message.template.CarouselTemplate;
+import com.linecorp.bot.model.message.template.ConfirmTemplate;
+import com.linecorp.bot.model.response.BotApiResponse;
+import com.linecorp.bot.spring.boot.annotation.EventMapping;
+import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
+
+import lombok.NonNull;
+import lombok.Value;
+import lombok.extern.slf4j.Slf4j;
+
+import java.net.URI;
+
+//extra imports
+import java.util.LinkedList;
+import java.util.Timer;
+import java.util.TimerTask;
+import retrofit2.Response;
+import java.util.Calendar;
+import com.linecorp.bot.client.LineMessagingServiceBuilder;
+import com.linecorp.bot.model.PushMessage;
+import com.linecorp.bot.model.message.TextMessage;
+import com.linecorp.bot.model.response.BotApiResponse;
+import java.io.IOException;
+import lombok.extern.slf4j.Slf4j;
+import java.time.Instant;
+import retrofit2.Response;
+
+<span class="fc" id="L93">@Slf4j</span>
+public class ProjectInterface {
+	//TODO define image addresses
+<span class="fc" id="L96">	public static final String [] IMAGE_NAMES = {&quot;/static/gather.jpg&quot;,&quot;/static/gd1.jpg&quot;,&quot;/static/beach3.jpg&quot;,&quot;TODO&quot;,&quot;TODO&quot;,&quot;TODO&quot;,&quot;TODO&quot;,&quot;TODO&quot;,&quot;TODO&quot;,&quot;TODO&quot;};</span>
+<span class="fc" id="L97">	private final String STAFF_PASSCODE = &quot;LOVE SUNG KIM ADD STAFF&quot;;</span>
+	public String replyType;		//i.e. text, image, carousel, confirm, unknown
+	public String replyText;		//for replyType: text
+	public String replyImageAddress;
+	public CarouselTemplate replyCarousel;
+	public List&lt;Message&gt; replyList;
+	
+<span class="fc" id="L104">	private ProjectMasterController controller = new ProjectMasterController();</span>
+        private final UserList userList;    
+	
+<span class="fc" id="L107">	private final Timer discountTimer = new Timer();</span>
+	private TimerTask discountPromotion;
+		
+<span class="fc" id="L110">	Message message = null; // placeholder, if all Controllers can return a Message object/a List of Nessage objects after processsing, we can just ask the Controllers return Message to KSC</span>
+	
+    /**
+     * Constructor
+     * @param userList
+     */
+<span class="fc" id="L116">	public ProjectInterface(UserList userList) {</span>
+<span class="fc" id="L117">        this.userList = userList;</span>
+<span class="fc" id="L118">	}</span>
+	
+	
+	// TODO make it return controllers instead of calling them?
+	/**
+	 * Checks what state the user is in and calls appropriate controllers.
+	 * Checking is done by calling state-check helper functions.
+	 * Changes replyType, replyText, replyCarousel and replyList appropriately.
+	 * @param text - Input text received from user
+	 * @param userId - The userID of the user
+	 */
+	public void process(String text, String userId) {
+<span class="nc" id="L130">                log.info(userList.toString());</span>
+<span class="nc" id="L131">		userList.updateBuffer(userId, text);</span>
+		
+<span class="nc" id="L133">		message = null; // since not all Controllers can return Message object right now</span>
+		
+<span class="nc bnc" id="L135" title="All 2 branches missed.">		if (text.equals(STAFF_PASSCODE)){</span>
+<span class="nc" id="L136">			new SQLDatabaseEngine().addStaff(userId);</span>
+		}
+		
+<span class="nc" id="L139">		String state = userList.getState(userId);</span>
+<span class="nc bnc" id="L140" title="All 4 branches missed.">		if (userList.getState(userId).equals(&quot;new&quot;) || text.toLowerCase().equals(&quot;cancel&quot;)) {</span>
+<span class="nc" id="L141">                        userList.setState(userId, &quot;init&quot;);</span>
+<span class="nc" id="L142">                        message = controller.init.createMessage();</span>
+<span class="nc" id="L143">			replyText = &quot;Carousel message for init state&quot;;</span>
+<span class="nc" id="L144">			replyType = &quot;carousel&quot;;</span>
+<span class="nc bnc" id="L145" title="All 4 branches missed.">		} else if (userList.getState(userId).equals(&quot;init&quot;) &amp;&amp; text.toLowerCase().contains(&quot;recommend&quot;)) {</span>
+<span class="nc" id="L146">			replyType = &quot;text&quot;;</span>
+<span class="nc" id="L147">			replyText = controller.init.recommendTrip(userId);</span>
+		
+<span class="nc bnc" id="L149" title="All 2 branches missed.">		} else if (checkSearchState(text, userId)) {</span>
+<span class="nc" id="L150">			controller.search.process(text, state, userList.getSearchState(userId));</span>
+<span class="nc" id="L151">			userList.setState(userId, &quot;search&quot;);</span>
+<span class="nc" id="L152">			replyType = &quot;mixed&quot;;</span>
+<span class="nc" id="L153">			replyList = controller.search.replyList;</span>
+<span class="nc bnc" id="L154" title="All 2 branches missed.">		} else if (checkBookState(text, userId)) {</span>
+<span class="nc" id="L155">			userList.setState(userId, &quot;book&quot;);</span>
+<span class="nc" id="L156">			controller.book.process(text, userList.getBookState(userId), userId);</span>
+<span class="nc" id="L157">			replyType = &quot;mixed&quot;;</span>
+<span class="nc" id="L158">			replyList = controller.book.replyList;</span>
+<span class="nc bnc" id="L159" title="All 2 branches missed.">		} else if (checkEnqState(text,userId)) {</span>
+<span class="nc" id="L160">			replyType = &quot;text&quot;;</span>
+<span class="nc" id="L161">			replyText = controller.enq.bookingEnq(userId);</span>
+<span class="nc bnc" id="L162" title="All 2 branches missed.">		} else if (checkFAQ(text)) {</span>
+<span class="nc" id="L163">			replyText=&quot;FAQ result is:\n&quot;+controller.faq.search(text);</span>
+<span class="nc" id="L164">			replyType=&quot;text&quot;;</span>
+		} else {
+<span class="nc" id="L166">			replyText = &quot;Sorry, I did not understand: &quot; + text + &quot;. We will relay this message to a staff member who will contact you if your question is valid.&quot;;</span>
+<span class="nc" id="L167">			replyType = &quot;unknown&quot;;</span>
+<span class="nc" id="L168">			controller.unknown.handleUnknown(userId, text, userList.getBuffer(userId).toArray(new String[0])); // passes buffer as a String array for easier manipulation</span>
+		}
+			
+<span class="nc" id="L171">	}</span>
+	
+	/**
+	 * Checks if the state is 'search'
+	 * Some conditions are checked implicitly by other checks called prior
+	 * @param text - Input text received from user
+	 * @param state - Previous state
+	 * @return true if it is, false if it isn't
+	 */
+	public boolean checkSearchState(String text, String userId) {
+<span class="nc" id="L181">		SearchState searchState = userList.getSearchState(userId);</span>
+<span class="nc" id="L182">		String state = userList.getState(userId);</span>
+<span class="nc bnc" id="L183" title="All 4 branches missed.">		if ((state.equals(&quot;init&quot;) &amp;&amp; text.toLowerCase().contains(&quot;search&quot;))) {</span>
+<span class="nc" id="L184">			userList.resetSearchState(userId);</span>
+<span class="nc" id="L185">			searchState.substate = &quot;display&quot;;</span>
+<span class="nc" id="L186">			return true;</span>
+<span class="nc bnc" id="L187" title="All 4 branches missed.">		} else if (state.equals(&quot;book&quot;) &amp;&amp; text.toLowerCase().equals(&quot;.back&quot;)) { // TODO are you sure you want a dot here?</span>
+<span class="nc" id="L188">			userList.setState(userId, &quot;search&quot;);</span>
+<span class="nc" id="L189">			searchState.rsIndex = 0;</span>
+<span class="nc" id="L190">			searchState.substate = &quot;display&quot;;</span>
+<span class="nc" id="L191">			return true;</span>
+<span class="nc bnc" id="L192" title="All 6 branches missed.">		} else if (state.equals(&quot;search&quot;) &amp;&amp; !searchState.substate.equals(&quot;keywordMessage&quot;) &amp;&amp; text.toLowerCase().contains(&quot;add filter&quot;)) {</span>
+<span class="nc" id="L193">			searchState.substate = &quot;keywordMessage&quot;;</span>
+<span class="nc" id="L194">			return true;</span>
+<span class="nc bnc" id="L195" title="All 4 branches missed.">		} else if (state.equals(&quot;search&quot;) &amp;&amp; searchState.substate.equals(&quot;keywordMessage&quot;)) {</span>
+<span class="nc" id="L196">			searchState.substate = &quot;keywordInput&quot;;</span>
+<span class="nc" id="L197">			return true;</span>
+<span class="nc bnc" id="L198" title="All 4 branches missed.">		} else if (state.equals(&quot;search&quot;) &amp;&amp; !text.toLowerCase().contains(&quot;book&quot;)) {</span>
+<span class="nc" id="L199">			searchState.substate = &quot;display&quot;;</span>
+<span class="nc" id="L200">			return true;</span>
+		} else {
+<span class="nc" id="L202">			return false;</span>
+		}	
+	}
+	
+	/**
+	 * Checks if the state is 'book'
+	 * Some conditions are checked implicitly by other checks called prior
+	 * @param text - Input text received from user
+	 * @param state - Previous state
+	 * @return true if it is, false if it isn't
+	 */
+	public boolean checkBookState(String text, String userId) {
+		//TODO: check if state is book
+		//should be accessible from SEARCH (result) state ONLY
+		//is really
+<span class="nc" id="L217">		BookState bookState = userList.getBookState(userId);</span>
+<span class="nc" id="L218">		String state = userList.getState(userId);</span>
+<span class="nc bnc" id="L219" title="All 4 branches missed.">		if (state.equals(&quot;search&quot;) &amp;&amp; text.toLowerCase().contains(&quot;book&quot;)) {</span>
+<span class="nc" id="L220">            userList.resetBookState(userId);</span>
+<span class="nc" id="L221">			return true;</span>
+<span class="nc bnc" id="L222" title="All 4 branches missed.">		} else if (state.contains(&quot;book&quot;) &amp;&amp; !text.toLowerCase().contains(&quot;.back&quot;)) {</span>
+<span class="nc" id="L223">			return true;</span>
+		} else {
+<span class="nc" id="L225">			return false;</span>
+		}
+	}
+	
+	/**
+	 * This method take user's text as input and returns a boolean value indicating if this text is a booking enquiry or not.
+	 * @param text The text used to decide user's sending a booking enquiry or not
+	 * @return bool If true, user is sending a booking enquiry, otherwise is not a booking enquiry.
+	 */
+	public boolean checkEnqState(String text,String userId) {
+		//TODO: check if state is enq
+<span class="nc bnc" id="L236" title="All 4 branches missed.">		if (userList.getState(userId).equals(&quot;init&quot;) &amp;&amp; text.toLowerCase().contains(&quot;enquiry&quot;))</span>
+<span class="nc" id="L237">			return true;</span>
+		else
+<span class="nc" id="L239">			return false;</span>
+		
+	}
+	
+	/**
+     * check whether input text contain the keywolds in the FAQ table in database
+     * @param text the user input message
+     * @return if text contain keywolds whose answer is stored in FAQ table,return true, else return false
+     */
+    public boolean checkFAQ(String text) {
+        //TODO: check if state is faq
+        //lookup faq table in database to see if input message matches any stored questions
+        //should be accessible from ANY state        
+<span class="nc" id="L252">        StringBuilder newsb=new StringBuilder();</span>
+<span class="nc bnc" id="L253" title="All 2 branches missed.">        if(controller.faq.search(text).equals(newsb.toString()))</span>
+<span class="nc" id="L254">            return false;</span>
+<span class="nc" id="L255">        return true;</span>
+    }
+    
+    /**
+     * Getter method of all Staff's userId for identifying who is a staff.
+     * @return String containing all userIds of staffs, delimited by semicolon (;)
+     */
+    public String getStaffID() {
+<span class="nc" id="L263">    	String id=null;</span>
+<span class="nc" id="L264">    	id=controller.unknown.getStaffId();</span>
+<span class="nc" id="L265">    	return id;</span>
+    }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

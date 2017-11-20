@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.example.bot.spring.ProjectPusherTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2017-11-20T15:36:36" hostname="Nyanpasu" time="1.06">
+  <properties/>
+  <testcase name="testPushText" classname="com.example.bot.spring.ProjectPusherTest" time="0.69"/>
+  <testcase name="testPushTextShorthand" classname="com.example.bot.spring.ProjectPusherTest" time="0.0"/>
+  <testcase name="testPushMessage" classname="com.example.bot.spring.ProjectPusherTest" time="0.37"/>
+  <system-out><![CDATA[push text
+2017-11-20 23:36:36.537  INFO 28228 --- [    Test worker] com.example.bot.spring.ProjectPusher     : Attempting to push1 texts to U4b3770248bd07a25bd8f37c346483ac8
+2017-11-20 23:36:36.540  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : --> POST https://api.line.me/v2/bot/message/push http/1.1
+2017-11-20 23:36:36.540  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Content-Type: application/json; charset=UTF-8
+2017-11-20 23:36:36.540  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Content-Length: 99
+2017-11-20 23:36:36.540  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Authorization: Bearer JUST NOTHING
+2017-11-20 23:36:36.540  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : User-Agent: line-botsdk-java/1.9.0-SNAPSHOT
+2017-11-20 23:36:36.540  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : 
+2017-11-20 23:36:36.540  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : {"to":"U4b3770248bd07a25bd8f37c346483ac8","messages":[{"type":"text","text":"JUnit test message"}]}
+2017-11-20 23:36:36.540  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : --> END POST (99-byte body)
+2017-11-20 23:36:36.936  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : <-- 401 Unauthorized https://api.line.me/v2/bot/message/push (395ms)
+2017-11-20 23:36:36.936  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Server: nginx
+2017-11-20 23:36:36.936  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Content-Type: application/json;charset=UTF-8
+2017-11-20 23:36:36.936  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : X-Line-Request-Id: 9a2c167e-f1c3-4469-b6a4-756f76d4e02b
+2017-11-20 23:36:36.936  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : X-Content-Type-Options: nosniff
+2017-11-20 23:36:36.936  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : X-XSS-Protection: 1; mode=block
+2017-11-20 23:36:36.936  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : X-Frame-Options: DENY
+2017-11-20 23:36:36.936  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : WWW-Authenticate: Bearer error="invalid_token", error_description="invalid token"
+2017-11-20 23:36:36.936  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Content-Length: 147
+2017-11-20 23:36:36.936  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Expires: Mon, 20 Nov 2017 15:36:38 GMT
+2017-11-20 23:36:36.936  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Cache-Control: max-age=0, no-cache, no-store
+2017-11-20 23:36:36.936  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Pragma: no-cache
+2017-11-20 23:36:36.936  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Date: Mon, 20 Nov 2017 15:36:38 GMT
+2017-11-20 23:36:36.936  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Connection: close
+2017-11-20 23:36:36.936  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : 
+2017-11-20 23:36:36.936  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : {"message":"Authentication failed due to the following reason: invalid token. Confirm that the access token in the authorization header is valid."}
+2017-11-20 23:36:36.936  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : <-- END HTTP (147-byte body)
+2017-11-20 23:36:36.936  INFO 28228 --- [    Test worker] com.example.bot.spring.ProjectPusher     : Attempting to push3 texts to U4b3770248bd07a25bd8f37c346483ac8
+2017-11-20 23:36:36.939  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : --> POST https://api.line.me/v2/bot/message/push http/1.1
+2017-11-20 23:36:36.939  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Content-Type: application/json; charset=UTF-8
+2017-11-20 23:36:36.939  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Content-Length: 149
+2017-11-20 23:36:36.939  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Authorization: Bearer JUST NOTHING
+2017-11-20 23:36:36.939  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : User-Agent: line-botsdk-java/1.9.0-SNAPSHOT
+2017-11-20 23:36:36.939  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : 
+2017-11-20 23:36:36.939  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : {"to":"U4b3770248bd07a25bd8f37c346483ac8","messages":[{"type":"text","text":"JUnit"},{"type":"text","text":"test"},{"type":"text","text":"message"}]}
+2017-11-20 23:36:36.939  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : --> END POST (149-byte body)
+2017-11-20 23:36:37.073  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : <-- 401 Unauthorized https://api.line.me/v2/bot/message/push (134ms)
+2017-11-20 23:36:37.073  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Server: nginx
+2017-11-20 23:36:37.073  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Content-Type: application/json;charset=UTF-8
+2017-11-20 23:36:37.073  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : X-Line-Request-Id: d621fc8b-4dc6-4a3b-9489-ced4140144e8
+2017-11-20 23:36:37.073  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : X-Content-Type-Options: nosniff
+2017-11-20 23:36:37.073  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : X-XSS-Protection: 1; mode=block
+2017-11-20 23:36:37.073  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : X-Frame-Options: DENY
+2017-11-20 23:36:37.073  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : WWW-Authenticate: Bearer error="invalid_token", error_description="invalid token"
+2017-11-20 23:36:37.073  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Content-Length: 147
+2017-11-20 23:36:37.073  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Expires: Mon, 20 Nov 2017 15:36:38 GMT
+2017-11-20 23:36:37.073  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Cache-Control: max-age=0, no-cache, no-store
+2017-11-20 23:36:37.073  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Pragma: no-cache
+2017-11-20 23:36:37.073  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Date: Mon, 20 Nov 2017 15:36:38 GMT
+2017-11-20 23:36:37.073  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Connection: close
+2017-11-20 23:36:37.073  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : 
+2017-11-20 23:36:37.073  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : {"message":"Authentication failed due to the following reason: invalid token. Confirm that the access token in the authorization header is valid."}
+2017-11-20 23:36:37.073  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : <-- END HTTP (147-byte body)
+2017-11-20 23:36:37.073  INFO 28228 --- [    Test worker] com.example.bot.spring.ProjectPusher     : Attempting to push1 texts to U4b3770248bd07a25bd8f37c346483ac8
+2017-11-20 23:36:37.076  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : --> POST https://api.line.me/v2/bot/message/push http/1.1
+2017-11-20 23:36:37.076  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Content-Type: application/json; charset=UTF-8
+2017-11-20 23:36:37.076  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Content-Length: 81
+2017-11-20 23:36:37.076  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Authorization: Bearer JUST NOTHING
+2017-11-20 23:36:37.076  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : User-Agent: line-botsdk-java/1.9.0-SNAPSHOT
+2017-11-20 23:36:37.076  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : 
+2017-11-20 23:36:37.076  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : {"to":"U4b3770248bd07a25bd8f37c346483ac8","messages":[{"type":"text","text":""}]}
+2017-11-20 23:36:37.076  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : --> END POST (81-byte body)
+2017-11-20 23:36:37.225  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : <-- 401 Unauthorized https://api.line.me/v2/bot/message/push (148ms)
+2017-11-20 23:36:37.225  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Server: nginx
+2017-11-20 23:36:37.226  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Content-Type: application/json;charset=UTF-8
+2017-11-20 23:36:37.226  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : X-Line-Request-Id: 946374e7-b35c-4bb3-99ac-84dc6e5ffdf9
+2017-11-20 23:36:37.226  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : X-Content-Type-Options: nosniff
+2017-11-20 23:36:37.226  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : X-XSS-Protection: 1; mode=block
+2017-11-20 23:36:37.226  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : X-Frame-Options: DENY
+2017-11-20 23:36:37.226  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : WWW-Authenticate: Bearer error="invalid_token", error_description="invalid token"
+2017-11-20 23:36:37.226  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Content-Length: 147
+2017-11-20 23:36:37.226  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Expires: Mon, 20 Nov 2017 15:36:38 GMT
+2017-11-20 23:36:37.226  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Cache-Control: max-age=0, no-cache, no-store
+2017-11-20 23:36:37.226  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Pragma: no-cache
+2017-11-20 23:36:37.226  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Date: Mon, 20 Nov 2017 15:36:38 GMT
+2017-11-20 23:36:37.226  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Connection: close
+2017-11-20 23:36:37.226  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : 
+2017-11-20 23:36:37.226  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : {"message":"Authentication failed due to the following reason: invalid token. Confirm that the access token in the authorization header is valid."}
+2017-11-20 23:36:37.226  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : <-- END HTTP (147-byte body)
+push text shorthand
+push message
+2017-11-20 23:36:37.226  INFO 28228 --- [    Test worker] com.example.bot.spring.ProjectPusher     : Attempting to push 1 messages to U4b3770248bd07a25bd8f37c346483ac8
+2017-11-20 23:36:37.229  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : --> POST https://api.line.me/v2/bot/message/push http/1.1
+2017-11-20 23:36:37.229  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Content-Type: application/json; charset=UTF-8
+2017-11-20 23:36:37.229  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Content-Length: 104
+2017-11-20 23:36:37.229  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Authorization: Bearer JUST NOTHING
+2017-11-20 23:36:37.229  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : User-Agent: line-botsdk-java/1.9.0-SNAPSHOT
+2017-11-20 23:36:37.229  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : 
+2017-11-20 23:36:37.229  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : {"to":"U4b3770248bd07a25bd8f37c346483ac8","messages":[{"type":"text","text":"JUnit test push message"}]}
+2017-11-20 23:36:37.229  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : --> END POST (104-byte body)
+2017-11-20 23:36:37.367  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : <-- 401 Unauthorized https://api.line.me/v2/bot/message/push (137ms)
+2017-11-20 23:36:37.367  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Server: nginx
+2017-11-20 23:36:37.367  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Content-Type: application/json;charset=UTF-8
+2017-11-20 23:36:37.367  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : X-Line-Request-Id: ee352d1d-d093-4444-9963-6bcdde6db989
+2017-11-20 23:36:37.367  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : X-Content-Type-Options: nosniff
+2017-11-20 23:36:37.367  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : X-XSS-Protection: 1; mode=block
+2017-11-20 23:36:37.367  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : X-Frame-Options: DENY
+2017-11-20 23:36:37.367  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : WWW-Authenticate: Bearer error="invalid_token", error_description="invalid token"
+2017-11-20 23:36:37.367  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Content-Length: 147
+2017-11-20 23:36:37.367  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Expires: Mon, 20 Nov 2017 15:36:38 GMT
+2017-11-20 23:36:37.367  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Cache-Control: max-age=0, no-cache, no-store
+2017-11-20 23:36:37.367  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Pragma: no-cache
+2017-11-20 23:36:37.367  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Date: Mon, 20 Nov 2017 15:36:38 GMT
+2017-11-20 23:36:37.367  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Connection: close
+2017-11-20 23:36:37.367  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : 
+2017-11-20 23:36:37.367  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : {"message":"Authentication failed due to the following reason: invalid token. Confirm that the access token in the authorization header is valid."}
+2017-11-20 23:36:37.367  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : <-- END HTTP (147-byte body)
+2017-11-20 23:36:37.367  INFO 28228 --- [    Test worker] com.example.bot.spring.ProjectPusher     : Attempting to push 1 messages to U4b3770248bd07a25bd8f37c346483ac8
+2017-11-20 23:36:37.370  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : --> POST https://api.line.me/v2/bot/message/push http/1.1
+2017-11-20 23:36:37.370  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Content-Type: application/json; charset=UTF-8
+2017-11-20 23:36:37.370  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Content-Length: 81
+2017-11-20 23:36:37.370  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Authorization: Bearer JUST NOTHING
+2017-11-20 23:36:37.370  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : User-Agent: line-botsdk-java/1.9.0-SNAPSHOT
+2017-11-20 23:36:37.370  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : 
+2017-11-20 23:36:37.370  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : {"to":"U4b3770248bd07a25bd8f37c346483ac8","messages":[{"type":"text","text":""}]}
+2017-11-20 23:36:37.370  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : --> END POST (81-byte body)
+2017-11-20 23:36:37.596  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : <-- 401 Unauthorized https://api.line.me/v2/bot/message/push (225ms)
+2017-11-20 23:36:37.596  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Server: nginx
+2017-11-20 23:36:37.596  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Content-Type: application/json;charset=UTF-8
+2017-11-20 23:36:37.596  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : X-Line-Request-Id: d928e9ac-ae5c-49a3-a453-52795b080359
+2017-11-20 23:36:37.596  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : X-Content-Type-Options: nosniff
+2017-11-20 23:36:37.596  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : X-XSS-Protection: 1; mode=block
+2017-11-20 23:36:37.596  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : X-Frame-Options: DENY
+2017-11-20 23:36:37.596  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : WWW-Authenticate: Bearer error="invalid_token", error_description="invalid token"
+2017-11-20 23:36:37.596  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Content-Length: 147
+2017-11-20 23:36:37.596  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Expires: Mon, 20 Nov 2017 15:36:38 GMT
+2017-11-20 23:36:37.596  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Cache-Control: max-age=0, no-cache, no-store
+2017-11-20 23:36:37.596  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Pragma: no-cache
+2017-11-20 23:36:37.596  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Date: Mon, 20 Nov 2017 15:36:38 GMT
+2017-11-20 23:36:37.596  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : Connection: close
+2017-11-20 23:36:37.596  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : 
+2017-11-20 23:36:37.596  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : {"message":"Authentication failed due to the following reason: invalid token. Confirm that the access token in the authorization header is valid."}
+2017-11-20 23:36:37.596  INFO 28228 --- [    Test worker] com.linecorp.bot.client.wire             : <-- END HTTP (147-byte body)
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

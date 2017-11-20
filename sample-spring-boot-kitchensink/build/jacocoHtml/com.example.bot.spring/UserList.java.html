@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserList.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">sample-spring-boot-kitchensink</a> &gt; <a href="index.source.html" class="el_package">com.example.bot.spring</a> &gt; <span class="el_source">UserList.java</span></div><h1>UserList.java</h1><pre class="source lang-java linenums">package com.example.bot.spring;
+
+import java.util.LinkedList;
+import lombok.extern.slf4j.Slf4j;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+<span class="fc" id="L7">@Slf4j</span>
+public class UserList {
+	
+<span class="fc" id="L10">	private CopyOnWriteArrayList&lt;User&gt; users = new CopyOnWriteArrayList&lt;&gt;();</span>
+        
+        /**
+         * Constructor of UserList.
+	 * A controller is required as parameter in order for each User object to schedule their timeout messages.
+         */
+<span class="fc" id="L16">        public UserList(){</span>
+<span class="fc" id="L17">        }</span>
+        
+        /**
+         * Helper method to find the User object for an userId.
+         * @param userId userId to search for
+         * @return An User object if User is found, null if User is not found
+         */
+        private User findUser(String userId){
+<span class="fc bfc" id="L25" title="All 2 branches covered.">                for (User user: users)</span>
+<span class="fc bfc" id="L26" title="All 2 branches covered.">                        if (user.getUserId().equals(userId)){</span>
+<span class="fc" id="L27">                                log.info(&quot;User of userId &quot;+userId+&quot; found.&quot;);</span>
+<span class="fc" id="L28">                                return user;</span>
+                        }
+<span class="fc" id="L30">                log.info(&quot;User of userId &quot;+userId+&quot; NOT found.&quot;);</span>
+<span class="fc" id="L31">                return null; // User not found</span>
+        }
+        
+        /**
+         * Method to check if the user has been in inactivity or s/he is a new user.
+         * @param userId userId of the user
+         * @return boolean indicator of whether the user is in the UserList (ie inactive for 15mins or new user)
+         */
+        public boolean isInList(String userId){
+<span class="fc bfc" id="L40" title="All 2 branches covered.">                return findUser(userId)!=null;</span>
+        }
+        
+        /**
+         * Update the status of an existing user, or if user does not exist, add him/her to the UserList.
+         * @param userId userId of the User to be updated
+         */
+        public void update(String userId) {
+<span class="fc" id="L48">                User user = findUser(userId);</span>
+<span class="fc bfc" id="L49" title="All 2 branches covered.">                if (user == null) {// User not found</span>
+<span class="fc" id="L50">                        log.info(&quot;Adding a new user of userId &quot;+userId);</span>
+<span class="fc" id="L51">                        users.add(new User(userId, this));</span>
+                }
+                else
+<span class="fc" id="L54">                        user.update();</span>
+<span class="fc" id="L55">        }</span>
+        
+        /**
+         * Update the buffer of a certain userId.
+	 * The String text would be put into the buffer of the user, the buffer would contain up to 5 latest messages.
+         * @param userId User that we want to update its buffer
+         * @param text A String preparing to be added to buffer
+         */
+        public void updateBuffer(String userId, String text){
+<span class="fc" id="L64">                User user = findUser(userId);</span>
+<span class="fc bfc" id="L65" title="All 2 branches covered.">                if (user == null){</span>
+<span class="fc" id="L66">                        log.info(&quot;Failed to update buffer! User &quot;+userId+&quot; not in UserList yet!&quot;);</span>
+<span class="fc" id="L67">                        return;</span>
+                }
+<span class="fc" id="L69">                user.updateBuffer(text);</span>
+<span class="fc" id="L70">        }</span>
+        
+        /**
+         * Getter method for the buffer of a certain userId.
+         * @param userId userId of the user
+         * @return LinkedList of String object as buffer of that user, or null if User is not present in this UserList.
+         */
+        public LinkedList&lt;String&gt; getBuffer(String userId){
+<span class="fc" id="L78">                User user = findUser(userId);</span>
+<span class="fc bfc" id="L79" title="All 2 branches covered.">                if (user != null)</span>
+<span class="fc" id="L80">                        return user.getBuffer();</span>
+<span class="fc" id="L81">                return null;</span>
+        }
+        
+        /**
+         * Changes the specific User's status.
+         * @param userId User to set status to
+         * @param state New state for User
+         */
+        public void setState(String userId, String state) {
+<span class="fc" id="L90">                User user = findUser(userId);</span>
+<span class="fc bfc" id="L91" title="All 2 branches covered.">                if (user == null) // User not found</span>
+<span class="fc" id="L92">                        return;</span>
+<span class="fc" id="L93">                user.setState(state);</span>
+<span class="fc" id="L94">        }</span>
+        
+        /**
+         * Get the current status of a specific User.
+         * @param userId userId of the User to be changed.
+         * @return String containing the current status of the user
+         */
+        public String getState(String userId) {
+<span class="fc" id="L102">                User user = findUser(userId);</span>
+<span class="fc bfc" id="L103" title="All 2 branches covered.">                if (user == null)</span>
+<span class="fc" id="L104">                        return null;</span>
+<span class="fc" id="L105">                return user.getState();</span>
+        }
+        
+        /** 
+         * Remove a user given the User object.
+         * Used by User class when updating.
+         * @param user An User object.
+         */
+	public void remove(User user) {
+<span class="fc" id="L114">                log.info(&quot;Removing user &quot;+user.getUserId());</span>
+<span class="fc" id="L115">		users.remove(user);</span>
+<span class="fc" id="L116">	}</span>
+        
+        /**
+         * Remove a user given the userId.
+         * Typically would just let User expire.
+         * The timeout message would not be shown if used.
+         * @param userId 
+         */
+        public void remove(String userId) {
+<span class="fc" id="L125">                User user = findUser(userId);</span>
+<span class="fc bfc" id="L126" title="All 2 branches covered.">                if (user == null)</span>
+<span class="fc" id="L127">                        log.info(&quot;Failed to remove user with userId: &quot;+userId);</span>
+                else
+<span class="fc" id="L129">                        remove(user);</span>
+<span class="fc" id="L130">        }    </span>
+    
+////////////////////searchstate remake
+    
+    /**
+     * Getter method for input user's searchState dataobject
+     * @param userId
+     * @return
+     */
+    public SearchState getSearchState(String userId) {
+<span class="fc" id="L140">    	User user = findUser(userId);</span>
+<span class="fc bfc" id="L141" title="All 2 branches covered.">    	if (user == null)</span>
+<span class="fc" id="L142">            return null;</span>
+<span class="fc" id="L143">		return user.getSearchState();</span>
+    }
+    
+    /**
+     * Getter method for input user's bookState data object
+     * @param userId
+     * @return
+     */
+    public BookState getBookState(String userId) {
+<span class="fc" id="L152">    	User user = findUser(userId);</span>
+<span class="fc bfc" id="L153" title="All 2 branches covered.">    	if (user == null)</span>
+<span class="fc" id="L154">            return null;</span>
+<span class="fc" id="L155">		return user.getBookState();</span>
+    }
+    
+    /**
+     * Resets input user's bookstate data object
+     * @param userId
+     */
+    public void resetBookState(String userId) {
+<span class="fc" id="L163">    	User user = findUser(userId);</span>
+<span class="fc bfc" id="L164" title="All 2 branches covered.">    	if (user != null)</span>
+<span class="fc" id="L165">    		user.resetBookState();</span>
+<span class="fc" id="L166">	}</span>
+	
+    /**
+     * Resets input user's searchstate data object
+     * @param userId
+     */
+	public void resetSearchState(String userId) {
+<span class="fc" id="L173">		User user = findUser(userId);</span>
+<span class="fc bfc" id="L174" title="All 2 branches covered.">    	if (user != null)</span>
+<span class="fc" id="L175">    		user.resetSearchState();</span>
+<span class="fc" id="L176">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

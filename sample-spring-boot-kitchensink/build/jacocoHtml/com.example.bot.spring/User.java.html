@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>User.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">sample-spring-boot-kitchensink</a> &gt; <a href="index.source.html" class="el_package">com.example.bot.spring</a> &gt; <span class="el_source">User.java</span></div><h1>User.java</h1><pre class="source lang-java linenums">package com.example.bot.spring;
+
+import com.linecorp.bot.client.LineMessagingServiceBuilder;
+import com.linecorp.bot.model.PushMessage;
+import com.linecorp.bot.model.message.TextMessage;
+import com.linecorp.bot.model.response.BotApiResponse;
+import java.io.IOException;
+import lombok.extern.slf4j.Slf4j;
+import java.time.Instant;
+import java.util.LinkedList;
+import java.util.Timer;
+import java.util.TimerTask;
+import retrofit2.Response;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+<span class="fc" id="L17">@Slf4j</span>
+/** User class to store all users that have not timed out (ie 15mins of inactivity). */
+public class User {
+	
+	private final String userId;
+<span class="fc" id="L22">	private String state = &quot;new&quot;;</span>
+	private Instant lastActivityTime;
+	private TimerTask timeoutMessage;
+<span class="fc" id="L25">	private final Timer timer = new Timer();</span>
+	private final UserList userList; // Users subscribe to a UserList
+<span class="fc" id="L27">	private LinkedList&lt;String&gt; buffer = new LinkedList&lt;&gt;();</span>
+	private ProjectPusher pusher;
+        
+<span class="fc" id="L30">	private final int TIMEOUT_TIME = 15*60*1000; // in milliseconds</span>
+	public final static String TIMEOUT_TEXT_MESSAGE = &quot;*You have been in inactivity for 15mins, please restart by typing anything new*&quot;;
+	//the following variables are for handling the search state
+<span class="fc" id="L33">	private SearchState searchState = new SearchState(); </span>
+	//the following variables are for handling the booking state
+<span class="fc" id="L35">	private BookState bookState = new BookState();</span>
+        /**
+         * Constructor of an User.
+	 * References to UserList and controller is required in order to remove User from UserList and schedule a timeout message.
+         * @param userId userId referring to user's line account
+         * @param userList A UserList object that the User registers to
+         */
+<span class="fc" id="L42">	public User(String userId, UserList userList) {</span>
+<span class="fc" id="L43">		this.userId = userId;</span>
+<span class="fc" id="L44">                this.userList = userList;</span>
+<span class="fc" id="L45">                timeoutMessage = new TimeoutMessage();</span>
+<span class="fc" id="L46">                timer.schedule(timeoutMessage, TIMEOUT_TIME);</span>
+<span class="fc" id="L47">                log.info(&quot;New user of userId &quot;+userId+&quot; created.&quot;);</span>
+                
+<span class="fc" id="L49">	}</span>
+	
+        /**
+         * Update the user to renew his/her timeout time.
+	 * His/her next timeout message would occur 15mins after this has been run.
+	 * S/he would be removed from UserList 15mins after as well.
+         */
+	public void update() {
+<span class="fc" id="L57">                lastActivityTime = Instant.now();</span>
+<span class="fc" id="L58">                timeoutMessage.cancel();</span>
+<span class="fc" id="L59">                timeoutMessage = new TimeoutMessage();</span>
+<span class="fc" id="L60">                timer.schedule(timeoutMessage, TIMEOUT_TIME); // reschedule the timeout message</span>
+<span class="fc" id="L61">                log.info(&quot;Timeout renewed for user &quot;+userId);</span>
+<span class="fc" id="L62">        }</span>
+        
+	/**
+	 * Put a String into buffer, if buffer exceeds maximum size 5, remove the oldest one.
+	 * @param text String to be put into buffer
+	 */
+        public void updateBuffer(String text){
+<span class="fc" id="L69">                buffer.add(text);</span>
+<span class="fc bfc" id="L70" title="All 2 branches covered.">		if (buffer.size() &gt; 5)</span>
+<span class="fc" id="L71">			buffer.poll();</span>
+<span class="fc" id="L72">        }</span>
+        
+	/**
+	 * Getter method to get the whole buffer for further usage.
+	 * The LinkedList is guaranteed to contain 5 String objects.
+	 * @return A LinkedList of String containing the last 5 messages
+	 */
+        public LinkedList&lt;String&gt; getBuffer(){
+<span class="fc" id="L80">                return buffer;</span>
+        }
+        
+        /**
+         * User removes itself from UserList.
+         */
+        public void remove() {
+<span class="fc" id="L87">                timer.cancel();</span>
+<span class="fc" id="L88">                userList.remove(this);</span>
+<span class="fc" id="L89">        }</span>
+        
+        /**
+         * Getter method of userId.
+         * @return userId of this User
+         */
+        public String getUserId() {
+<span class="fc" id="L96">                return userId;</span>
+        }
+    
+        /**
+         * Mutator method of state.
+	 * Set the state of this User object to another one.
+         * @param state State to be set
+         */
+        public void setState(String state) {
+<span class="fc" id="L105">                this.state = state;</span>
+<span class="fc" id="L106">        }</span>
+        
+        /**
+         * Getter method of current state.
+         * @return Current state this user is in.
+         */
+        public String getState() {
+<span class="fc" id="L113">                return state;</span>
+        }
+	
+	/** 
+         * Helper class to generate a timeout message.
+         * Generates a timeout message and remove the user itself from UserList.
+         */
+<span class="fc" id="L120">	class TimeoutMessage extends TimerTask {</span>
+
+		@Override
+		/**
+		 * Overriding TimerTask so that run() would be run on schedule.
+		 */
+		public void run() {
+<span class="fc" id="L127">                        log.info(&quot;Attempting to send timeout message to user &quot; + userId);          </span>
+<span class="fc" id="L128">			ProjectPusher.pushTextShorthand(userId, TIMEOUT_TEXT_MESSAGE);</span>
+<span class="fc" id="L129">			remove();</span>
+<span class="fc" id="L130">		}</span>
+		
+	}
+
+	//////////////searchstate remake
+	
+	/**
+	 * Getter function for searchState
+	 * @return user's searchstate data object
+	 */
+	public SearchState getSearchState() {
+<span class="fc" id="L141">		return searchState;</span>
+	}
+	
+	/**
+	 * Getter function for bookState
+	 * @return user's bookstate data object
+	 */
+	public BookState getBookState() {
+<span class="fc" id="L149">		return bookState;</span>
+	}
+	
+	/**
+	 * Resets user's bookstate data object
+	 */
+	public void resetBookState() {
+<span class="fc" id="L156">		bookState = new BookState();</span>
+<span class="fc" id="L157">	}</span>
+	
+	/**
+	 * Resets user's searchstate data object
+	 */
+	public void resetSearchState() {
+<span class="fc" id="L163">		searchState = new SearchState();</span>
+<span class="fc" id="L164">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DiscountChecker.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">sample-spring-boot-kitchensink</a> &gt; <a href="index.source.html" class="el_package">com.example.bot.spring</a> &gt; <span class="el_source">DiscountChecker.java</span></div><h1>DiscountChecker.java</h1><pre class="source lang-java linenums">/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.example.bot.spring;
+
+import com.linecorp.bot.client.LineMessagingServiceBuilder;
+import com.linecorp.bot.model.PushMessage;
+import com.linecorp.bot.model.message.TextMessage;
+import com.linecorp.bot.model.response.BotApiResponse;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.TimeZone;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.jni.Time;
+import retrofit2.Response;
+
+/**
+ * Class responsible for repeatedly pushing messages to users when there is a Discount available.
+ * On construction, it will push one discount messages to all users present in the Booker table.
+ * And it will repeat this for every 15 mins.
+ * One can use {@link #forceRunDiscountPromotion() forceRunDiscountPromotion()} to force the discount message running prematurely.
+ * Or use {@link #startDiscountPromotion() startDiscountPromotion() } and {@link #stopDiscountPromotion() stopDiscountPromotion()} to start or stop the message spam.
+ */
+<span class="fc" id="L30">@Slf4j</span>
+public class DiscountChecker {
+<span class="fc" id="L32">	private final Timer discountTimer = new Timer();</span>
+	private TimerTask discountPromotion;
+	
+<span class="fc" id="L35">	private final int FIRST_MESSAGE_DELAY = 1*1000; // first message is shown 1 second after</span>
+<span class="fc" id="L36">	private final int PERIOD = 15*60*1000; // repeat every 15mins</span>
+	
+	/**
+	 * Constructor of DiscountChecker.
+	 * On construction, it will automatically push a promotion message to all users.
+	 * Then the message will be sent every other 15mins.
+	 */
+<span class="fc" id="L43">	public DiscountChecker() {</span>
+<span class="fc" id="L44">		discountPromotion = new DiscountPromotion();</span>
+<span class="fc" id="L45">		discountTimer.schedule(discountPromotion, FIRST_MESSAGE_DELAY, PERIOD); </span>
+<span class="fc" id="L46">	}</span>
+	
+	/**
+	 * Manually stops discount pushmessages.
+	 * This makes no more promotion messages sent to any users.
+	 * Useful if you want the chatbot to rest or prevent spamming for too long.
+	 */
+	public void stopDiscountPromotion() {
+<span class="fc" id="L54">		discountPromotion.cancel();</span>
+<span class="fc" id="L55">	}</span>
+	
+	/**
+	 * Manually start discount pushmessages.
+	 * This is used if {@link #stopDiscountPromotion() stopDiscountPromotion()} is run and one wants to start the scheduled messages again.
+	 */
+	public void startDiscountPromotion() {
+<span class="fc" id="L62">		discountPromotion.cancel();</span>
+<span class="fc" id="L63">		discountPromotion = new DiscountPromotion();</span>
+<span class="fc" id="L64">		discountTimer.schedule(discountPromotion, FIRST_MESSAGE_DELAY, PERIOD);</span>
+<span class="fc" id="L65">	}</span>
+	
+	/**
+	 * Forces a discount pushmessage to be sent. 
+	 * This is used to notify customers of any newer discounts. 
+	 */
+	public void forceRunDiscountPromotion() {
+<span class="fc" id="L72">		discountPromotion.run();</span>
+<span class="fc" id="L73">	}</span>
+	
+	/**
+	 * A helper class to help with scheduling messages. 
+	 * @see https://docs.oracle.com/javase/7/docs/api/java/util/TimerTask.html
+	 */
+<span class="fc" id="L79">	class DiscountPromotion extends TimerTask {</span>
+		@Override
+		/**
+		 * Task to run on timer event.
+		 * Sends a pushmessage to every user in the booking table, promoting discounts (if any).
+		 */
+		public void run() {
+<span class="fc" id="L86">			log.info(&quot;Running scheduled discount check...&quot;);</span>
+<span class="fc" id="L87">			ArrayList&lt;ArrayList&lt;String&gt;&gt; deals = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L88">			ArrayList&lt;String&gt; userList = new ArrayList&lt;&gt;(); </span>
+			try {
+<span class="fc" id="L90">				log.info(&quot;Searching for discounts and bookers&quot;);</span>
+<span class="fc" id="L91">				SQLDatabaseEngine db = new SQLDatabaseEngine();</span>
+<span class="fc" id="L92">				deals = db.getDeals();</span>
+<span class="fc" id="L93">				userList = db.getBookers();</span>
+<span class="fc" id="L94">				String text = &quot;3111 brings you limited-time discounts to the best tours in China!&quot;;</span>
+<span class="pc bpc" id="L95" title="1 of 4 branches missed.">				for (int i=0; i &lt; 3 &amp;&amp; i &lt; deals.size(); i++) {</span>
+<span class="fc" id="L96">					text += &quot;\n&quot; + Math.round(((1-Double.parseDouble(deals.get(i).get(1)))*100)) + &quot;% off our &quot; + deals.get(i).get(0);</span>
+				}
+<span class="fc" id="L98">				text += &quot;\nCheck out our offers today!&quot;;</span>
+				
+<span class="fc" id="L100">				TextMessage textMessage = new TextMessage(text);</span>
+				
+<span class="fc" id="L102">				log.info(&quot;Found &quot;+userList.size()+&quot; users!&quot;);</span>
+				
+<span class="fc bfc" id="L104" title="All 2 branches covered.">				for (String userId : userList) {</span>
+<span class="fc" id="L105">					log.info(&quot;Attempting to send discount message to user &quot;+userId);</span>
+<span class="fc" id="L106">					PushMessage pushMessage = new PushMessage(userId, textMessage);</span>
+					Response&lt;BotApiResponse&gt; response;
+<span class="fc" id="L108">					response = LineMessagingServiceBuilder</span>
+<span class="fc" id="L109">						.create(System.getenv(&quot;LINE_BOT_CHANNEL_TOKEN&quot;))</span>
+<span class="fc" id="L110">						.build()</span>
+<span class="fc" id="L111">						.pushMessage(pushMessage)</span>
+<span class="fc" id="L112">						.execute();</span>
+<span class="fc" id="L113">				}</span>
+			
+			
+<span class="nc" id="L116">			} catch (Exception e) {</span>
+<span class="nc" id="L117">				log.info(&quot;exception in discount promotion!&quot;);</span>
+<span class="fc" id="L118">			}</span>
+			
+<span class="fc" id="L120">		}</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

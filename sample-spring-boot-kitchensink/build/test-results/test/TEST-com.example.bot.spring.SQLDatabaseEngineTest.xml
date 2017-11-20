@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.example.bot.spring.SQLDatabaseEngineTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2017-11-20T15:37:00" hostname="Nyanpasu" time="13.454">
+  <properties/>
+  <testcase name="testGetStaffId" classname="com.example.bot.spring.SQLDatabaseEngineTest" time="1.45"/>
+  <testcase name="testSearchBookingById1" classname="com.example.bot.spring.SQLDatabaseEngineTest" time="1.482"/>
+  <testcase name="testSearchBookingById2" classname="com.example.bot.spring.SQLDatabaseEngineTest" time="1.534"/>
+  <testcase name="testSearchKeywordFromFAQ1" classname="com.example.bot.spring.SQLDatabaseEngineTest" time="1.467"/>
+  <testcase name="testSearchKeywordFromFAQ2" classname="com.example.bot.spring.SQLDatabaseEngineTest" time="1.471"/>
+  <testcase name="testSearchKeywordFromFAQ3" classname="com.example.bot.spring.SQLDatabaseEngineTest" time="1.448"/>
+  <testcase name="testSearchKeywordFromFAQ4" classname="com.example.bot.spring.SQLDatabaseEngineTest" time="3.137"/>
+  <testcase name="testGetRecommendation" classname="com.example.bot.spring.SQLDatabaseEngineTest" time="1.459"/>
+  <system-out><![CDATA[2017-11-20 23:37:00.033  INFO 28228 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Neither @ContextConfiguration nor @ContextHierarchy found for test class [com.example.bot.spring.SQLDatabaseEngineTest], using SpringBootContextLoader
+2017-11-20 23:37:00.034  INFO 28228 --- [    Test worker] o.s.t.c.support.AbstractContextLoader    : Could not detect default resource locations for test class [com.example.bot.spring.SQLDatabaseEngineTest]: no resource found for suffixes {-context.xml, Context.groovy}.
+2017-11-20 23:37:00.037  INFO 28228 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener, org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener, org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2017-11-20 23:37:00.038  INFO 28228 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Could not instantiate TestExecutionListener [org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [org/springframework/transaction/interceptor/TransactionAttribute]
+2017-11-20 23:37:00.039  INFO 28228 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Could not instantiate TestExecutionListener [org.springframework.test.context.transaction.TransactionalTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [org/springframework/transaction/interceptor/TransactionAttributeSource]
+2017-11-20 23:37:00.039  INFO 28228 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Using TestExecutionListeners: [org.springframework.test.context.web.ServletTestExecutionListener@1a5c6627, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener@46d51962, org.springframework.boot.test.autoconfigure.SpringBootDependencyInjectionTestExecutionListener@3e2c8243, org.springframework.test.context.support.DirtiesContextTestExecutionListener@2a443c6b, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener@53501a5a, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener@3da0175b, org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener@67c4b436, org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener@6ce87bc1, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener@3f392ecc, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener@21eecbf]
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::        (v1.4.2.RELEASE)
+
+2017-11-20 23:37:00.071  INFO 28228 --- [    Test worker] c.e.bot.spring.SQLDatabaseEngineTest     : Starting SQLDatabaseEngineTest on Nyanpasu with PID 28228 (started by Alistair in C:\Users\Alistair\Desktop\COMP3111\project repos\chatbot-working-repo\sample-spring-boot-kitchensink)
+2017-11-20 23:37:00.071  INFO 28228 --- [    Test worker] c.e.bot.spring.SQLDatabaseEngineTest     : No active profile set, falling back to default profiles: default
+2017-11-20 23:37:00.075  INFO 28228 --- [    Test worker] o.s.w.c.s.GenericWebApplicationContext   : Refreshing org.springframework.web.context.support.GenericWebApplicationContext@5530a923: startup date [Mon Nov 20 23:37:00 CST 2017]; root of context hierarchy
+2017-11-20 23:37:00.093  INFO 28228 --- [    Test worker] c.e.bot.spring.SQLDatabaseEngineTest     : Started SQLDatabaseEngineTest in 0.05 seconds (JVM running for 103.474)
+2017-11-20 23:37:00.095  INFO 28228 --- [    Test worker] c.example.bot.spring.SQLDatabaseEngine   : Username: wusfbejyowexph Password: 79e590b917bad348679f4ca02f5c93d02efbb282c69b814c4e4848ec9f96a8b1
+2017-11-20 23:37:00.095  INFO 28228 --- [    Test worker] c.example.bot.spring.SQLDatabaseEngine   : dbUrl: jdbc:postgresql://ec2-50-17-220-223.compute-1.amazonaws.com:5432/dasu0mq4bcdjr8?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory
+2017-11-20 23:37:01.545  INFO 28228 --- [    Test worker] c.example.bot.spring.SQLDatabaseEngine   : Username: wusfbejyowexph Password: 79e590b917bad348679f4ca02f5c93d02efbb282c69b814c4e4848ec9f96a8b1
+2017-11-20 23:37:01.545  INFO 28228 --- [    Test worker] c.example.bot.spring.SQLDatabaseEngine   : dbUrl: jdbc:postgresql://ec2-50-17-220-223.compute-1.amazonaws.com:5432/dasu0mq4bcdjr8?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory
+2017-11-20 23:37:03.028  INFO 28228 --- [    Test worker] c.example.bot.spring.SQLDatabaseEngine   : Username: wusfbejyowexph Password: 79e590b917bad348679f4ca02f5c93d02efbb282c69b814c4e4848ec9f96a8b1
+2017-11-20 23:37:03.028  INFO 28228 --- [    Test worker] c.example.bot.spring.SQLDatabaseEngine   : dbUrl: jdbc:postgresql://ec2-50-17-220-223.compute-1.amazonaws.com:5432/dasu0mq4bcdjr8?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory
+2017-11-20 23:37:04.563  INFO 28228 --- [    Test worker] c.example.bot.spring.SQLDatabaseEngine   : Username: wusfbejyowexph Password: 79e590b917bad348679f4ca02f5c93d02efbb282c69b814c4e4848ec9f96a8b1
+2017-11-20 23:37:04.563  INFO 28228 --- [    Test worker] c.example.bot.spring.SQLDatabaseEngine   : dbUrl: jdbc:postgresql://ec2-50-17-220-223.compute-1.amazonaws.com:5432/dasu0mq4bcdjr8?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory
+2017-11-20 23:37:06.032  INFO 28228 --- [    Test worker] c.example.bot.spring.SQLDatabaseEngine   : Username: wusfbejyowexph Password: 79e590b917bad348679f4ca02f5c93d02efbb282c69b814c4e4848ec9f96a8b1
+2017-11-20 23:37:06.032  INFO 28228 --- [    Test worker] c.example.bot.spring.SQLDatabaseEngine   : dbUrl: jdbc:postgresql://ec2-50-17-220-223.compute-1.amazonaws.com:5432/dasu0mq4bcdjr8?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory
+2017-11-20 23:37:07.504  INFO 28228 --- [    Test worker] c.example.bot.spring.SQLDatabaseEngine   : Username: wusfbejyowexph Password: 79e590b917bad348679f4ca02f5c93d02efbb282c69b814c4e4848ec9f96a8b1
+2017-11-20 23:37:07.504  INFO 28228 --- [    Test worker] c.example.bot.spring.SQLDatabaseEngine   : dbUrl: jdbc:postgresql://ec2-50-17-220-223.compute-1.amazonaws.com:5432/dasu0mq4bcdjr8?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory
+2017-11-20 23:37:08.952  INFO 28228 --- [    Test worker] c.example.bot.spring.SQLDatabaseEngine   : Username: wusfbejyowexph Password: 79e590b917bad348679f4ca02f5c93d02efbb282c69b814c4e4848ec9f96a8b1
+2017-11-20 23:37:08.952  INFO 28228 --- [    Test worker] c.example.bot.spring.SQLDatabaseEngine   : dbUrl: jdbc:postgresql://ec2-50-17-220-223.compute-1.amazonaws.com:5432/dasu0mq4bcdjr8?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory
+2017-11-20 23:37:10.566  INFO 28228 --- [    Test worker] c.example.bot.spring.SQLDatabaseEngine   : Username: wusfbejyowexph Password: 79e590b917bad348679f4ca02f5c93d02efbb282c69b814c4e4848ec9f96a8b1
+2017-11-20 23:37:10.566  INFO 28228 --- [    Test worker] c.example.bot.spring.SQLDatabaseEngine   : dbUrl: jdbc:postgresql://ec2-50-17-220-223.compute-1.amazonaws.com:5432/dasu0mq4bcdjr8?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory
+2017-11-20 23:37:12.089  INFO 28228 --- [    Test worker] c.example.bot.spring.SQLDatabaseEngine   : Username: wusfbejyowexph Password: 79e590b917bad348679f4ca02f5c93d02efbb282c69b814c4e4848ec9f96a8b1
+2017-11-20 23:37:12.089  INFO 28228 --- [    Test worker] c.example.bot.spring.SQLDatabaseEngine   : dbUrl: jdbc:postgresql://ec2-50-17-220-223.compute-1.amazonaws.com:5432/dasu0mq4bcdjr8?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
