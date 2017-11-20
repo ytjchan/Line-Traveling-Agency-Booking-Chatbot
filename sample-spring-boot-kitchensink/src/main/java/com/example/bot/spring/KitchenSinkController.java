@@ -40,6 +40,7 @@ import com.google.common.io.ByteStreams;
 import com.linecorp.bot.client.LineMessagingClient;
 import com.linecorp.bot.client.MessageContentResponse;
 import com.linecorp.bot.model.ReplyMessage;
+import com.linecorp.bot.model.PushMessage;
 import com.linecorp.bot.model.action.MessageAction;
 import com.linecorp.bot.model.action.PostbackAction;
 import com.linecorp.bot.model.action.URIAction;
@@ -83,6 +84,7 @@ import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.URI;
+import java.util.ArrayList;
 
 @Slf4j
 @LineMessageHandler
@@ -156,7 +158,11 @@ public class KitchenSinkController {
 	@EventMapping
 	public void handleFollowEvent(FollowEvent event) {
 		String replyToken = event.getReplyToken();
-		this.replyText(replyToken, "Got followed event");
+		MessageFactory mf = new MessageFactory("/static/prof.jpg");
+		List<Message> messages = new ArrayList<>();
+		messages.add(mf.createTextMessage("Welcome to COMP3111! \nTo start your journey, just type in anything. \nTo go back to front page, type 'cancel' at anytime. \nHave a nice trip!")); 
+		messages.add(mf.createImageMessage());
+		this.reply(replyToken, messages);
 	}
 
 	@EventMapping
@@ -200,6 +206,8 @@ public class KitchenSinkController {
 		}
 	}
         
+	// removed since ProjectPusher is ready, but thanks for your investigation, Cloud.
+	
         // now has package access right
 	void replyText(@NonNull String replyToken, @NonNull String message) {
 		if (replyToken.isEmpty()) {
@@ -225,6 +233,10 @@ public class KitchenSinkController {
         funInterface.process(text, event.getSource().getUserId());
         //now the replyType of funInterface will change depending on the text & userID
         
+	// TODO make controllers return Message object or a List<Message> so we can just reply(replyToken, message)
+	if (funInterface.message != null)
+		reply(replyToken, funInterface.message);
+	
         //TODO manage the output reply based on the replyType
         
         switch (funInterface.replyType) {
@@ -250,11 +262,11 @@ public class KitchenSinkController {
     		case "unknown":{
     			//the message is always the same, e.g. "sorry i did not understand that"
     			this.replyText(replyToken, funInterface.replyText);
-    			break;
+			break;
     		}
     		case "mixed": {
     			this.reply(replyToken, funInterface.replyList);
-				break;
+			break;
     		}
     		default:
     			break;
@@ -292,14 +304,14 @@ public class KitchenSinkController {
                                         new URIAction("Go to line.me",
                                                       "https://line.me"),
                                         new PostbackAction("Say hello1",
-                                                           "hello ã�“ã‚“ã�«ã�¡ã�¯")
+                                                           "hello 茫锟解�溍ｂ�氣�溍ｏ拷芦茫锟铰∶ｏ拷炉")
                                 )),
                                 new CarouselColumn(imageUrl, "hoge", "fuga", Arrays.asList(
-                                        new PostbackAction("è¨€ hello2",
-                                                           "hello ã�“ã‚“ã�«ã�¡ã�¯",
-                                                           "hello ã�“ã‚“ã�«ã�¡ã�¯"),
+                                        new PostbackAction("猫篓鈧� hello2",
+                                                           "hello 茫锟解�溍ｂ�氣�溍ｏ拷芦茫锟铰∶ｏ拷炉",
+                                                           "hello 茫锟解�溍ｂ�氣�溍ｏ拷芦茫锟铰∶ｏ拷炉"),
                                         new MessageAction("Say message",
-                                                          "Rice=ç±³")
+                                                          "Rice=莽卤鲁")
                                 ))
                         ));
                 TemplateMessage templateMessage = new TemplateMessage("Carousel alt text", carouselTemplate);
