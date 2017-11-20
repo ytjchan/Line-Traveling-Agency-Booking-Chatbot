@@ -331,6 +331,7 @@ public class ProjectBookController {
 							discount = db.getDiscount(bookState.offerId);
 							temp += "Discount : " + (int)((1-discount)*100) + "% off!\n";
 							double savings = (1-discount) * bookState.totalCost;
+							savings = (double)((int)(savings*10))/10;
 							temp += "Savings : -$" + savings + "\n";
 							bookState.discounted = true;
 							bookState.totalCost *= discount;
