@@ -57,4 +57,26 @@ public class ProjectInitControllerTest {
 		assertNotNull(m);
 		assertTrue(m instanceof Message);
 	}
+	
+		@Test
+	/**
+	 * Test case to test if recommendTrip() return proper result for some booker).
+	 */
+	public void testRecommendTrip1() {
+		String result = null;
+		result = init.recommendTrip("hkjeffer");
+		assertNotNull(result);
+		assertTrue(result.contains("tourId"));
+	}
+	
+	@Test
+	/**
+	 * Test case to test if recommendTrip() return proper result for some non-booker).
+	 */
+	public void testRecommendTrip2() {
+		String result = null;
+		result = init.recommendTrip("nobody");
+		assertNotNull(result);
+		assertTrue(result.contains("tourId"));
+	}
 }
