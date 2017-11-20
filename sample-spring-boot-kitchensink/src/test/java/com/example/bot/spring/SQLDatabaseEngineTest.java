@@ -133,7 +133,7 @@ public class SQLDatabaseEngineTest {
 	}
 	
 	/**
-	 * test searchTourByDesc() method under proper input userId who have booked tours.
+	 * test searchTourByDesc() method under proper input.
 	 */
 	@Test
 	public void testSearchTourByDesc() {
