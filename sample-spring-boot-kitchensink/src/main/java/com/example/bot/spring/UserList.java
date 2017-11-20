@@ -22,11 +22,12 @@ public class UserList {
          * @return An User object if User is found, null if User is not found
          */
         private User findUser(String userId){
-                for (User user: users)
-                        if (user.getUserId().equals(userId)){
+                for (User user: users)     
+                		if (user.getUserId().equals(userId)){
                                 log.info("User of userId "+userId+" found.");
                                 return user;
                         }
+                
                 log.info("User of userId "+userId+" NOT found.");
                 return null; // User not found
         }
