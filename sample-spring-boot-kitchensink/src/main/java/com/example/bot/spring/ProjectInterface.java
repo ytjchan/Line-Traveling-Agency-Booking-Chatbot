@@ -93,7 +93,7 @@ public class ProjectInterface {
 	
 	public ProjectInterface(KitchenSinkController ksc, UserList userList) {
 		this.ksc = ksc;
-        this.userList = userList;
+		this.userList = userList;
 	}
 	
 	//this will change the reply type & reply 
@@ -113,12 +113,17 @@ public class ProjectInterface {
 		if (text.equals(STAFF_PASSCODE)){
 			new SQLDatabaseEngine().addStaff(userId);
 		}
-		
+	
 		if (userList.getState(userId).equals("new") || text.toLowerCase().equals("cancel")) {
-                        userList.setState(userId, "init");
-                        message = controller.init.createMessage();
+			userList.setState(userId, "init");
+			message = controller.init.createMessage();
 			replyText = "Carousel message for init state";
-			replyType = "carousel";
+			replyType = "carousel";	
+			
+		} else if (userList.getState(userId).equals("init") && text.toLowerCase().contains("recommend")) {
+			replyType = "text";
+			replyText = controller.init.recommendTrip(userId);
+		
 		} else if (checkSearchState(text, userId)) {
 			userList.setState(userId, "search");
 			controller.search.process(text);
@@ -127,12 +132,13 @@ public class ProjectInterface {
 			replyCarousel = controller.search.replyCarousel;
 		} else if (checkBookState()) {
 			//TODO: call booking controller
-		} else if (checkEnqState()) {
-			//TODO: call enquiry controller
+
+		} else if (checkEnqState(text,userId)) {
+			replyType = "text";
+			replyText = controller.enq.bookingEnq(userId);
+
 		} else if (checkFAQ(text)) {
             replyText="FAQ result is:\n"+controller.faq.search(text);
-            
-            
             replyType="text";
 
 		} else {
@@ -166,12 +172,18 @@ public class ProjectInterface {
 		return false;
 	}
 	
-	public boolean checkEnqState() {
+	/**
+	 * This method take user's text as input and returns a boolean value indicating if this text is a booking enquiry or not.
+	 * @param text The text used to decide user's sending a booking enquiry or not
+	 * @return bool If true, user is sending a booking enquiry, otherwise is not a booking enquiry.
+	 */
+	public boolean checkEnqState(String text,String userId) {
 		//TODO: check if state is enq
-		//should be accessible from INIT state ONLY
+		if (userList.getState(userId).equals("init") && text.toLowerCase().contains("enquiry"))
+			return true;
+		else
+			return false;
 		
-		//for test case, remove when you're actually done
-		return false;
 	}
 	/**
      * check whether input text contain the keywolds in the FAQ table in database

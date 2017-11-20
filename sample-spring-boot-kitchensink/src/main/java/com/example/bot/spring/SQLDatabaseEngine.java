@@ -156,6 +156,9 @@ public class SQLDatabaseEngine extends DatabaseEngine {
                 temp.add(tourRs.getString(4));	//length (days)
                 arr.add(temp);
             }
+            c.close();
+            stmt.close();
+            tourRs.close();
             return arr;
         }
         
@@ -243,6 +246,9 @@ public class SQLDatabaseEngine extends DatabaseEngine {
                 temp.add(tourRs.getString(4));	//length (days)
                 arr.add(temp);
         }
+        c.close();
+        stmt.close();
+        tourRs.close();
         return arr;
 
     }
@@ -265,10 +271,40 @@ public class SQLDatabaseEngine extends DatabaseEngine {
             temp.add(tourRs.getString(4));	//length (days)	|	tourguidelineid
             arr.add(temp);
     	}
+    	c.close();
+    	stmt.close();
+    	tourRs.close();
     	return arr;
     }
-    
+
+
     /**
+     * This method takes userId as input and returns a 2D array as this userId's booking record in database.
+     * @param userId This is the userId that is used to find bookings in database
+     * @return ArrayList<ArrayList<String>> Return an array of records, each record is a String array.
+     * @throws URISyntaxException
+     * @throws SQLException
+     */
+    protected ArrayList<ArrayList<String>> searchBookingById(String userId) throws URISyntaxException, SQLException {
+    		ArrayList<ArrayList<String>> rs = new ArrayList<>();
+    		try (
+                Connection c = getConnection();
+                PreparedStatement stmt = c.prepareStatement("select * from Booking where LineId = ?");
+                )
+    		{
+    			stmt.setString(1, userId);
+    			ResultSet bookRs = stmt.executeQuery();
+    			while (bookRs.next()) {
+    				ArrayList<String> temp = new ArrayList<String>();
+    				for (int i=2;i<10;i++)
+    					temp.add(bookRs.getString(i));
+    				rs.add(temp);
+    			}	
+    		}
+    		return rs;
+    }
+    
+	/**
 	 * get all staff's id and return them
 	 * @return String containing all userIds of staffs, delimited by semicolon (;)
 	 */
@@ -331,6 +367,38 @@ public class SQLDatabaseEngine extends DatabaseEngine {
                 }
 	}
 
+    /**
+     * This method take userId as input, returns a tour record as String array to recommend to the user.
+     * @param userId This is used to find a proper recommendation for the specific user
+     * @return ArrayList<String> This contains the information of the tour recommended to that user.
+     * @throws URISyntaxException
+     * @throws SQLException
+     */
+    protected ArrayList<String> getRecommendation(String userId) throws URISyntaxException, SQLException {
+    	ArrayList<String> result = new ArrayList<String>();
+    		try (
+                Connection c = getConnection();
+                PreparedStatement stmt = c.prepareStatement(
+                		"select * from TourOffering where tourId not in ("
+                			+"select substr(offerid,1,5) from booking where lineId = ? )"
+                			+"and tourdate > ?"
+                			+"order by price desc"
+                	);
+    		)
+    		{
+    			LocalDate localDate = LocalDate.now();
+    			stmt.setString(1, userId);
+    			stmt.setDate(2, java.sql.Date.valueOf(localDate));
+    			ResultSet rs = stmt.executeQuery();
+    			
+    			if (rs.next())
+    				for (int i=1; i<7; i++)
+    					result.add(rs.getString(i));
+    			else
+    				result = null;
+    		}
+    		return result;
+    }
 }
 
 
