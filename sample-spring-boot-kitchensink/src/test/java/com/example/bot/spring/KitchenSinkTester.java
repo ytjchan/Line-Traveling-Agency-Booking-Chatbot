@@ -42,12 +42,40 @@ import com.linecorp.bot.spring.boot.annotation.LineBotMessages;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
+
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { KitchenSinkTester.class })
+@SpringBootTest(classes = { KitchenSinkTester.class, KitchenSinkController.class })
+@ContextConfiguration(classes=UserTestConfig.class, loader=AnnotationConfigContextLoader.class)
 public class KitchenSinkTester {
+	@Autowired
+	protected KitchenSinkController ksc = new KitchenSinkController();
 	
 	@Test
-	public void test() {}
+	public void testPromo() {
+		ksc.handleTextContent(null, "STOP PROMOTION", "ksc test");
+		ksc.handleTextContent(null, "START PROMOTION", "ksc test");
+		ksc.handleTextContent(null, "FORCE PROMOTION", "ksc test");
+	}
 	
+	
+	@Test
+	public void testCategory() {
+
+		ksc.funInterface.replyText = "test";
+		ksc.replyCategory("text", null);
+		
+		ksc.funInterface.replyCarousel = null;
+		ksc.replyCategory("carousel", null);
+		
+		ksc.replyCategory("unknown", null);
+		ksc.replyCategory("default", null);
+		
+	}
 }

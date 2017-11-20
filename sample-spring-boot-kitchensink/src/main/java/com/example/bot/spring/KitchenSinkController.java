@@ -112,54 +112,6 @@ public class KitchenSinkController {
 	}
 
 	@EventMapping
-	public void handleStickerMessageEvent(MessageEvent<StickerMessageContent> event) {
-		handleSticker(event.getReplyToken(), event.getMessage());
-	}
-
-	@EventMapping
-	public void handleLocationMessageEvent(MessageEvent<LocationMessageContent> event) {
-		LocationMessageContent locationMessage = event.getMessage();
-		reply(event.getReplyToken(), new LocationMessage(locationMessage.getTitle(), locationMessage.getAddress(),
-				locationMessage.getLatitude(), locationMessage.getLongitude()));
-	}
-
-	@EventMapping
-	public void handleImageMessageEvent(MessageEvent<ImageMessageContent> event) throws IOException {
-		final MessageContentResponse response;
-		String replyToken = event.getReplyToken();
-		String messageId = event.getMessage().getId();
-		try {
-			response = lineMessagingClient.getMessageContent(messageId).get();
-		} catch (InterruptedException | ExecutionException e) {
-			reply(replyToken, new TextMessage("Cannot get image: " + e.getMessage()));
-			throw new RuntimeException(e);
-		}
-		DownloadedContent jpg = saveContent("jpg", response);
-		reply(((MessageEvent) event).getReplyToken(), new ImageMessage(jpg.getUri(), jpg.getUri()));
-
-	}
-
-	@EventMapping
-	public void handleAudioMessageEvent(MessageEvent<AudioMessageContent> event) throws IOException {
-		final MessageContentResponse response;
-		String replyToken = event.getReplyToken();
-		String messageId = event.getMessage().getId();
-		try {
-			response = lineMessagingClient.getMessageContent(messageId).get();
-		} catch (InterruptedException | ExecutionException e) {
-			reply(replyToken, new TextMessage("Cannot get image: " + e.getMessage()));
-			throw new RuntimeException(e);
-		}
-		DownloadedContent mp4 = saveContent("mp4", response);
-		reply(event.getReplyToken(), new AudioMessage(mp4.getUri(), 100));
-	}
-
-	@EventMapping
-	public void handleUnfollowEvent(UnfollowEvent event) {
-		log.info("unfollowed this bot: {}", event);
-	}
-
-	@EventMapping
 	public void handleFollowEvent(FollowEvent event) {
 		String replyToken = event.getReplyToken();
 		MessageFactory mf = new MessageFactory("/static/prof.jpg");
@@ -167,12 +119,6 @@ public class KitchenSinkController {
 		messages.add(mf.createTextMessage("Welcome to COMP3111! \nTo start your journey, just type in anything. \nTo go back to front page, type 'cancel' at anytime. \nHave a nice trip!")); 
 		messages.add(mf.createImageMessage());
 		this.reply(replyToken, messages);
-	}
-
-	@EventMapping
-	public void handleJoinEvent(JoinEvent event) {
-		String replyToken = event.getReplyToken();
-		this.replyText(replyToken, "Joined " + event.getSource());
 	}
 
 	@EventMapping
@@ -186,11 +132,6 @@ public class KitchenSinkController {
                 }
 	}
 
-	@EventMapping
-	public void handleBeaconEvent(BeaconEvent event) {
-		String replyToken = event.getReplyToken();
-		this.replyText(replyToken, "Got beacon message " + event.getBeacon().getHwid());
-	}
 
 	@EventMapping
 	public void handleOtherEvent(Event event) {
@@ -223,21 +164,20 @@ public class KitchenSinkController {
 		this.reply(replyToken, new TextMessage(message));
 	}
 
-
-	private void handleSticker(String replyToken, StickerMessageContent content) {
-		reply(replyToken, new StickerMessage(content.getPackageId(), content.getStickerId()));
-	}
-
 	private void handleTextContent(String replyToken, Event event, TextMessageContent content)
             throws Exception {
 		String text = content.getText();
-
-        log.info("Got text message from {}: {}", replyToken, text);
-		
-        funInterface.process(text, event.getSource().getUserId());
+		String userId = event.getSource().getUserId();
+        
+		handleTextContent(replyToken, text, userId);
+    }
+	
+	public void handleTextContent(String replyToken, String text, String userId) {
+		log.info("Got text message from {}: {}", replyToken, text);
+        
+        funInterface.process(text, userId);
         //now the replyType of funInterface will change depending on the text & userID
         
-        // TODO make controllers return Message object or a List<Message> so we can just reply(replyToken, message)
 		if (funInterface.message != null)
 			reply(replyToken, funInterface.message);
 	
@@ -245,40 +185,36 @@ public class KitchenSinkController {
 		if (text.equals("START PROMOTION")) {discountChecker.startDiscountPromotion(); reply(replyToken, new TextMessage("Started")); return;}
 		if (text.equals("FORCE PROMOTION")) {discountChecker.forceRunDiscountPromotion(); reply(replyToken, new TextMessage("Forced")); return;}
         
-        switch (funInterface.replyType) {
-    		case "text":{
-    			//test case
-    			this.replyText(replyToken, funInterface.replyText);
-    			break;
-    		}
-    		case "image":{
-    			//base on funInterface.replyImageAddress
-    			break;
-    		}
-    		case "carousel":{
-    			//base on funInterface.replyCarousel
-    			TemplateMessage templateMessage = new TemplateMessage("Welcome to 3111 Travel", funInterface.replyCarousel);
-                this.reply(replyToken, templateMessage);
-    			break;
-    		}
-    		case "confirm":{
-    			//the message is always the same, i.e. yes & no refer to provided codes
-    			break;
-    		}
-    		case "unknown":{
-    			//the message is always the same, e.g. "sorry i did not understand that"
-    			this.replyText(replyToken, funInterface.replyText);
-    			
+		replyCategory(funInterface.replyType, replyToken);
+	}
+	
+	public void replyCategory(String replyType, String replyToken) {
+		switch (replyType) {
+			case "text":{
+				//test case
+				this.replyText(replyToken, funInterface.replyText);
+				break;
+			}
+			case "carousel":{
+				//base on funInterface.replyCarousel
+				TemplateMessage templateMessage = new TemplateMessage("Welcome to 3111 Travel", funInterface.replyCarousel);
+	            this.reply(replyToken, templateMessage);
+				break;
+			}
+			case "unknown":{
+				//the message is always the same, e.g. "sorry i did not understand that"
+				this.replyText(replyToken, funInterface.replyText);
+				
 			break;
-    		}
-    		case "mixed": {
-    			this.reply(replyToken, funInterface.replyList);
-			break;
-    		}
-    		default:
-    			break;
-        }
-    }
+			}
+			case "mixed": {
+				this.reply(replyToken, funInterface.replyList);
+				break;
+			}
+			default:
+				break;
+	    }
+	}
 
 	static String createUri(String path) {
 		return ServletUriComponentsBuilder.fromCurrentContextPath().path(path).build().toUriString();
@@ -298,29 +234,6 @@ public class KitchenSinkController {
 		}
 	}
 
-	private static DownloadedContent saveContent(String ext, MessageContentResponse responseBody) {
-		log.info("Got content-type: {}", responseBody);
-
-		DownloadedContent tempFile = createTempFile(ext);
-		try (OutputStream outputStream = Files.newOutputStream(tempFile.path)) {
-			ByteStreams.copy(responseBody.getStream(), outputStream);
-			log.info("Saved {}: {}", ext, tempFile);
-			return tempFile;
-		} catch (IOException e) {
-			throw new UncheckedIOException(e);
-		}
-	}
-
-	private static DownloadedContent createTempFile(String ext) {
-		String fileName = LocalDateTime.now().toString() + '-' + UUID.randomUUID().toString() + '.' + ext;
-		Path tempFile = KitchenSinkApplication.downloadedContentDir.resolve(fileName);
-		tempFile.toFile().deleteOnExit();
-		return new DownloadedContent(tempFile, createUri("/downloaded/" + tempFile.getFileName()));
-	}
-
-
-	
-
 
 	public KitchenSinkController() {
 		database = new SQLDatabaseEngine();
@@ -339,33 +252,5 @@ public class KitchenSinkController {
 		Path path;
 		String uri;
 	}
-
-
-	//an inner class that gets the user profile and status message
-	class ProfileGetter implements BiConsumer<UserProfileResponse, Throwable> {
-		private KitchenSinkController ksc;
-		private String replyToken;
-		
-		public ProfileGetter(KitchenSinkController ksc, String replyToken) {
-			this.ksc = ksc;
-			this.replyToken = replyToken;
-		}
-		@Override
-    	public void accept(UserProfileResponse profile, Throwable throwable) {
-    		if (throwable != null) {
-            	ksc.replyText(replyToken, throwable.getMessage());
-            	return;
-        	}
-        	ksc.reply(
-                	replyToken,
-                	Arrays.asList(new TextMessage(
-                		"Display name: " + profile.getDisplayName()),
-                              	new TextMessage("Status message: "
-                            		  + profile.getStatusMessage()))
-        	);
-    	}
-    }
-	
-	
 
 }

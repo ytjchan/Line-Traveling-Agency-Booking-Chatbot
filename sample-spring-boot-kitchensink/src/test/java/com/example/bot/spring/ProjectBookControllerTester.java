@@ -73,7 +73,7 @@ public class ProjectBookControllerTester {
     	stmt.executeUpdate();
     	
     	
-    	template = "update discount set remaining = remaining + 1 where tourid = ? and offerid = ?";
+    	template = "update discount set remaining = remaining + 2 where tourid = ? and offerid = ?";
     	stmt = c.prepareStatement(template);
     	stmt.setString(1, "2D001");
     	stmt.setString(2, "20171115");
