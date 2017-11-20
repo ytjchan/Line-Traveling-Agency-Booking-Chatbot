@@ -94,4 +94,8 @@ INSERT INTO FAQ (Keyword,Question,Answer) VALUES ('fee', 'What is the tour fee f
 INSERT INTO FAQ (Keyword,Question,Answer) VALUES ('children', 'What is the tour fee for children?', 'Age below 3 (including 3) is free. Age between 4 to 11 (including 4 and 11) has a discount of 20% off. Otherwise full fee applies. The same service charge is applied to all age customers');
 INSERT INTO FAQ (Keyword,Question,Answer) VALUES ('late', 'What if I am late in the departure date?', 'You shall contact the tour guide if you know you will be late and see if the tour guide can wait a little bit longer. No refund or make up shall be made if a customer is late for the tour.');
 
+/* sample discount (new feature) */
+insert into discount values ('3D010', '20171122', '0.5', 3, 3);
+
+
 /* Question table insertion from DB Engine */

@@ -77,169 +77,165 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class ProjectSearchController {
-	private SQLDatabaseEngine db = new SQLDatabaseEngine();
-	
-	public LinkedList<String> keywords = new LinkedList<String>();
-	public String startDate;	
-	public String endDate 	= "9999-12-31";		//must be YYYY-MM-DD
-	
-	public String state = "display";
-	public int currentOffset = 0;
+	protected SQLDatabaseEngine db = new SQLDatabaseEngine();
 	
 	public String replyType;
-	public String replyText;
-	public CarouselTemplate replyCarousel;
-
-//	private static String[] imgs;
-//	private static String[] uris;
-//	private static String[] baseUris = new String[2];
+	public List<Message> replyList = new LinkedList<Message>();
 	
-	public ArrayList<ArrayList<String>> rs;
-	public int rsIndex = 0;
+	public ProjectSearchController() {}
 	
-	public ProjectSearchController() {
-//		baseUris[0] = KitchenSinkController.createUri(ProjectInterface.IMAGE_NAMES[3]);
-//		baseUris[1] = KitchenSinkController.createUri(ProjectInterface.IMAGE_NAMES[4]);
-		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		LocalDate localDate = LocalDate.now();
-		startDate = dtf.format(localDate);
-	}
-	
-	public void process(String text) {
+	/**
+	 * Tour Search handler called by projectInterface.
+	 * Uses replyList to pass reply back to projectInterface.
+	 * @param text text to be processed
+	 * @param state current state of chatbot 
+	 * @param searchState object that stores all necessary information for processing tour search state
+	 */
+	public void process(String text, String state, SearchState searchState) {
+		replyList.clear();
+		
 		try {
 			//enter keyword & update
-			if (state.equals("keywordInput")) {
-				keywords.add(text);
-				state = "display";
-				rs = db.searchTourByDesc(keywords, startDate, endDate);
-				if (rs.size() > 0) {
-					replyType = "carousel";
-					rsIndex = 0;
-					createSearchCarousel();
+			if (searchState.substate.equals("keywordInput")) {
+				//replyList.add(new TextMessage("KEYWORDINPUT"));
+				searchState.keywords.add(text);
+				searchState.rs = db.searchTourByDesc(searchState.keywords, searchState.startDate, searchState.endDate);
+				if (searchState.rs.size() > 0) {
+					searchState.rsIndex = 0;
+					createSearchCarousel(searchState);
 				} else {
-					replyType = "text";
-					replyText = "Sorry, it appears we do not have any available tours that match your criteria. Try changing your date range or reset your filters using the Reset filters button or by typing:\n Reset filters";
+					replyList.add(new TextMessage("Sorry, it appears we do not have any available tours that match your criteria. Try changing your date range or reset your filters using the Reset filters button or by typing:\n Reset filters"));
 				}
-				return;
 			}
 			
 			//show tour details
-			if (text.toLowerCase().contains("show details of ")) {
-				state = "display";
-				replyType = "text";
-				ArrayList<ArrayList<String>> temp = db.searchTourID(text.toLowerCase().replace("show details of ", ""), "tour");
-				replyText = temp.get(0).get(1) + "\n";
-				replyText += "Duration: " + temp.get(0).get(3) + " days\n";
-				replyText += "-" + temp.get(0).get(2).replace(" * ", "\n-");
-				return;
+			else if (text.toLowerCase().contains("show details of ")) {
+				//replyList.add(new TextMessage("SHOW DETAILS OF"));
+				ArrayList<ArrayList<String>> temp = db.searchTourID(text.toLowerCase().replace("show details of ", ""));
+				
+				if (temp.size()>0) {
+					String temptext = temp.get(0).get(1) + "\n";
+					temptext += "Duration: " + temp.get(0).get(3) + " days\n";
+					temptext += "-" + temp.get(0).get(2).replace(" * ", "\n-");
+					
+					replyList.add(new TextMessage(temptext));
+				} else {
+					replyList.add(new TextMessage("I'm afraid we don't have a tour that matches your input ID"));
+				}
 			}
 			
 			//show dates of tour
-			if (text.toLowerCase().contains("show dates of ")) {
-				state = "display";
-				replyType = "text";
-				ArrayList<ArrayList<String>> temp = db.searchTourID(text.toLowerCase().replace("show dates of ", ""), "tour");
-				replyText = temp.get(0).get(1);
-				temp = db.searchTourID(text.toLowerCase().replace("show dates of ", ""), "touroffering");
-				replyText += " (" + temp.get(0).get(1) + ")";
-				if (temp.size() > 0) {
-					for (ArrayList<String> str : temp) {
-						replyText += "\n-" + str.get(2);
+			else if (text.toLowerCase().contains("show dates of ")) {
+				//replyList.add(new TextMessage("SHOW DATES OF"));
+				ArrayList<ArrayList<String>> temp = db.searchTourID(text.toLowerCase().replace("show dates of ", ""));
+				
+				if (temp.size()>0) {
+					String temptext = temp.get(0).get(1);
+					temp = db.searchTourOfferingID(text.toLowerCase().replace("show dates of ", ""));
+					temptext += " (" + temp.get(0).get(0) + ")";
+					
+					DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+					LocalDate localDate = LocalDate.now().plusDays(3);
+					String start = dtf.format(localDate);
+					
+					if (temp.size() > 0) {
+						boolean hasrecords = false;
+						for (ArrayList<String> str : temp) {
+							if (str.get(2).compareTo(start) > 0) {
+								temptext += "\n-" + str.get(2);
+								hasrecords = true;
+							}
+						}
+						if (!hasrecords) {
+							temptext += " has no available tours!";
+						}
+						
+					} else {
+						temptext += " has no available tours!";
 					}
+					
+					replyList.add(new TextMessage(temptext));
 				} else {
-					replyText += " has no available tours!";
+					replyList.add(new TextMessage("I'm afraid we don't have a tour that matches your input ID"));
 				}
-				return;
+				
 			}
 			
 			//move to enter keyword state
-			if (text.toLowerCase().contains("add filter")) {
-				replyType = "text";
-				replyText = "Please enter a keyword:";
-				state = "keywordInput";
-				return;
+			else if (text.toLowerCase().contains("add filter")) {
+				replyList.add(new TextMessage("Please enter a keyword:"));
 			} 
 			
 			//enter date & update
-			if (text.toLowerCase().matches("(.*)(\\d{4})-(\\d{1,2})-(\\d{1,2}) to (\\d{4})-(\\d{1,2})-(\\d{1,2})(.*)")) {
-				state = "display";
-				startDate = text.substring(0,10);
-				endDate = text.substring(14,24);
-				rs = db.searchTourByDesc(keywords, startDate, endDate);
-				if (rs.size() > 0) {
-					replyType = "carousel";
-					rsIndex = 0;
-					createSearchCarousel();
+			else if (text.toLowerCase().matches("(.*)(\\d{4})-(\\d{1,2})-(\\d{1,2}) to (\\d{4})-(\\d{1,2})-(\\d{1,2})(.*)")) {
+				//replyList.add(new TextMessage("DATE DETECTED"));
+				searchState.startDate = text.substring(0,10);
+				searchState.endDate = text.substring(14,24);
+				searchState.rs = db.searchTourByDesc(searchState.keywords, searchState.startDate, searchState.endDate);
+				if (searchState.rs.size() > 0) {
+					searchState.rsIndex = 0;
+					createSearchCarousel(searchState);
 				} else {
-					replyType = "text";
-					replyText = "Sorry, it appears we do not have any available tours that match your criteria. Try changing your date range or reset your filters using the Reset filters button or by typing:\n Reset filters";
+					replyList.add(new TextMessage("Sorry, it appears we do not have any available tours that match your criteria. Try changing your date range or reset your filters using the Reset filters button or by typing:\n Reset filters"));
 				}
-				return;
 			}
 			
 			//show next 5
-			if (text.toLowerCase().contains("next")) {
-				state = "display";
-				if (rsIndex == rs.size()) {
-					replyType = "text";
-					replyText = "There are no more records!";
+			else if (text.toLowerCase().contains("next")) {
+				//replyList.add(new TextMessage("NEXT"));
+				if (searchState.rsIndex == searchState.rs.size()) {
+					replyList.add(new TextMessage("There are no more records!"));
 				} else {
-					replyType = "carousel";
-					createSearchCarousel();
+					createSearchCarousel(searchState);
 				}
-				return;
+			}
+			
+			else if (text.toLowerCase().equals(".back") && state.equals("book")) {
+				//replyList.add(new TextMessage(".BACK"));
+				searchState.rsIndex = 0;
+				createSearchCarousel(searchState);
 			}
 			
 			//show prev 5
-			if (text.toLowerCase().contains("previous") || text.toLowerCase().contains("back") || text.toLowerCase().contains("last")) {
-				state = "display";
-				if (rsIndex <= 5) {
-					replyType = "text";
-					replyText = "You are at the start and there are no previous results.";
+			else if (text.toLowerCase().contains("previous") || text.toLowerCase().contains("back") || text.toLowerCase().contains("last")) {
+				//replyList.add(new TextMessage("PREVIOUS"));
+				if (searchState.rsIndex <= 5) {
+					replyList.add(new TextMessage("You are at the start and there are no previous results."));
 				} else {
-					replyType = "carousel";
-					rsIndex = ((rsIndex-1)/5-1)*5;	//get current 5 (or less), move to previous 5, find index
-					createSearchCarousel();
+					searchState.rsIndex = ((searchState.rsIndex-1)/5-1)*5;	//get current 5 (or less), move to previous 5, find index
+					createSearchCarousel(searchState);
 				}
-				return;
 			}
 			
 			//new search
-			if ((keywords.isEmpty() && text.toLowerCase().contains("search")) || text.toLowerCase().contains("reset filters")) {
-				replyType = "carousel";
-				state = "display";
-				keywords.clear();
-				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-				LocalDate localDate = LocalDate.now();
-				startDate = dtf.format(localDate);
-				endDate = "9999-12-31";		//must be YYYY-MM-DD
-				rs = db.searchAllTour();
-				rsIndex = 0;
-				createSearchCarousel();
-				return;
+			else if ((searchState.keywords.isEmpty() && text.toLowerCase().contains("search")) || text.toLowerCase().contains("reset filters")) {
+				//replyList.add(new TextMessage("INIT"));
+				searchState.keywords.clear();
+				searchState.resetDates();
+				searchState.rs = db.searchTourByDesc(searchState.keywords, searchState.startDate, searchState.endDate);
+				searchState.rsIndex = 0;
+				createSearchCarousel(searchState);
 			}
 			
+			
 			//unknown
-			replyType = "text";
-			replyText = "Sorry, I didn't understand that.";
-		} catch (URISyntaxException e) {
-			replyType = "text";
-			replyText = "URI Syntax problem with URI: " + System.getenv("DATABASE_URL");
-			state = "error";
-		} catch (SQLException e) {
-			replyType = "text";
-			replyText = "Searching tours by description failed!";
-			state = "error";
+			if (replyList.size() == 0) {
+				replyList.add(new TextMessage("Sorry, I didn't understand that."));
+			}
+		} catch (Exception e) {
+			replyList.add(new TextMessage("Something failed!"));
 		}
-		
-		
+		//for debugging
+		//replyList.add(new TextMessage("Start: " + searchState.startDate + "\nEnd: " + searchState.endDate + "\nRS size: " + searchState.rs.size()));
 	}
 	
-	//CREATES A CAROUSEL OBJECT
-	//1ST column is a menu
-	//2 onwards is up to 5 results from rs
-	//Last column is show more menu
-	public void createSearchCarousel() {
+	/**
+	 * Helper function that creates a carousel based on current filters.
+	 * 1st and last column are menus
+	 * In between are results from rs
+	 * @param searchState object that stores all necessary information for processing tour search state
+	 */
+	public void createSearchCarousel(SearchState searchState) { //int rsIndex, ArrayList<ArrayList<String>> rs, LinkedList<String> keywords) {
 		List<CarouselColumn> columns = new LinkedList<CarouselColumn>();
 		
 		//dummy
@@ -257,35 +253,34 @@ public class ProjectSearchController {
 		);
 		
 		//content
-		for (int i=rsIndex, max=rsIndex+5; i<max && i<rs.size(); i++) {
+		for (int i=searchState.rsIndex, max=searchState.rsIndex+5; i<max && i<searchState.rs.size(); i++) {
 			columns.add(
 				new CarouselColumn(
 					"https://www.scienceabc.com/wp-content/uploads/2017/02/Thailand-beach-sand.jpg",
-					rs.get(i).get(1).length() > 40 ? 
-						rs.get(i).get(1).substring(0, 35) + "..." : 
-						rs.get(i).get(1),
-					//temp[1],
-					rs.get(i).get(2).replace(" * ",", ").length() > 55 ?
-						rs.get(i).get(2).replace(" * ",", ").substring(0,54) + "...": 
-						rs.get(i).get(2).replace(" * ",", "),
+					searchState.rs.get(i).get(1).length() > 40 ? 
+						searchState.rs.get(i).get(1).substring(0, 35) + "..." : 
+						searchState.rs.get(i).get(1),
+					searchState.rs.get(i).get(2).replace(" * ",", ").length() > 55 ?
+						searchState.rs.get(i).get(2).replace(" * ",", ").substring(0,54) + "...": 
+						searchState.rs.get(i).get(2).replace(" * ",", "),
 					Arrays.asList(
-						new MessageAction("Details", "Show details of " + rs.get(i).get(0)),
-	                    new MessageAction("Show dates", "Show dates of " + rs.get(i).get(0)),
-	                    new MessageAction("Book", "Book " + rs.get(i).get(0))
+						new MessageAction("Details", "Show details of " + searchState.rs.get(i).get(0)),
+	                    new MessageAction("Show dates", "Show dates of " + searchState.rs.get(i).get(0)),
+	                    new MessageAction("Book", "Book " + searchState.rs.get(i).get(0))
                     )
 				)
 			);
-			rsIndex ++;
+			searchState.rsIndex ++;
 		}
 		
 		//1st column (info)
 		String info = "To search for tours within a period, enter the start and end dates in the following format:\nYYYY-MM-DD to YYYY-MM-DD\n\nCurrently showing:\n"
-				+ (((rsIndex-1)/5)*5+1) + "-"  + rsIndex + " of " + rs.size() + " results\n\nKeywords: ";
-		for (String str : keywords) {
+				+ (((searchState.rsIndex-1)/5)*5+1) + "-"  + searchState.rsIndex + " of " + searchState.rs.size() + " results\n\nKeywords: ";
+		for (String str : searchState.keywords) {
 			info += str + ", ";
 		}
 		info += "\n\n";
-		info += "Start Date: " + startDate + "\nEnd Date: " + endDate;
+		info += "Start Date: " + searchState.startDate + "\nEnd Date: " + searchState.endDate;
 		columns.set(0,
 			new CarouselColumn(
 				"https://images-na.ssl-images-amazon.com/images/I/61G%2BdmtkeeL._SX355_.jpg",
@@ -306,17 +301,16 @@ public class ProjectSearchController {
         		"Check out more",
         		"To see more results, press the buttons below.", 
                 Arrays.asList(
-                    rsIndex == rs.size() ?
+            		searchState.rsIndex == searchState.rs.size() ?
                 		new PostbackAction("(end of results)","There are no more results!"):
                 		new MessageAction("Show next 5", "Next 5"),
-                    rsIndex <= 5 ?
+            		searchState.rsIndex <= 5 ?
                 		new PostbackAction("(start of results)","There are no results before these!"):
                 		new MessageAction("Show previous 5", "Previous 5"),
                     new MessageAction("Back to welcome", "Cancel")
                 )
             )
         );
-	
-	    replyCarousel = new CarouselTemplate(columns);
+	    replyList.add(new TemplateMessage("Tour Search", new CarouselTemplate(columns)));
 	}
 }

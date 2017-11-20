@@ -22,12 +22,11 @@ public class UserList {
          * @return An User object if User is found, null if User is not found
          */
         private User findUser(String userId){
-                for (User user: users)     
-                		if (user.getUserId().equals(userId)){
+                for (User user: users)
+                        if (user.getUserId().equals(userId)){
                                 log.info("User of userId "+userId+" found.");
                                 return user;
                         }
-                
                 log.info("User of userId "+userId+" NOT found.");
                 return null; // User not found
         }
@@ -128,5 +127,51 @@ public class UserList {
                         log.info("Failed to remove user with userId: "+userId);
                 else
                         remove(user);
-        }
+        }    
+    
+////////////////////searchstate remake
+    
+    /**
+     * Getter method for input user's searchState dataobject
+     * @param userId
+     * @return
+     */
+    public SearchState getSearchState(String userId) {
+    	User user = findUser(userId);
+    	if (user == null)
+            return null;
+		return user.getSearchState();
+    }
+    
+    /**
+     * Getter method for input user's bookState data object
+     * @param userId
+     * @return
+     */
+    public BookState getBookState(String userId) {
+    	User user = findUser(userId);
+    	if (user == null)
+            return null;
+		return user.getBookState();
+    }
+    
+    /**
+     * Resets input user's bookstate data object
+     * @param userId
+     */
+    public void resetBookState(String userId) {
+    	User user = findUser(userId);
+    	if (user != null)
+    		user.resetBookState();
+	}
+	
+    /**
+     * Resets input user's searchstate data object
+     * @param userId
+     */
+	public void resetSearchState(String userId) {
+		User user = findUser(userId);
+    	if (user != null)
+    		user.resetSearchState();
+	}
 }

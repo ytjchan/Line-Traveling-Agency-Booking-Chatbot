@@ -13,11 +13,13 @@ public class ProjectEnqController {
 	 * @return String This is a message of user's booking, including offerId, number of tourists, tour fee...
 	 */
 	public String bookingEnq(String userID) {
-		SQLDatabaseEngine db = new SQLDatabaseEngine();
+//		SQLDatabaseEngine db = new SQLDatabaseEngine();
+		SQLDatabaseEngine sql = new SQLDatabaseEngine();
 		ArrayList<ArrayList<String>> rs = new ArrayList<>();
 		
 		try {
-			rs=db.searchBookingById(userID);
+//			rs=db.searchBookingById(userID);
+			rs = sql.searchBookingById(userID);
 		} catch (URISyntaxException e){
 		} catch (SQLException e) {}
 		

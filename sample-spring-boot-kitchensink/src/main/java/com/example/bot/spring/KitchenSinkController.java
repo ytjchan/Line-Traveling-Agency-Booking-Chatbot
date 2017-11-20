@@ -85,6 +85,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.LinkedList;
+
+import retrofit2.Response;
 
 @Slf4j
 @LineMessageHandler
@@ -93,9 +96,10 @@ public class KitchenSinkController {
 
 
 	@Autowired
-	private LineMessagingClient lineMessagingClient;       
-        UserList userList = new UserList(); // default access right
-	public ProjectInterface funInterface = new ProjectInterface(this, userList);
+	private LineMessagingClient lineMessagingClient;
+    UserList userList = new UserList(); // default access right (no need to pass ksc anymore)
+    DiscountChecker discountChecker = new DiscountChecker();
+	public ProjectInterface funInterface = new ProjectInterface(userList);
 
 	@EventMapping
 	public void handleTextMessageEvent(MessageEvent<TextMessageContent> event) throws Exception {
@@ -233,11 +237,13 @@ public class KitchenSinkController {
         funInterface.process(text, event.getSource().getUserId());
         //now the replyType of funInterface will change depending on the text & userID
         
-	// TODO make controllers return Message object or a List<Message> so we can just reply(replyToken, message)
-	if (funInterface.message != null)
-		reply(replyToken, funInterface.message);
+        // TODO make controllers return Message object or a List<Message> so we can just reply(replyToken, message)
+		if (funInterface.message != null)
+			reply(replyToken, funInterface.message);
 	
-        //TODO manage the output reply based on the replyType
+		if (text.equals("STOP PROMOTION")) {discountChecker.stopDiscountPromotion(); reply(replyToken, new TextMessage("Stopped")); return;}
+		if (text.equals("START PROMOTION")) {discountChecker.startDiscountPromotion(); reply(replyToken, new TextMessage("Started")); return;}
+		if (text.equals("FORCE PROMOTION")) {discountChecker.forceRunDiscountPromotion(); reply(replyToken, new TextMessage("Forced")); return;}
         
         switch (funInterface.replyType) {
     		case "text":{
@@ -272,67 +278,6 @@ public class KitchenSinkController {
     		default:
     			break;
         }
-        
-        
-        /*
-        switch (text) {
-            case "profile": {
-                String userId = event.getSource().getUserId();
-                if (userId != null) {
-                    lineMessagingClient
-                            .getProfile(userId)
-                            .whenComplete(new ProfileGetter (this, replyToken));
-                } else {
-                    this.replyText(replyToken, "Bot can't use profile API without user ID");
-                }
-                break;
-            }
-            case "confirm": {
-                ConfirmTemplate confirmTemplate = new ConfirmTemplate(
-                        "Do it?",
-                        new MessageAction("Yes", "Yes!"),
-                        new MessageAction("No", "No!")
-                );
-                TemplateMessage templateMessage = new TemplateMessage("Confirm alt text", confirmTemplate);
-                this.reply(replyToken, templateMessage);
-                break;
-            }
-            case "carousel": {
-                String imageUrl = createUri("/static/buttons/1040.jpg");
-                CarouselTemplate carouselTemplate = new CarouselTemplate(
-                        Arrays.asList(
-                                new CarouselColumn(imageUrl, "hoge", "fuga", Arrays.asList(
-                                        new URIAction("Go to line.me",
-                                                      "https://line.me"),
-                                        new PostbackAction("Say hello1",
-                                                           "hello 鑼敓瑙ｏ拷婧嶏絺锟芥埃锟芥簫锝忔嫹鑺﹁尗閿熼摪鈭讹綇鎷风倝")
-                                )),
-                                new CarouselColumn(imageUrl, "hoge", "fuga", Arrays.asList(
-                                        new PostbackAction("鐚瘬閳э拷 hello2",
-                                                           "hello 鑼敓瑙ｏ拷婧嶏絺锟芥埃锟芥簫锝忔嫹鑺﹁尗閿熼摪鈭讹綇鎷风倝",
-                                                           "hello 鑼敓瑙ｏ拷婧嶏絺锟芥埃锟芥簫锝忔嫹鑺﹁尗閿熼摪鈭讹綇鎷风倝"),
-                                        new MessageAction("Say message",
-                                                          "Rice=鑾藉崵椴�")
-                                ))
-                        ));
-                TemplateMessage templateMessage = new TemplateMessage("Carousel alt text", carouselTemplate);
-                this.reply(replyToken, templateMessage);
-                break;
-            }
-            default:
-            	String reply = null;
-            	try {
-            		reply = database.search(text);
-            	} catch (Exception e) {
-            		reply = text;
-            	}
-                log.info("Returns echo message {}: {}", replyToken, reply);
-                this.replyText(
-                        replyToken,
-                        itscLOGIN + " says " + reply
-                );
-                break;
-        }*/
     }
 
 	static String createUri(String path) {
