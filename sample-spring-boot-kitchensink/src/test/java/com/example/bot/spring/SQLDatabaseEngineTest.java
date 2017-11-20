@@ -86,5 +86,48 @@ public class SQLDatabaseEngineTest {
 		assertTrue(result.equals("COMP3111FUN;"));
 	}
 	
+		/**
+	 * test searchBookingById() method under input userId who have booked tours.
+	 */
+	@Test
+	public void testSearchBookingById1() {
+		ArrayList<ArrayList<String>> result = new ArrayList<>();
+		try {
+			result=db.searchBookingById("hkjeffer");
+		} catch (URISyntaxException e){
+		} catch (SQLException e) {}
+		assertNotNull(result);
+		assertTrue(result.size()==2);
+	}
+	
+	/**
+	 * test searchBookingById() method under input userId who have no booked tours.
+	 */
+	@Test
+	public void testSearchBookingById2() {
+		ArrayList<ArrayList<String>> result = new ArrayList<>();
+		try {
+			result=db.searchBookingById("nobody");
+		} catch (URISyntaxException e){
+		} catch (SQLException e) {}
+		assertNotNull(result);
+		assertTrue(result.size()==0);
+	}
+	
+	/**
+	 * test getRecommendation() method under input userId who have booked tours.
+	 */
+	@Test
+	public void testGetRecommendation() {
+		ArrayList<String> result = new ArrayList<String>();
+		try {
+			result=db.getRecommendation("hkjeffer");
+		} catch (URISyntaxException e){
+		} catch (SQLException e) {}
+		assertNotNull(result);
+		assertTrue(result.size()>0);
+	}
+	
+	
 }
 
