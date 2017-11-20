@@ -55,8 +55,11 @@ public class ProjectPusher {
 		MessageFactory mf = new MessageFactory();
 		for (int i=0; i<5 && i<texts.length; i++)
 			messageList.add(mf.createTextMessage(texts[i]));
-		if (messageList.isEmpty())
-			return;
+		//no need to check
+		/**
+		*if (messageList.isEmpty())
+		*	return;
+		*/
 		PushMessage pushMessage = new PushMessage(userId, messageList);
 		try {
 			response = LineMessagingServiceBuilder
@@ -85,8 +88,11 @@ public class ProjectPusher {
 		ArrayList<Message> messageList = new ArrayList<>();
 		for (int i=0; i<5 && i<messages.length; i++)
 			messageList.add(messages[i]);
-		if (messageList.isEmpty())
-			return;
+		//no need to check
+		/**
+		*if (messageList.isEmpty())
+		*	return;
+		*/
 		PushMessage pushMessage = new PushMessage(userId, messageList);
 		try {
 			response = LineMessagingServiceBuilder

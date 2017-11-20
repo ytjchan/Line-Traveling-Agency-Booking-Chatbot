@@ -22,6 +22,7 @@ public class ProjectPusherTest {
 	private ProjectPusher pusher;
 	private String userId = "U4b3770248bd07a25bd8f37c346483ac8";
 	private String textMessage = "JUnit test message";
+	private String emptyMessage = "";
 	
 	public ProjectPusherTest() {}
 	
@@ -45,6 +46,9 @@ public class ProjectPusherTest {
 		tempArray[0] = "JUnit";	tempArray[1] = "test";	tempArray[2] = "message";
 		pusher.pushText(tempArray);
 		//assertThat(log..getRenderedMessage(), is("Attempting to push" + tempArray.length+" texts to " + userId));
+		
+		//push empty message
+		pusher.pushText(emptyMessage);
 	}
 	
 	@Test
@@ -53,6 +57,10 @@ public class ProjectPusherTest {
 		Message messages = new TextMessage("JUnit test push message");
 		pusher.pushMessage(messages);
 		//assertThat(log.getRenderedMessage(), is("Attempting to push " + messages.length+" messages to " + userId));
+		
+		//push empty message
+		messages = new TextMessage(emptyMessage);
+		pusher.pushMessage(messages);
 	}
 	
 	@Test
