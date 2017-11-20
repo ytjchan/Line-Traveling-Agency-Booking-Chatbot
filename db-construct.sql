@@ -6,6 +6,7 @@ drop table Booker cascade;
 drop table Booking cascade;
 drop table Question cascade;
 drop table FAQ cascade;
+drop table Staff;
 
 /* Create tables */
 create table Tour (TourID varchar(5) constraint check_id_length check (length(TourID)=5) primary key, TourName varchar(50) constraint not_null not null, TourDesc varchar(200), TourLength smallint constraint check_length check (TourLength>0));
@@ -30,6 +31,7 @@ create table Booking (
 
 create table Question (QID integer primary key, LineID varchar(40) not null, FullQuestion varchar(200) not null, LastFiveQuestion varchar(1000), Resolved boolean default false);
 create table FAQ (Keyword varchar(200) primary key, Question varchar(200), Answer varchar(500) not null);
+create table Staff(UserID varchar(50) primary key);
 
 /* new table for extra feature */
 create table Discount (
@@ -49,6 +51,7 @@ comment on table Booker is 'Individual Bookers with LineID and personal info';
 comment on table Booking is 'Booking of bookers on a certain TourOffering, with booking details';
 comment on table Question is 'Unanswered questions from users';
 comment on table FAQ is 'FAQs for chatbot to search through';
+comment on table Staff is 'All userId of staffs to push message to them';
 
 /* Demostration of inserting records */
 /*insert into tour values ('1A001', 'Happy', 'Oh no', 3);

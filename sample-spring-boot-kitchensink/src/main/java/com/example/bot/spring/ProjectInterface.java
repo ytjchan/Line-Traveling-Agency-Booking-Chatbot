@@ -94,26 +94,27 @@ import retrofit2.Response;
 public class ProjectInterface {
 	//TODO define image addresses
 	public static final String [] IMAGE_NAMES = {"/static/gather.jpg","/static/gd1.jpg","/static/beach3.jpg","TODO","TODO","TODO","TODO","TODO","TODO","TODO"};
-		
+	private final String STAFF_PASSCODE = "LOVE SUNG KIM ADD STAFF";
 	public String replyType;		//i.e. text, image, carousel, confirm, unknown
 	public String replyText;		//for replyType: text
 	public String replyImageAddress;
 	public CarouselTemplate replyCarousel;
 	public List<Message> replyList;
-    
+	
 	private ProjectMasterController controller = new ProjectMasterController();
-    private final KitchenSinkController ksc;
-    protected final UserList userList; 
-    private final Timer discountTimer = new Timer();
-    private TimerTask discountPromotion;
-    
+        private final UserList userList;    
+	
+	private final Timer discountTimer = new Timer();
+	private TimerTask discountPromotion;
+		
+	Message message = null; // placeholder, if all Controllers can return a Message object/a List of Nessage objects after processsing, we can just ask the Controllers return Message to KSC
+	
     /**
      * 
      * @param ksc
      * @param userList
      */
-	public ProjectInterface(KitchenSinkController ksc, UserList userList) {
-		this.ksc = ksc;
+	public ProjectInterface(UserList userList) {
         this.userList = userList;
         discountPromotion = new DiscountPromotion();
 //        LocalDate localDate = LocalDate.now(ZoneId.of("Asia/Hong_Kong"));
@@ -194,6 +195,7 @@ public class ProjectInterface {
 		discountPromotion.run();
 	}
 	
+	// TODO make it return controllers instead of calling them?
 	/**
 	 * Checks what state the user is in and calls appropriate controllers.
 	 * Checking is done by calling state-check helper functions.
@@ -202,54 +204,44 @@ public class ProjectInterface {
 	 * @param userId - The userID of the user
 	 */
 	public void process(String text, String userId) {
-        log.info(userList.toString());
+                log.info(userList.toString());
 		userList.updateBuffer(userId, text);
 		
-		String state = userList.getState(userId);
-		if (state.equals("new") || text.toLowerCase().equals("cancel")) {
-			
-            userList.setState(userId, "init");
-            userList.resetSearchState(userId);
-            userList.resetBookState(userId);
-            replyCarousel = controller.init.createMessage();
-			replyType = "carousel";
-			
-		} 
+		message = null; // since not all Controllers can return Message object right now
 		
-		else if (checkSearchState(text,userId)) {
-			
+		if (text.equals(STAFF_PASSCODE)){
+			new SQLDatabaseEngine().addStaff(userId);
+		}
+		
+		String state = userList.getState(userId);
+		if (userList.getState(userId).equals("new") || text.toLowerCase().equals("cancel")) {
+                        userList.setState(userId, "init");
+                        message = controller.init.createMessage();
+			replyText = "Carousel message for init state";
+			replyType = "carousel";
+		} else if (checkSearchState(text, userId)) {
 			userList.setState(userId, "search");
 			controller.search.process(text, state, userList.getSearchState(userId));
 			replyType = "mixed";
 			replyList = controller.search.replyList;
-		} 
-		
-		else if (checkBookState(text, userId)) {
-
+		} else if (checkBookState(text, userId)) {
 			userList.setState(userId, "book");
 			controller.book.process(text, state, userList.getBookState(userId), userId);
 			replyType = "mixed";
 			replyList = controller.book.replyList;
-		} 
-		
-		else if (checkEnqState()) {
+		} else if (checkEnqState()) {
 			//TODO: call enquiry controller
-		} 
-		
-		else if (checkFAQ(text)) {
-            replyText="FAQ result is:\n"+controller.faq.search(text);
-            replyType="text";
+		} else if (checkFAQ(text)) {
+			replyText="FAQ result is:\n"+controller.faq.search(text);
+			replyType="text";
 		} else {
-			//TODO: call unknown controller
-			//find some way to send message to staff, and/or store result in database
-			
 			replyText = "Sorry, I did not understand: " + text + ". We will relay this message to a staff member who will contact you if your question is valid.";
 			replyType = "unknown";
 			controller.unknown.handleUnknown(userId, text, userList.getBuffer(userId).toArray(new String[0])); // passes buffer as a String array for easier manipulation
 		}
 			
 	}
-
+	
 	/**
 	 * Checks if the state is 'search'
 	 * Some conditions are checked implicitly by other checks called prior
@@ -264,7 +256,7 @@ public class ProjectInterface {
 			userList.resetSearchState(userId);
 			searchState.substate = "display";
 			return true;
-		} else if (state.equals("book") && text.toLowerCase().equals(".back")) {
+		} else if (state.equals("book") && text.toLowerCase().equals(".back")) { // TODO are you sure you want a dot here?
 			userList.setState(userId, "search");
 			searchState.rsIndex = 0;
 			searchState.substate = "display";
@@ -322,6 +314,11 @@ public class ProjectInterface {
         if(controller.faq.search(text).equals(newsb.toString()))
             return false;
         return true;
+    }
+    public String getStaffID() {
+    	String id=null;
+    	id=controller.unknown.getStaffId();
+    	return id;
     }
 
 

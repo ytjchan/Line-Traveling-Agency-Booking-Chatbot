@@ -22,7 +22,8 @@ dependencies {
 }
 
 test {
-    environment "DATABASE_URL", "postgres://wusfbejyowexph:79e590b917bad348679f4ca02f5c93d02efbb282c69b814c4e4848ec9f96a8b1@ec2-50-17-220-223.compute-1.amazonaws.com:5432/dasu0mq4bcdjr8" 
+    environment "DATABASE_URL", "postgres://wusfbejyowexph:79e590b917bad348679f4ca02f5c93d02efbb282c69b814c4e4848ec9f96a8b1@ec2-50-17-220-223.compute-1.amazonaws.com:5432/dasu0mq4bcdjr8"
+    environment "LINE_BOT_CHANNEL_TOKEN", "JUST NOTHING" 
 }
 
 apply plugin: "jacoco"
@@ -32,5 +33,5 @@ jacocoTestReport {
 		xml.enabled false
 		csv.enabled false
 		html.destination file("${buildDir}/jacocoHtml")
-	}
+	} 
 }

@@ -179,8 +179,7 @@ public class SQLDatabaseEngine extends DatabaseEngine {
                     log.info("Insertion into Question table failed!");
             }
             return false;
-    }
-        
+    }        
      
 	private Connection getConnection() throws URISyntaxException, SQLException {
 		Connection connection;
@@ -257,6 +256,65 @@ public class SQLDatabaseEngine extends DatabaseEngine {
     	return arr;
     }
     
+    //to get staff id from database
+    protected String getStaffId() {
+    	
+      	StringBuilder sb = new StringBuilder();
+    	
+    	
+    		String sqlsentence="SELECT * FROM Staff;"; 
+
+
+                        try (
+                                Connection c = getConnection();
+                                PreparedStatement stmt = c.prepareStatement(sqlsentence);
+                                ) // Java try-with-resources closes Connection and PreparedStatement automatically (old getStatement() is not feasible since we cannot close the Connection object)
+                        {
+                                
+
+                                //ResultSet keywordRs = getStatement(testsql).executeQuery();
+                                ResultSet keywordRs = stmt.executeQuery();
+                                
+                                
+                                while (keywordRs.next()){
+                                    sb.append(keywordRs.getString(1));
+                                    sb.append(";");
+                            }
+                                
+                                
+                        } catch (URISyntaxException e) {
+                                log.info("URI Syntax problem with URI: " + System.getenv("DATABASE_URL"));
+                        } catch (SQLException e) {
+                                log.info("Searching for answer from FAQ table failed! Continuing on next word.");
+                        }
+                
+    		return sb.toString();
+    	
+    	
+    	
+    }
+
+	/**
+	 * Add a user as Staff.
+	 * The staff would receive every unanswered question and the customer's userId.
+	 * So that the staff can answer it later.
+	 * Staffs can also access the database to view all questions apart from registering as a Staff.
+	 * @param userId The userId of the user that would be added as staff. 
+	 */
+	protected void addStaff(String userId) {
+                try (
+                        Connection c = getConnection();
+                        PreparedStatement stmt = c.prepareStatement("insert into staff values(?);");
+                        ) // Java try-with-resources
+                {
+			stmt.setString(1, userId);
+			stmt.execute();
+                } catch (URISyntaxException e){
+                        log.info("URI Syntax problem with URI: " + System.getenv("DATABASE_URL"));
+                } catch (SQLException e){
+                        log.info("Adding "+userId+" as staff failed!");
+                }
+	}    
     
     /**
      * Search booker table for matching line ID
