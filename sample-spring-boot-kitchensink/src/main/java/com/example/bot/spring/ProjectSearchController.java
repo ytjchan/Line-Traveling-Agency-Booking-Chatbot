@@ -117,7 +117,6 @@ public class ProjectSearchController {
 				temptext += "-" + temp.get(0).get(2).replace(" * ", "\n-");
 				
 				replyList.add(new TextMessage(temptext));
-				return;
 			}
 			
 			//show dates of tour

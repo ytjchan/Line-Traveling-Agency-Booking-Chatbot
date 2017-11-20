@@ -48,10 +48,10 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { ProjectSearchControllerTester.class, ProjectSearchController.class, SearchState.class })
-public class ProjectSearchControllerTester {
+@SpringBootTest(classes = { ProjectBookControllerTester.class, ProjectBookController.class, BookState.class })
+public class ProjectBookControllerTester {
 	protected SQLDatabaseEngine db = new SQLDatabaseEngine();
-	protected ProjectSearchController search = new ProjectSearchController(); 
+	protected ProjectBookController search = new ProjectBookController(); 
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -70,61 +70,7 @@ public class ProjectSearchControllerTester {
 	}
 
 	@Test
-	public void keywordInputTest() {
-		String keyword = "Shimen";
-		String state = "search";
-		SearchState searchState = new SearchState();
-		searchState.substate = "keywordInput";
-		search.process(keyword, state, searchState);
-		assertThat(searchState.keywords.size() == 1).isEqualTo(true);
-		assertThat(search.replyList.size() > 0).isEqualTo(true);
-		
-		//check invalid too, check searchState.rs.size()
-	}
-
-	
-	@Test
-	public void showDetailsTest() {
-		
-	}
-	
-	@Test
-	public void showDatesTest() {
-		
-	}
-	
-	@Test
-	public void addFilterTest() {
-		
-	}
-	
-	@Test
-	public void enterDateTest() {
-		//check invalid too
-	}
-	
-	@Test
-	public void showNextTest() {
-		//check invalid too
-	}
-	
-	@Test
-	public void bookBackTest() {
-		
-	}
-	
-	@Test
-	public void showPrevTest() {
-		//check invalid too
-	}
-	
-	@Test
-	public void newSearchTest() {
-		
-	}
-	
-	@Test
-	public void unknownTest() {
+	public void initStateTest() {
 		
 	}
 	
