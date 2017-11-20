@@ -16,7 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-
+import java.sql.*;
+import java.net.URISyntaxException;
+import java.net.URI;
+import java.util.ArrayList;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SQLDatabaseEngineTest.class, SQLDatabaseEngine.class })
