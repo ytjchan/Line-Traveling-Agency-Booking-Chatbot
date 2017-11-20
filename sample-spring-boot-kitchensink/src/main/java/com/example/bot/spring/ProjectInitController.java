@@ -8,7 +8,7 @@ import com.linecorp.bot.model.message.Message;
 
 
 public class ProjectInitController {
-	private final String [] imgs = new String[]{"/static/gd1.jpg", "/static/beach3.jpg","/static/beach3.jpg"};
+	private final String [] imgs = new String[]{"/static/gd1.jpg", "/static/beach3.jpg", "/static/prof.jpg"};
 
 	public ProjectInitController(){}
 	
@@ -26,7 +26,7 @@ public class ProjectInitController {
 			
 			"About booking","Press the button, or type enquiry to view booking record", // column 3 title and descriptions
 			"message","Booking enquiry","enquiry", // button 1
-			"postback","Greeting","Hello! This is COMP3111 Group12's chatbot!" // button 2
+			"postback","About me","Hello! This is COMP3111 Group12's chatbot!" // button 2
 		};
 		Message m = mf.createCarouselMessage(3, 2, carouselContents);
 		return m;
