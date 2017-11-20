@@ -179,7 +179,7 @@ public class ProjectInterface {
 	}
 	
 	/**
-	 * Manually stops discount pushmessages.
+	 * Manually starts discount pushmessages.
 	 */
 	public void startDiscountPromotion() {
 		Calendar current = Calendar.getInstance(TimeZone.getTimeZone("Asia/Hong_Kong"));
@@ -220,8 +220,8 @@ public class ProjectInterface {
 			replyText = "Carousel message for init state";
 			replyType = "carousel";
 		} else if (checkSearchState(text, userId)) {
-			userList.setState(userId, "search");
 			controller.search.process(text, state, userList.getSearchState(userId));
+			userList.setState(userId, "search");
 			replyType = "mixed";
 			replyList = controller.search.replyList;
 		} else if (checkBookState(text, userId)) {

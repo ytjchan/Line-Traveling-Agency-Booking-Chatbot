@@ -112,42 +112,53 @@ public class ProjectSearchController {
 			else if (text.toLowerCase().contains("show details of ")) {
 				//replyList.add(new TextMessage("SHOW DETAILS OF"));
 				ArrayList<ArrayList<String>> temp = db.searchTourID(text.toLowerCase().replace("show details of ", ""));
-				String temptext = temp.get(0).get(1) + "\n";
-				temptext += "Duration: " + temp.get(0).get(3) + " days\n";
-				temptext += "-" + temp.get(0).get(2).replace(" * ", "\n-");
 				
-				replyList.add(new TextMessage(temptext));
+				if (temp.size()>0) {
+					String temptext = temp.get(0).get(1) + "\n";
+					temptext += "Duration: " + temp.get(0).get(3) + " days\n";
+					temptext += "-" + temp.get(0).get(2).replace(" * ", "\n-");
+					
+					replyList.add(new TextMessage(temptext));
+				} else {
+					replyList.add(new TextMessage("I'm afraid we don't have a tour that matches your input ID"));
+				}
 			}
 			
 			//show dates of tour
 			else if (text.toLowerCase().contains("show dates of ")) {
 				//replyList.add(new TextMessage("SHOW DATES OF"));
 				ArrayList<ArrayList<String>> temp = db.searchTourID(text.toLowerCase().replace("show dates of ", ""));
-				String temptext = temp.get(0).get(1);
-				temp = db.searchTourOfferingID(text.toLowerCase().replace("show dates of ", ""));
-				temptext += " (" + temp.get(0).get(0) + ")";
 				
-				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-				LocalDate localDate = LocalDate.now().plusDays(3);
-				String start = dtf.format(localDate);
-				
-				if (temp.size() > 0) {
-					boolean hasrecords = false;
-					for (ArrayList<String> str : temp) {
-						if (str.get(2).compareTo(start) > 0) {
-							temptext += "\n-" + str.get(2);
-							hasrecords = true;
+				if (temp.size()>0) {
+					String temptext = temp.get(0).get(1);
+					temp = db.searchTourOfferingID(text.toLowerCase().replace("show dates of ", ""));
+					temptext += " (" + temp.get(0).get(0) + ")";
+					
+					DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+					LocalDate localDate = LocalDate.now().plusDays(3);
+					String start = dtf.format(localDate);
+					
+					if (temp.size() > 0) {
+						boolean hasrecords = false;
+						for (ArrayList<String> str : temp) {
+							if (str.get(2).compareTo(start) > 0) {
+								temptext += "\n-" + str.get(2);
+								hasrecords = true;
+							}
 						}
-					}
-					if (!hasrecords) {
+						if (!hasrecords) {
+							temptext += " has no available tours!";
+						}
+						
+					} else {
 						temptext += " has no available tours!";
 					}
 					
+					replyList.add(new TextMessage(temptext));
 				} else {
-					temptext += " has no available tours!";
+					replyList.add(new TextMessage("I'm afraid we don't have a tour that matches your input ID"));
 				}
 				
-				replyList.add(new TextMessage(temptext));
 			}
 			
 			//move to enter keyword state

@@ -103,27 +103,17 @@ public class ProjectBookController {
 			ArrayList<ArrayList<String>> temp = new ArrayList<ArrayList<String>>();
 			try {
 				getOfferings(bookState);
-			} catch (Exception e) {
-				replyList.add(new TextMessage("getOfferings threw an error!"));
-				bookState.substate = "error";
-				return;
-			}
-			
-			try {
 				temp = db.searchTourID(bookState.tourId);
+				if (temp.size() > 0) {
+					
+					bookState.tourName = temp.get(0).get(1);
+					replyList.add(new TextMessage("Now booking:\n" + bookState.tourName));
+					temp = db.searchBookerForLineID(userId);
+				} else {
+					replyList.add(new TextMessage("I'm afraid we don't have the tour you're looking for. Please enter .back (with the full stop) to return to your search results."));
+				}
 			} catch (Exception e) {
-				replyList.add(new TextMessage("gsearchTourID threw an error!"));
-				bookState.substate = "error";
-				return;
-			}
-			
-			bookState.tourName = temp.get(0).get(1);
-			replyList.add(new TextMessage("Now booking:\n" + bookState.tourName));
-			
-			try {				
-				temp = db.searchBookerForLineID(userId);
-			} catch (Exception e) {
-				replyList.add(new TextMessage("searchBookerForLineID threw an error!"));
+				replyList.add(new TextMessage("Something went wrong!"));
 				bookState.substate = "error";
 				return;
 			}
