@@ -26,17 +26,17 @@ public class ProjectFAQHandlerTest {
 	ProjectFAQHandler faq=new ProjectFAQHandler();
 	@Test
 	/**
-	 * Test case to test if createMessage() creates a proper template message (which carousel belongs to).
+	 * Test case to test for input text which is keyword, whether it can return corresponding answer
 	 */
 	public void testSearch1() {
-		String result=faq.search("visa");
+		String result=faq.search("vegetarian");
 		assertNotNull(result);
-		
-		assertTrue(result.length()==0);
+		//System.out.print("\n\nhello"+result+"!!!!!!!!\n\n");
+		assertTrue(result.equals("No"));
 	}
 	@Test
 	/**
-	 * Test case to test if createMessage() creates a proper template message (which carousel belongs to).
+	 * Test case to test for input text which is not keyword, whether it return empty string
 	 */
 	public void testSearch2() {
 		String result=faq.search("vegetariansaf");
