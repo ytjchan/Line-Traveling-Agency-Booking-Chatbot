@@ -226,7 +226,7 @@ public class ProjectInterface {
 			replyList = controller.search.replyList;
 		} else if (checkBookState(text, userId)) {
 			userList.setState(userId, "book");
-			controller.book.process(text, state, userList.getBookState(userId), userId);
+			controller.book.process(text, userList.getBookState(userId), userId);
 			replyType = "mixed";
 			replyList = controller.book.replyList;
 		} else if (checkEnqState()) {

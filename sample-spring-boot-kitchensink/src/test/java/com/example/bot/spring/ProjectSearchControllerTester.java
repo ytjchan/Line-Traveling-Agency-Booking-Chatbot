@@ -50,7 +50,6 @@ import lombok.extern.slf4j.Slf4j;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { ProjectSearchControllerTester.class, ProjectSearchController.class, SearchState.class })
 public class ProjectSearchControllerTester {
-	protected SQLDatabaseEngine db = new SQLDatabaseEngine();
 	protected ProjectSearchController search = new ProjectSearchController(); 
 
 	@Test
