@@ -113,9 +113,10 @@ public class MessageFactory {
 	 * @param param2 The second parameter on the creation of said object.
 	 * @return The Action object of suitable class.
 	 */
-	private Action createAction(String type, String param1, String param2){
+	Action createAction(String type, String param1, String param2){
+		String temp = type.toLowerCase();
 		Action a = null;
-		switch (type.toLowerCase()) {
+		switch (temp) {
 			case "message": a = new MessageAction(param1, param2); break;
 			case "postback": a = new PostbackAction(param1, param2); break;
 			case "uri": a = new URIAction(param1, param2); break;
@@ -145,8 +146,9 @@ public class MessageFactory {
 	 */
 	public Message createMessage(String type, Object... param) {
 		Message a;
+		String temp = type.toLowerCase();
 		try {
-			switch (type.toLowerCase()) {
+			switch (temp) {
 				case ("text"): 
 					a = createTextMessage((String)param[0]); 
 					break;

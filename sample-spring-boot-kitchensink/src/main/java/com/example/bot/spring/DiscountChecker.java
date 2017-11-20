@@ -91,16 +91,11 @@ public class DiscountChecker {
 				SQLDatabaseEngine db = new SQLDatabaseEngine();
 				deals = db.getDeals();
 				userList = db.getBookers();
-			} catch (Exception e) {
-				log.info("Cannot get discounts and bookers!" +e.toString());
-				return;
-			}
-			if (deals.size() > 0) {
 				String text = "3111 brings you limited-time discounts to the best tours in China!";
 				for (int i=0; i < 3 && i < deals.size(); i++) {
-					text += "\n" + ((1-Double.parseDouble(deals.get(i).get(1)))*100) + "% off our " + deals.get(i).get(0);
+					text += "\n" + Math.round(((1-Double.parseDouble(deals.get(i).get(1)))*100)) + "% off our " + deals.get(i).get(0);
 				}
-				text += "\nAnd many more! Check out our offers today!";
+				text += "\nCheck out our offers today!";
 				
 				TextMessage textMessage = new TextMessage(text);
 				
@@ -110,17 +105,18 @@ public class DiscountChecker {
 					log.info("Attempting to send discount message to user "+userId);
 					PushMessage pushMessage = new PushMessage(userId, textMessage);
 					Response<BotApiResponse> response;
-					try {
 					response = LineMessagingServiceBuilder
 						.create(System.getenv("LINE_BOT_CHANNEL_TOKEN"))
 						.build()
 						.pushMessage(pushMessage)
 						.execute();
-					} catch (IOException e) {
-					log.info(e.toString());
-					}
 				}
+			
+			
+			} catch (Exception e) {
+				log.info("exception in discount promotion!");
 			}
+			
 		}
 	}
 }

@@ -209,4 +209,32 @@ public class MessageFactoryTest {
 		assertTrue(m instanceof Message);
 	}
 	
+	
+	@Test
+	public void imageConstructor() {
+		MessageFactory temp = new MessageFactory("/static/prof.jpg");
+	}
+	
+	@Test
+	public void emptyPathConstructor() {
+		MessageFactory temp = new MessageFactory(new String[0]);
+	}
+	
+	@Test
+	public void faultyCarouselInput() {
+		mf.createCarouselMessage(1, 1, new String[] {"1","2"}); 
+	}
+	
+	@Test
+	public void faultyCreateAction() {
+		mf.createAction("kim sung", "loves", "comp3111");
+	}
+	
+	@Test
+	public void testFaultyMessage() {
+		mf.createMessage("carousel", "String", "String", "String");
+		mf.createMessage("kim sung", "String");
+	}
+	
+	
 }

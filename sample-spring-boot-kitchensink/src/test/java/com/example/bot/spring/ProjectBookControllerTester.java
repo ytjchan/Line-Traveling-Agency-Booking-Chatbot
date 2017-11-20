@@ -54,9 +54,10 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { ProjectBookControllerTester.class, ProjectBookController.class, BookState.class })
+@SpringBootTest(classes = { ProjectBookControllerTester.class, ProjectBookController.class, BookState.class, SQLDatabaseEngine.class })
 public class ProjectBookControllerTester {
-	protected ProjectBookController book = new ProjectBookController(); 
+	protected ProjectBookController book = new ProjectBookController();
+	protected SQLDatabaseEngine db = new SQLDatabaseEngine();
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -72,11 +73,10 @@ public class ProjectBookControllerTester {
     	stmt.executeUpdate();
     	
     	
-    	template = "update discount set remaining = ? where tourid = ? and offerid = ?";
+    	template = "update discount set remaining = remaining + 1 where tourid = ? and offerid = ?";
     	stmt = c.prepareStatement(template);
-    	stmt.setInt(1, 1);
-    	stmt.setString(2, "2D001");
-    	stmt.setString(3, "20171115");
+    	stmt.setString(1, "2D001");
+    	stmt.setString(2, "20171115");
     	stmt.executeUpdate();
     	
     	stmt.close();
@@ -279,7 +279,7 @@ public class ProjectBookControllerTester {
 		assertThat(bookState.substate.equals("error")).isEqualTo(true);
 		
 		
-		
+		//no discount test
 		
 		text = "book 2D001";
 		bookState = new BookState();
@@ -312,8 +312,10 @@ public class ProjectBookControllerTester {
 	}
 	
 	@Test
-	public void newBooking() {
+	public void testGetDiscountFail() throws Exception {
 		
+		double result = db.getDiscount("2D002");
+		assertThat(result >= 0 && result <= 1);
 	}
 }
 

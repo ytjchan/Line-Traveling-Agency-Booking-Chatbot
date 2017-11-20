@@ -42,35 +42,12 @@ import com.linecorp.bot.spring.boot.annotation.LineBotMessages;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
-import com.example.bot.spring.DatabaseEngine;
-
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { KitchenSinkTester.class, SQLDatabaseEngine.class, ProjectInitController.class,ProjectEnqController.class })
+@SpringBootTest(classes = { KitchenSinkTester.class })
 public class KitchenSinkTester {
-	@Autowired
-	private SQLDatabaseEngine databaseEngine;
-	
-	@Autowired
-	private ProjectInitController init;
-	
-	@Autowired
-	private ProjectEnqController enq;
 	
 	@Test
 	public void test() {}
-	
-/*	
-	@Test
-	public void testBookingEnquiry() {
-		String reply = enq.bookingEnq("hkgeorgechen");
-		assertThat(reply).isEqualTo("You don't have any booking in our database");
-	}
-	@Test
-	public void testRecommendTrip() {
-		String reply = init.recommendTrip("64562");
-		assertThat(reply).isNotEqualTo("Sorry, we don't have recommendation for you.");
-	}
-*/
 	
 }

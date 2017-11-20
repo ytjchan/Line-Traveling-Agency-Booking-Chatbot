@@ -16,7 +16,7 @@ import java.util.Date;
 import java.time.format.DateTimeFormatter;
 
 @Slf4j
-public class SQLDatabaseEngine extends DatabaseEngine {
+public class SQLDatabaseEngine {
     /**
      * Return all keywords available in FAQ table
      * @return String of all keywords concatenated and separated by ', ' 
@@ -34,10 +34,8 @@ public class SQLDatabaseEngine extends DatabaseEngine {
                         sb.append(", ");
                 }
                 return sb.toString();
-        } catch (URISyntaxException e){
-                log.info("URI Syntax problem with URI: " + System.getenv("DATABASE_URL"));
-        } catch (SQLException e){
-                log.info("Searching for all keywords failed!");
+        } catch (Exception e){
+                log.info("searchAllKeywords Error");
         }
         return null;
     }
@@ -48,8 +46,7 @@ public class SQLDatabaseEngine extends DatabaseEngine {
     	for(int i=0;i<currentString-1;i++) {
 			if(s.toLowerCase().equals(textlist[i].toLowerCase())) {
 				skip=true;
-				//for test
-				//return "deplicate";
+				break;
 			}
 		}
     	return skip;
@@ -94,10 +91,8 @@ public class SQLDatabaseEngine extends DatabaseEngine {
                             ResultSet keywordRs = stmt.executeQuery();
                             if (keywordRs.next()) // while loop would concatenate all ans results if keywords repeat in the db, this my ruin the output String
                                     sb.append(keywordRs.getString(1));
-                    } catch (URISyntaxException e) {
-                            log.info("URI Syntax problem with URI: " + System.getenv("DATABASE_URL"));
-                    } catch (SQLException e) {
-                            log.info("Searching for answer from FAQ table failed! Continuing on next word.");
+                    } catch (Exception e) {
+                            log.info("searchKeywordFromFAQ error");
                     }
             }
 		return sb.toString();
@@ -355,15 +350,11 @@ public class SQLDatabaseEngine extends DatabaseEngine {
     	PreparedStatement stmt = c.prepareStatement(template);
     	stmt.setString(1, offerId);
     	ResultSet tourRs = stmt.executeQuery();
-    	if (tourRs.next()) {
-    		int temp = tourRs.getInt(1);
-    		stmt.close();
-            c.close();
-    		return temp;
-    	}
-    	stmt.close();
+		tourRs.next();
+		int temp = tourRs.getInt(1);
+		stmt.close();
         c.close();
-    	return 0;
+		return temp;
     }
     
     /**

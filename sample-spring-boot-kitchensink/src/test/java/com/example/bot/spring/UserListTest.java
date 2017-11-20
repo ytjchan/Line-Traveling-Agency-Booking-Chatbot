@@ -182,4 +182,17 @@ public class UserListTest {
 		//user not found
 		userList.remove("COMP3111NOTFUN");
 	}
+	
+	@Test
+	public void searchBookGetters() {
+		userList.getSearchState("COMP3111");
+		userList.getBookState("COMP3111");
+		userList.resetSearchState("COMP3111");
+		userList.resetBookState("COMP3111");
+		
+		userList.getSearchState("");
+		userList.getBookState("");
+		userList.resetSearchState("");
+		userList.resetBookState("");
+	}
 }
