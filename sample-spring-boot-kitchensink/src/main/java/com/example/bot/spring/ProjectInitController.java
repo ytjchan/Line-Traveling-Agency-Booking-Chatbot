@@ -8,7 +8,7 @@ import com.linecorp.bot.model.message.Message;
 
 
 public class ProjectInitController {
-	private final String [] imgs = new String[]{"/static/gd1.jpg", "/static/beach3.jpg", "/static/prof.jpg"};
+	private final String [] imgs = new String[]{"/static/gd1.jpg", "/static/beach3.jpg", "/static/magnify1.jpg"};
 
 	public ProjectInitController(){}
 	
