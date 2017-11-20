@@ -98,6 +98,12 @@ public class ProjectInterface {
 	
 	//this will change the reply type & reply 
         // need to pass userId in order to distinguish every user
+	/**
+     * this will change the reply type & reply 
+     * need to pass userId in order to distinguish every user
+     * @param text user's input message, which will be used to generate corresponding reply and reply type
+     * @param userId used to to distinguish every user
+     */
 	public void process(String text, String userId) {
                 log.info(userList.toString());
 		userList.updateBuffer(userId, text);
@@ -167,7 +173,11 @@ public class ProjectInterface {
 		//for test case, remove when you're actually done
 		return false;
 	}
-	
+	/**
+     * check whether input text contain the keywolds in the FAQ table in database
+     * @param text the user input message
+     * @return if text contain keywolds whose answer is stored in FAQ table,return true, else return false
+     */
     public boolean checkFAQ(String text) {
         //TODO: check if state is faq
         //lookup faq table in database to see if input message matches any stored questions
@@ -177,6 +187,11 @@ public class ProjectInterface {
             return false;
         return true;
     }
+    
+    /**
+     * Getter method of all Staff's userId for identifying who is a staff.
+     * @return String containing all userIds of staffs, delimited by semicolon (;)
+     */
     public String getStaffID() {
     	String id=null;
     	id=controller.unknown.getStaffId();

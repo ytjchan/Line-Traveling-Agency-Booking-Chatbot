@@ -267,7 +267,11 @@ public class SQLDatabaseEngine extends DatabaseEngine {
     	}
     	return arr;
     }
-    //to get staff id from database
+    
+    /**
+	 * get all staff's id and return them
+	 * @return String containing all userIds of staffs, delimited by semicolon (;)
+	 */
     protected String getStaffId() {
     	
       	StringBuilder sb = new StringBuilder();
